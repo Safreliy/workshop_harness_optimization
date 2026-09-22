@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d1018">
+  <meta name="description" content="Интерактивное сравнение стартового ReAct-агента и meta-optimized harness на PostgreSQL-задачах.">
+  <title>Harness Lab — сравнение агентов</title>
+  <link rel="stylesheet" href="demo.css">
+</head>
+<body>
+  <a class="skip-link" href="#workbench">К результату</a>
+  <header class="labbar">
+    <a class="lab-brand" href="index.html" aria-label="Вернуться к презентации">
+      <span class="lab-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span>HARNESS LAB</span>
+      <small>← презентация</small>
+    </a>
+    <div class="agent-switch" role="tablist" aria-label="Выбор агента">
+      <button class="agent-button active" type="button" role="tab" aria-selected="true" data-agent="baseline">
+        <span>Стартовый</span><small>ReAct</small>
+      </button>
+      <button class="agent-button" type="button" role="tab" aria-selected="false" data-agent="optimized">
+        <span>Оптимизированный</span><small>тот же model</small>
+      </button>
+    </div>
+    <div class="runtime-badge" id="runtime-badge"><i></i><span>загрузка данных</span></div>
+  </header>
+
+  <main class="lab-shell" id="workbench">
+    <aside class="task-panel" aria-label="Набор задач">
+      <div class="panel-heading">
+        <span>01 · ВЫБЕРИТЕ КЕЙС</span>
+        <strong>Пять разных провалов</strong>
+        <p>Все результаты получены одной и той же моделью.</p>
+      </div>
+      <div class="task-list" id="task-list" aria-live="polite">
+        <div class="task-skeleton"></div><div class="task-skeleton"></div><div class="task-skeleton"></div>
+      </div>
+      <button class="custom-task-button" id="custom-task-button" type="button">
+        <b>+</b><span>Свободный чат</span><small>история сохраняется · live</small>
+      </button>
+      <details class="config-diff">
+        <summary>Что изменил meta-harness</summary>
+        <div class="diff-grid">
+          <div><span>START</span><p>общий prompt<br>4 коротких tool descriptions<br>routing: none<br>6 шагов</p></div>
+          <i>→</i>
+          <div><span>OPTIMIZED</span><p>routing по типу задачи<br>диагностические описания<br>trial_index_plan<br>8 шагов + короткий patch</p></div>
+        </div>
+      </details>
+    </aside>
+
+    <section class="chat-workspace" aria-label="Диалог с агентом">
+      <header class="case-header">
+        <div>
+          <span id="case-kicker">ЗАДАЧА</span>
+          <h1 id="case-title">Загружаем набор…</h1>
+        </div>
+        <div class="case-delta" aria-label="Изменение оценки">
+          <span>РАЗНИЦА</span><strong id="case-delta">—</strong>
+        </div>
+      </header>
+
+      <div class="case-why" id="case-why">Подготавливаем описание кейса.</div>
+
+      <section class="free-chat" id="custom-composer" hidden aria-label="Свободный чат с агентом">
+        <div class="chat-history" id="chat-history" aria-live="polite">
+          <div class="chat-empty" id="chat-empty"><strong>Обычный диалог без формата</strong><span>Напишите вопрос, вставьте SQL прямо в сообщение или продолжите ответ уточнением.</span></div>
+        </div>
+        <form class="chat-form" id="chat-form">
+          <label for="chat-input">Сообщение</label>
+          <textarea id="chat-input" rows="3" maxlength="20000" placeholder="Например: какие тарифы есть в базе? Или: помоги уточнить требования к недельному отчёту"></textarea>
+          <div class="chat-actions">
+            <button class="clear-chat" id="clear-chat" type="button">Очистить историю</button>
+            <span id="chat-state">Enter — отправить · Shift+Enter — новая строка</span>
+            <button class="send-chat" id="send-chat" type="submit">Отправить <b>↗</b></button>
+          </div>
+        </form>
+      </section>
+
+      <article class="message user-message" id="user-message">
+        <div class="message-identity"><span>ЗАДАНИЕ</span><i>user</i></div>
+        <div class="message-body" id="input-body"></div>
+      </article>
+
+      <div class="run-row" id="run-row">
+        <button class="run-button" id="run-button" type="button" disabled>
+          <span aria-hidden="true">▶</span><b>Показать прогон</b>
+        </button>
+        <button class="swap-button" id="swap-button" type="button" disabled>Сравнить с оптимизированным →</button>
+        <span class="run-note" id="run-note">Один и тот же запрос, модель и база данных</span>
+      </div>
+
+      <article class="message assistant-message" id="assistant-message" aria-live="polite">
+        <div class="message-identity"><span id="assistant-name">СТАРТОВЫЙ REACT</span><i id="assistant-status">готов</i></div>
+        <div class="assistant-placeholder" id="assistant-placeholder">
+          Выберите кейс и запустите сохранённую траекторию.
+        </div>
+        <div class="answer-wrap" id="answer-wrap" hidden>
+          <pre class="assistant-answer" id="assistant-answer"></pre>
+          <button class="answer-toggle" id="answer-toggle" type="button">Показать ответ целиком</button>
+        </div>
+      </article>
+
+      <section class="comparison-strip" id="comparison-strip" aria-label="Сравнение метрик">
+        <div class="comparison-label"><span>ЭТОТ КЕЙС</span><strong>baseline → optimized</strong></div>
+        <div class="compare-metric"><span>общая оценка</span><strong id="compare-score">—</strong><i><b id="compare-score-bar"></b></i></div>
+        <div class="compare-metric"><span>оценка траектории</span><strong id="compare-trace">—</strong><i><b id="compare-trace-bar"></b></i></div>
+        <div class="compare-metric"><span>вызовы модели</span><strong id="compare-calls">—</strong><i class="reverse"><b id="compare-calls-bar"></b></i></div>
+      </section>
+    </section>
+
+    <aside class="trace-panel" aria-label="Проверка и траектория">
+      <section class="expectation-card">
+        <div class="panel-heading compact"><span>02 · ЧТО ПРОВЕРЯЕМ</span><strong>Критерии</strong></div>
+        <ul id="expectation-list"></ul>
+      </section>
+
+      <section class="result-card" id="result-card">
+        <div class="result-head"><span>РЕЗУЛЬТАТ</span><strong id="result-verdict">—</strong></div>
+        <div class="score-pair">
+          <div><span>ответ</span><strong id="output-score">—</strong></div>
+          <div><span>траектория</span><strong id="trajectory-score">—</strong></div>
+          <div><span>LLM</span><strong id="llm-calls">—</strong></div>
+        </div>
+        <div class="grader-note" id="grader-note">Результат появится после запуска.</div>
+      </section>
+
+      <section class="trace-card">
+        <div class="trace-head"><span>03 · НАБЛЮДАЕМАЯ ТРАЕКТОРИЯ</span><strong id="trace-count">0 действий</strong></div>
+        <ol class="trace-list" id="trace-list"></ol>
+        <div class="trace-empty" id="trace-empty">Здесь появится последовательность tool calls и финализации.</div>
+      </section>
+    </aside>
+  </main>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+  <script src="demo.js"></script>
+</body>
+</html>

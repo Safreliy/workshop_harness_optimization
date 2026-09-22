@@ -1,0 +1,18 @@
+name: baseline_react
+prompt_profile: baseline
+prompt_patch: ""
+routing: none
+workflow: react
+context_strategy: raw
+context_partition: shared
+review_mode: none
+tool_description_profile: terse
+enabled_tools:
+  - list_tables
+  - describe_table
+  - explain_query
+  - run_readonly_query
+tool_description_overrides: {}
+max_steps: 6
+max_context_chars: 60000
+temperature: 0.0

@@ -1,0 +1,11 @@
+.env
+.venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+artifacts/**
+!artifacts/.gitkeep
+.coverage
+.npm-cache-sites/
+.site-build/
+interactive-deck/

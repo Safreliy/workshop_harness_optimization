@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10131d">
+  <meta name="description" content="Интерактивная презентация эксперимента по meta-harness optimization PostgreSQL-агента.">
+  <meta property="og:title" content="Meta-harness optimization PostgreSQL-агента">
+  <meta property="og:description" content="Конкретные benchmark-кейсы, оценка результата и траектории, модельный meta-search и открытый eval.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://harness-lab-saveliy-2026.safreliy.chatgpt.site/assets/social-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Meta-harness optimization PostgreSQL-агента">
+  <meta name="twitter:description" content="Benchmark-кейсы, trajectory eval и результаты эксперимента.">
+  <meta name="twitter:image" content="https://harness-lab-saveliy-2026.safreliy.chatgpt.site/assets/social-preview.png">
+  <title>Harness Lab — meta-harness optimization PostgreSQL-агента</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#deck">К презентации</a>
+  <header class="deck-chrome" aria-label="Навигация презентации">
+    <a class="brand" href="#slide-1" aria-label="В начало">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span>HARNESS LAB</span>
+    </a>
+    <div class="chapter-label" aria-live="polite">01 · Гипотеза</div>
+    <div class="deck-actions">
+      <a class="demo-nav" href="demo.html">ДЕМО АГЕНТА <span>↗</span></a>
+      <div class="counter"><span id="current-slide">01</span><span>/</span><span id="total-slides">13</span></div>
+    </div>
+  </header>
+  <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
+  <nav class="rail" aria-label="Слайды"></nav>
+
+  <main id="deck" tabindex="-1">
+    <section class="slide hero" id="slide-1" data-title="Гипотеза" data-chapter="01">
+      <div class="slide-inner hero-grid">
+        <div class="hero-copy reveal">
+          <p class="eyebrow">POSTGRESQL META-HARNESS LAB · 2026</p>
+          <h1>Meta-harness<br><em>для PostgreSQL-агента</em></h1>
+          <p class="lead">Фиксируем DeepSeek-V4-Flash-0731. Оптимизируем prompts, tools, routing, workflow, context strategy и бюджет по train/eval.</p>
+        </div>
+        <div class="signal-stage reveal" aria-label="Модель остаётся фиксированной, конфигурация harness меняется">
+          <div class="model-core"><span>MODEL</span><strong>fixed</strong><small>DeepSeek-V4-Flash-0731</small></div>
+          <div class="orbit orbit-a"><span>prompt</span></div><div class="orbit orbit-b"><span>tools</span></div><div class="orbit orbit-c"><span>routing</span></div><div class="signal-line"></div>
+        </div>
+        <p class="scroll-cue">Листайте вниз или используйте <kbd>→</kbd></p>
+      </div>
+    </section>
+
+    <section class="slide premise" id="slide-2" data-title="Что меняем" data-chapter="02">
+      <div class="slide-inner">
+        <p class="eyebrow reveal">КОНТРОЛИРУЕМЫЙ ЭКСПЕРИМЕНТ</p>
+        <h2 class="reveal">Фиксированная модель.<br>Версионируемый harness.</h2>
+        <div class="locked-row reveal">
+          <div class="fixed-block"><span class="lock">◆</span><strong>MODEL_NAME</strong><small>не меняется между runs</small></div><div class="equals">=</div>
+          <div class="variable-strip" aria-label="Оптимизируемые компоненты"><span>prompt</span><span>tools</span><span>routing</span><span>workflow</span><span>context</span><span>review</span><span>budget</span></div>
+        </div>
+        <p class="takeaway reveal"><span>Цель:</span> связать изменение метрики с конкретной конфигурацией агентной системы.</p>
+      </div>
+    </section>
+
+    <section class="slide task-slide" id="slide-3" data-title="Задачи агента" data-chapter="03">
+      <div class="slide-inner split-title">
+        <div><p class="eyebrow reveal">ДВА ТИПА ВЕРИФИЦИРУЕМЫХ ЗАДАЧ</p><h2 class="reveal">Что именно должен сделать агент</h2></div>
+        <div class="mode-switch reveal" role="tablist" aria-label="Типы задач"><button class="mode-button active" type="button" role="tab" aria-selected="true" data-mode="report">ОТЧЁТ</button><button class="mode-button" type="button" role="tab" aria-selected="false" data-mode="sql">SQL</button></div>
+        <div class="task-stage flow-panel reveal" data-mode-panel="report">
+          <div class="task-flow" aria-label="Последовательность решения задачи по отчёту">
+            <article class="task-step request"><span>1 · ИСХОДНЫЙ ЗАПРОС</span><strong>«Раз в неделю покажи сумму всех заказов по странам»</strong><p><b>GMV</b> здесь означает общую стоимость заказов до уточнения статусов и возвратов.</p></article>
+            <i>→</i>
+            <article class="task-step corrections"><span>2 · ПОЗДНИЕ УТОЧНЕНИЯ</span><strong>Требование меняется по ходу диалога</strong><p>Только оплаченные заказы; вычесть скидку; считать неделю по Москве; убрать страну; добавить тариф и канал продаж.</p></article>
+            <i>→</i>
+            <article class="task-step output"><span>3 · ОТВЕТ АГЕНТА</span><strong>Итоговое ТЗ в JSON</strong><p>Название отчёта, формулы показателей, группировка строк, фильтры, часовой пояс, формат и открытые вопросы.</p></article>
+            <i>→</i>
+            <article class="task-step verify"><span>4 · АВТОМАТИЧЕСКАЯ ПРОВЕРКА</span><strong>15 однозначных условий</strong><p><code>timezone = Europe/Moscow</code><br><code>status = paid</code><br><code>country отсутствует</code></p></article>
+          </div>
+          <div class="deterministic-note"><b>Почему не нужен LLM-судья:</b><span>ответ имеет фиксированную структуру. Программа проверяет точные значения полей, наличие элементов в списках и формулу показателя.</span></div>
+        </div>
+        <div class="task-stage flow-panel reveal" data-mode-panel="sql" hidden>
+          <div class="task-flow" aria-label="Последовательность решения задачи по SQL">
+            <article class="task-step request"><span>1 · ИСХОДНЫЙ ЗАПРОС</span><strong>Запрос медленно считает дневную выручку</strong><p>Из-за функции вокруг даты PostgreSQL читает всю таблицу из 220&nbsp;000 заказов.</p></article>
+            <i>→</i>
+            <article class="task-step corrections"><span>2 · ДИАГНОСТИКА</span><strong>Агент изучает таблицу и план запроса</strong><p>Смотрит столбцы и индексы, затем получает измеренный план выполнения исходного SQL.</p></article>
+            <i>→</i>
+            <article class="task-step output"><span>3 · ПРЕДЛОЖЕНИЕ</span><strong>Новый SQL и индекс</strong><p>Фильтр по диапазону времени позволяет использовать индекс. Агент проверяет вариант внутри временной транзакции.</p></article>
+            <i>→</i>
+            <article class="task-step verify"><span>4 · АВТОМАТИЧЕСКАЯ ПРОВЕРКА</span><strong>Результаты совпадают, стоимость плана ниже</strong><p>Программа выполняет оба запроса, сравнивает строки и числа из планов PostgreSQL.</p></article>
+          </div>
+          <div class="deterministic-note"><b>Проверка также детерминирована:</b><span>SQL остаётся только для чтения, результат совпадает, индекс откатывается, отношение стоимости плана превышает заданный порог.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide case-slide report-case" id="slide-report-case" data-title="Пример REPORT" data-chapter="04">
+      <div class="slide-inner">
+        <p class="eyebrow reveal">REPORT_TRAIN_01 · ТЗ НА ЕЖЕНЕДЕЛЬНЫЙ ОТЧЁТ</p>
+        <h2 class="reveal">Пример: поздние правки меняют итоговое ТЗ</h2>
+        <div class="case-grid report-case-grid reveal">
+          <div class="case-input">
+            <div class="case-head"><span>ЗАДАНИЕ АГЕНТУ</span><strong>10 реплик</strong></div>
+            <p>Составить финальное ТЗ на отчёт. Вернуть один JSON заданной структуры. Поздние исправления имеют приоритет.</p>
+            <ol class="turn-list">
+              <li><b>01</b><span>Сумма всех заказов за неделю, с разбивкой по странам.</span></li>
+              <li><b>03</b><span><mark>Поправка:</mark> выручка = сумма заказа минус скидка, только оплаченные заказы.</span></li>
+              <li><b>07</b><span><mark>Поправка:</mark> время Москвы; неделя с понедельника.</span></li>
+              <li><b>08</b><span>Убрать страну; добавить число заказов и сравнение с прошлой неделей.</span></li>
+              <li><b>10</b><span>CSV по понедельникам 09:00; за определение выручки отвечает Finance.</span></li>
+            </ol>
+          </div>
+          <div class="case-contract">
+            <div class="case-head"><span>ПРОВЕРЯЕМАЯ ЧАСТЬ ОТВЕТА</span><strong>фрагмент JSON</strong></div>
+            <pre><code>{
+  "report_name": "weekly_b2b_revenue",
+  "timezone": "Europe/Moscow",
+  "grain": ["iso_week", "plan", "sales_channel"],
+  "population": {
+    "include": ["growth", "enterprise"],
+    "exclude": ["starter", "is_test"]
+  },
+  "metrics": [
+    {"id": "recognized_net_revenue", "definition": "SUM(total-discount), paid"},
+    {"id": "orders_count", "definition": "COUNT(DISTINCT order id)"}
+  ],
+  "comparisons": ["wow"],
+  "delivery": {"format": "csv", "cadence": "monday 09:00"},
+  "open_questions": ["tax"]
+}</code></pre>
+            <p class="term-note"><code>grain</code> — поля группировки одной строки отчёта; <code>plan</code> — тариф клиента; <code>sales_channel</code> — канал продаж.</p>
+          </div>
+          <div class="case-checks">
+            <span>15 АВТОМАТИЧЕСКИХ ПРОВЕРОК</span>
+            <div><code>часовой пояс = Europe/Moscow</code><code>группировка содержит неделю</code><code>формула содержит paid, total, discount</code><code>число уникальных заказов</code><code>вопрос о налогах не потерян</code></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide case-slide sql-case" id="slide-sql-case" data-title="Пример SQL" data-chapter="05">
+      <div class="slide-inner">
+        <p class="eyebrow reveal">SQL_TRAIN_01 · НЕСАРГИРУЕМЫЙ ДНЕВНОЙ REVENUE</p>
+        <h2 class="reveal">Запрос, обязательная траектория и критерий успеха</h2>
+        <div class="case-grid sql-case-grid reveal">
+          <div class="sql-prompt">
+            <div class="case-head"><span>ЗАДАНИЕ</span><strong>только чтение</strong></div>
+            <p>Сохрани точную семантику результата. Предложи SQL и индекс на основании EXPLAIN.</p>
+            <pre><code>SELECT count(*), sum(total - discount)
+FROM orders
+WHERE date(created_at AT TIME ZONE 'UTC')
+      = DATE '2025-06-14'
+  AND status = 'paid'
+  AND is_test = false;</code></pre>
+          </div>
+          <div class="trace-contract">
+            <div class="case-head"><span>ОБЯЗАТЕЛЬНЫЕ ДЕЙСТВИЯ</span><strong>3 шага</strong></div>
+            <div class="trace-steps"><span>describe_table</span><i>→</i><span>explain_query</span><i>→</i><span>trial_index_plan</span></div>
+            <pre><code>WHERE created_at &gt;= lower_bound
+  AND created_at &lt;  upper_bound
+
+CREATE INDEX … ON orders (created_at)
+INCLUDE (total, discount)
+WHERE status='paid' AND is_test=false;</code></pre>
+          </div>
+          <div class="sql-measurements">
+            <div><span>стоимость исходного плана</span><strong>6301.90</strong></div>
+            <i>→</i>
+            <div><span>стоимость нового плана</span><strong>15.33</strong></div>
+            <div class="ratio"><span>снижение стоимости</span><strong>411.08×</strong><small>порог: ≥ 1.15×</small></div>
+            <div class="verified"><b>✓</b><span>orders_count = 300<br>результаты совпали · индекс откатан</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide pipeline-slide" id="slide-4" data-title="Схема эксперимента" data-chapter="06">
+      <div class="slide-inner">
+        <div class="title-row"><div><p class="eyebrow reveal">TRACE → PROPOSALS → PARETO → REPEAT</p><h2 class="reveal">Модель сама строит следующий портфель</h2></div><button class="play-flow reveal" type="button"><span>▶</span> проиграть схему</button></div>
+        <div class="experiment-flow reveal" aria-label="Схема эксперимента">
+          <div class="flow-step" data-step="1"><small>TRAIN</small><strong>10 задач</strong><span>6 отчётов + 4 SQL</span></div><i class="flow-arrow" data-step="2">→</i>
+          <div class="flow-step" data-step="3"><small>MODEL</small><strong>портфель</strong><span>родитель + гипотеза + patch</span></div><i class="flow-arrow" data-step="4">→</i>
+          <div class="flow-step" data-step="5"><small>RUN</small><strong>graders</strong><span>ответ + траектория</span></div><i class="flow-arrow" data-step="6">→</i>
+          <div class="flow-step freeze-step" data-step="7"><small>SELECT</small><strong>Pareto beam</strong><span>несколько родителей</span></div><i class="flow-arrow gate-arrow" data-step="8">→</i>
+          <div class="flow-step test-step" data-step="9"><small>REPEAT / EVAL</small><strong>3 раунда</strong><span>затем 7 eval-задач</span></div>
+        </div>
+        <div class="guardrail reveal"><span>01</span><p>В <code>search.yaml</code> нет готовых мутаций: только размер портфеля, beam и лимиты.</p><span>02</span><p>Сбой API повторяется и не превращается в «плохой harness».</p></div>
+      </div>
+    </section>
+
+    <section class="slide score-slide" id="slide-5" data-title="Что измеряем" data-chapter="07">
+      <div class="slide-inner">
+        <p class="eyebrow reveal">OUTPUT + OBSERVABLE TRACE</p><h2 class="reveal">Итоговая оценка: 75% ответ, 25% траектория</h2>
+        <div class="score-layout reveal">
+          <div class="score-ring" aria-label="Формула оценки: 75% output и 25% trajectory"><div><strong>0.75</strong><span>OUTPUT</span></div><div><strong>0.25</strong><span>TRACE</span></div><b>combined</b></div>
+          <div class="score-tabs"><div role="tablist" aria-label="Состав оценки"><button class="score-tab active" type="button" data-score="output" role="tab" aria-selected="true">Ответ</button><button class="score-tab" type="button" data-score="trajectory" role="tab" aria-selected="false">Траектория</button></div>
+            <div class="score-detail" data-score-panel="output"><h3>Детерминированные проверки результата</h3><p><b>REPORT:</b> schema + атомарные требования. <b>SQL:</b> безопасность, эквивалентность, cost ratio, индекс и evidence.</p><div class="checkline"><i></i><span>Grader возвращает список пройденных и проваленных инвариантов.</span></div></div>
+            <div class="score-detail" data-score-panel="trajectory" hidden><h3>Оцениваем наблюдаемое поведение</h3><p>Порядок schema → EXPLAIN → index trial, лишние tools, ошибки, forced finalization и бюджет LLM-вызовов.</p><div class="checkline warning"><i></i><span>7 вызовов могут получить меньший trace score, чем 4. Провальные traces сохраняются как отрицательные примеры для optimizer.</span></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide search-slide" id="slide-6" data-title="Пространство поиска" data-chapter="08">
+      <div class="slide-inner">
+        <div class="search-copy"><p class="eyebrow reveal">ФАКТИЧЕСКАЯ LINEAGE</p><h2 class="reveal">Модель выбирает родителя и изменение</h2><p class="section-copy reveal">Каждая стрелка — реально выполненный кандидат. Номера 5, 6 и 7 остались в финальном beam.</p><div class="lineage-board reveal" aria-label="Происхождение вариантов"><div class="lineage-track"><small>РАУНД 1 · ОТ BASELINE</small><p><b>0</b><i>→</i><b>1</b><span>workflow</span><i>·</i><b>2</b><span>tools</span><i>·</i><b>3</b><span>context</span></p></div><div class="lineage-track full-track"><small>РАУНДЫ 2–3 · РАЗВИТИЕ ВЕТКИ 2</small><p><b>2</b><i>→</i><b>4</b><span>review</span><i>·</i><b class="beam-node">5</b><span>routing</span><i>→</i><b class="beam-node">6</b><span>ledger</span><i>·</i><b class="beam-node">7</b><span>prompt</span></p><span>финальный beam: <em>5 · 6 · 7</em></span></div></div></div>
+        <div class="coordinate-layout reveal">
+          <div class="coordinate-list" role="list" aria-label="Раунды поиска"><button class="coordinate active" type="button" data-axis="round1"><span>01</span>три направления<i></i></button><button class="coordinate" type="button" data-axis="round2"><span>02</span>развить tools<i></i></button><button class="coordinate" type="button" data-axis="round3"><span>03</span>добрать качество<i></i></button><button class="coordinate" type="button" data-axis="best"><span>BEST</span>что получилось<i></i></button></div>
+          <div class="coordinate-readout" aria-live="polite"><small id="axis-kicker">РАУНД 01 · РОДИТЕЛЬ 0</small><h3 id="axis-title">Модель предложила три разных механизма</h3><p id="axis-copy">Workflow ухудшил цену. Context ledger почти не помог. Добавление пробного индекса и диагностических описаний подняло SQL с 0,156 до 0,758.</p><div class="objective-mini"><span>что задаёт человек</span><code>schema + graders + portfolio/beam budget</code></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide calibration-slide" id="slide-7" data-title="Baseline" data-chapter="09">
+      <div class="slide-inner">
+        <div class="title-row"><div><p class="eyebrow reveal">ТОЧКА ОТСЧЁТА · 10 TRAIN-ЗАДАЧ</p><h2 class="reveal">Простой ReAct: 0,475</h2></div><div class="metric-toggle reveal" role="tablist" aria-label="Срез baseline"><button class="metric-button active" type="button" data-metric="all">все</button><button class="metric-button" type="button" data-metric="report">отчёты</button><button class="metric-button" type="button" data-metric="sql">SQL</button></div></div>
+        <div class="calibration-grid reveal">
+          <div class="hero-metric"><span id="baseline-label">общая оценка</span><strong id="baseline-score">0,475</strong><div class="meter"><i id="baseline-meter" style="--value:47.51%"></i></div><p id="baseline-caption">0 из 10 задач прошли ответ и траекторию · 5,4 вызова в среднем</p></div>
+          <div class="kind-bars"><div class="kind-row"><span>SQL</span><div><i style="--value:15.58%"></i></div><strong>0,156</strong><small>ответ: 0,000</small></div><div class="kind-row"><span>ОТЧЁТЫ</span><div><i style="--value:68.80%"></i></div><strong>0,688</strong><small>траектория: 0,195</small></div><p class="bar-note">В отчётах агент обращается к БД без необходимости. В SQL не завершает проверку эквивалентности и пробного индекса.</p></div>
+          <div class="failure-card"><small>ПРИМЕР ПРОВАЛЬНОЙ ТРАЕКТОРИИ</small><strong>sql_train_03 · 0,131</strong><p>7 вызовов, повторные выборки, принудительный финал и ни одной транзакционной проверки индекса. Output score: 0,000.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide results-slide" id="slide-8" data-title="Полный train-search" data-chapter="10">
+      <div class="slide-inner">
+        <div class="results-heading"><div><p class="eyebrow reveal">10 TRAIN-ЗАДАЧ · 7 МОДЕЛЬНЫХ КАНДИДАТОВ</p><h2 class="reveal">Структура дала основной прирост</h2></div><div class="pareto-toggle reveal" role="tablist" aria-label="Оси графика"><button class="pareto-mode active" type="button" data-plot="cost" role="tab" aria-selected="true">оценка / вызовы</button><button class="pareto-mode" type="button" data-plot="tasks" role="tab" aria-selected="false">отчёты / SQL</button></div></div><p class="result-context reveal" id="pareto-context">По качеству и числу вызовов вариант 7 доминирует все остальные: 0,913 при 3,2 вызова. Его родитель 5 уже достиг 0,898 без prompt patch.</p>
+        <div class="result-layout reveal">
+          <div class="scatter-panel">
+            <div class="scatter" aria-label="Интерактивный Парето-график"><span class="axis-y" id="pareto-y-label">общая оценка ↑</span><span class="axis-x" id="pareto-x-label">вызовы модели →</span><span class="axis-direction" id="pareto-direction">лучше ↖</span><div class="grid-line g1"></div><div class="grid-line g2"></div><div class="grid-line g3"></div><svg class="pareto-overlay" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline id="pareto-line" points=""></polyline></svg><button class="trial-point active" type="button" data-trial="t0" aria-label="Вариант 0: baseline"><i>0</i></button><button class="trial-point" type="button" data-trial="t1" aria-label="Вариант 1: plan execute"><i>1</i></button><button class="trial-point" type="button" data-trial="t2" aria-label="Вариант 2: индексный tool и описания"><i>2</i></button><button class="trial-point" type="button" data-trial="t3" aria-label="Вариант 3: журнал требований"><i>3</i></button><button class="trial-point" type="button" data-trial="t4" aria-label="Вариант 4: domain reviewer"><i>4</i></button><button class="trial-point" type="button" data-trial="t5" aria-label="Вариант 5: routing и бюджет"><i>5</i></button><button class="trial-point" type="button" data-trial="t6" aria-label="Вариант 6: журнал требований от 5"><i>6</i></button><button class="trial-point" type="button" data-trial="t7" aria-label="Вариант 7: короткий prompt patch от 5"><i>7</i></button></div>
+            <div class="scatter-legend" aria-label="Варианты поиска"><button class="scatter-key active" type="button" data-trial-legend="t0"><b>0</b><span>baseline</span><small>0,449</small></button><button class="scatter-key rejected-key" type="button" data-trial-legend="t1"><b>1</b><span>workflow</span><small>0,431</small></button><button class="scatter-key" type="button" data-trial-legend="t2"><b>2</b><span>tools</span><small>0,651</small></button><button class="scatter-key rejected-key" type="button" data-trial-legend="t3"><b>3</b><span>context</span><small>0,436</small></button><button class="scatter-key model-key" type="button" data-trial-legend="t4"><b>4</b><span>reviewer</span><small>0,736</small></button><button class="scatter-key" type="button" data-trial-legend="t5"><b>5</b><span>routing</span><small>0,882</small></button><button class="scatter-key full-key" type="button" data-trial-legend="t6"><b>6</b><span>ledger</span><small>0,815</small></button><button class="scatter-key model-key" type="button" data-trial-legend="t7"><b>7</b><span>prompt</span><small>0,900</small></button></div>
+          </div>
+          <div class="trial-readout" aria-live="polite"><div class="trial-head"><small id="trial-number">ВАРИАНТ 00 · BASELINE</small><span id="trial-status" class="rejected">вне финального beam</span></div><h3 id="trial-title">Точка отсчёта</h3><div class="trial-numbers"><div><span id="trial-metric-a-label">оценка</span><strong id="trial-score">0,475</strong></div><div><span id="trial-metric-b-label">вызовы</span><strong id="trial-calls">5,4</strong></div><div><span id="trial-metric-c-label">цель</span><strong id="trial-objective">0,449</strong></div></div><p id="trial-copy">Ответ: 0,511. Траектория: 0,366. Ни одна из 10 задач не прошла обе группы проверок.</p><div class="trial-nav"><button type="button" data-step-trial="-1" aria-label="Предыдущий вариант">←</button><span>точки и карточки можно нажимать</span><button type="button" data-step-trial="1" aria-label="Следующий вариант">→</button></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide evidence-slide" id="slide-9" data-title="Результат eval" data-chapter="11">
+      <div class="slide-inner evidence-grid">
+        <div><p class="eyebrow reveal">ОТКРЫТЫЙ EVAL · 7 ЗАДАЧ</p><h2 class="reveal">Eval показывает рабочий прирост</h2></div>
+        <div class="evidence-scale reveal"><div class="evidence-known"><span>ОБЩАЯ ОЦЕНКА</span><strong>0,524 → 0,934</strong><p>Прирост +0,410. Новый harness лучше baseline на каждой из семи задач.</p></div><div class="evidence-gain"><span>ОТВЕТ / ТРАЕКТОРИЯ</span><strong>0,917 / 0,982</strong><p>Было 0,601 / 0,293. Вызовы модели снизились 6,14 → 3,14.</p></div><div class="sample-line"><i style="--fill:85.71%"></i><b>6 / 7</b><span>отчёты: 0,918 · SQL: 0,954 · у ReAct полный проход: 0 / 7</span></div></div>
+        <p class="evidence-rule reveal"><b>Статус результата:</b> eval можно запускать повторно и использовать для следующей итерации. Это инженерная оценка, а не закрытый test и не доказательство обобщения.</p>
+      </div>
+    </section>
+
+    <section class="slide reuse-slide" id="slide-10" data-title="Переиспользование" data-chapter="12">
+      <div class="slide-inner">
+        <p class="eyebrow reveal">ПЕРЕНОСИМЫЙ ПАТТЕРН</p><h2 class="reveal">Для нового проекта заменяются cases и graders</h2>
+        <div class="reuse-layout reveal">
+          <div class="reuse-map" role="list" aria-label="Слои переносимой архитектуры"><button class="reuse-node active" type="button" data-reuse="cases"><span>01</span><strong>cases</strong><small>реальные failure modes</small></button><i>→</i><button class="reuse-node" type="button" data-reuse="registry"><span>02</span><strong>registry</strong><small>tools + configs</small></button><i>→</i><button class="reuse-node" type="button" data-reuse="graders"><span>03</span><strong>graders</strong><small>проверяемые инварианты</small></button><i>→</i><button class="reuse-node" type="button" data-reuse="search"><span>04</span><strong>search</strong><small>model proposals + beam</small></button><i>→</i><button class="reuse-node" type="button" data-reuse="eval"><span>05</span><strong>eval</strong><small>повторяемая оценка</small></button></div>
+          <div class="reuse-readout" aria-live="polite"><small id="reuse-kicker">СЛОЙ 01 · ЗАМЕНИТЬ</small><h3 id="reuse-title">Соберите пары «задача + наблюдаемый провал»</h3><p id="reuse-copy">Возьмите 10–30 рабочих кейсов с поздними правками, ошибками инструментов, неверными решениями или лишними шагами.</p><div id="reuse-example" class="reuse-example"><span>пример</span> Support → policy exceptions · Coding → failing tests · RAG → citation misses</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide closing-slide" id="slide-11" data-title="Как запустить у себя" data-chapter="13">
+      <div class="slide-inner closing-grid">
+        <div><p class="eyebrow reveal">ПРАКТИЧЕСКИЙ ВЫВОД</p><h2 class="reveal">Оптимизируйте систему, а не только текст</h2><p class="closing-lead reveal">В этом прогоне основной скачок дали tool, его описание и routing. Prompt patch улучшил уже работающую структурную ветку.</p></div>
+        <ol class="runbook reveal"><li><span>01</span><p><b>Зафиксируйте модель</b><small>и параметры gateway</small></p></li><li><span>02</span><p><b>Соберите train / eval</b><small>eval остаётся обратной связью</small></p></li><li><span>03</span><p><b>Пишите детерминированные graders</b><small>для результата и поведения</small></p></li><li><span>04</span><p><b>Дайте модели bounded schema</b><small>но не готовые мутации</small></p></li><li><span>05</span><p><b>Сохраняйте beam и провалы</b><small>parent + hypothesis + diff</small></p></li><li><span>06</span><p><b>Повторяйте финалистов</b><small>отделяйте эффект от шума</small></p></li></ol>
+        <div class="final-line reveal"><span>fixed model</span><i>·</i><b>model-generated search</b><i>·</i><strong>trajectory feedback</strong><i>· reusable eval</i></div><p class="source-note">Источник: README, configs, исходный код graders/optimizer и сохранённые artifacts meta_v4.</p>
+      </div>
+    </section>
+  </main>
+
+  <button class="help-button" type="button" aria-label="Показать управление">?</button>
+  <div class="help" role="dialog" aria-modal="false" aria-label="Управление презентацией" hidden><button class="help-close" type="button" aria-label="Закрыть">×</button><strong>Управление</strong><p><kbd>←</kbd><kbd>→</kbd> слайды · <kbd>Space</kbd> дальше · <kbd>Home</kbd> начало · <kbd>F</kbd> полный экран</p></div>
+  <script src="app.js"></script>
+</body>
+</html>

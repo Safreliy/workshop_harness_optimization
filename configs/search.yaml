@@ -1,0 +1,6 @@
+base_config: configs/baseline.yaml
+objective_call_penalty: 0.006
+model_rounds: 3
+proposals_per_round: 3
+beam_width: 3
+proposal_temperature: 0.0

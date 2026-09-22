@@ -1,0 +1,26 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: workshop
+      POSTGRES_USER: workshop
+      POSTGRES_PASSWORD: workshop
+    ports:
+      - "${POSTGRES_PORT:-55432}:5432"
+    volumes:
+      - workshop_pgdata:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          pg_isready -U workshop -d workshop &&
+          psql -U workshop -d workshop -Atqc
+          "SELECT 1 FROM benchmark_metadata WHERE key='dataset_version'" | grep -q 1
+      interval: 2s
+      timeout: 3s
+      retries: 120
+      start_period: 5s
+
+volumes:
+  workshop_pgdata:

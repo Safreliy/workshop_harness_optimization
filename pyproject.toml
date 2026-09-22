@@ -1,0 +1,30 @@
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "postgres-meta-harness-lab"
+version = "0.1.0"
+description = "Reproducible workshop: optimize an agent harness without changing the model"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "psycopg[binary]>=3.2,<4",
+  "pydantic>=2.10,<3",
+  "python-dotenv>=1.0,<2",
+  "PyYAML>=6.0,<7",
+  "rich>=13.9,<15",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3,<10", "pytest-cov>=6,<8"]
+
+[project.scripts]
+harness-lab = "harness_lab.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/harness_lab"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
