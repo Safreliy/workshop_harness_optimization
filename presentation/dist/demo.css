@@ -104,6 +104,52 @@ button { color: inherit; }
 .custom-task-button span { font-size: .88rem; font-weight: 700; }
 .custom-task-button small { color: var(--muted); font-size: .7rem; letter-spacing: .04em; }
 .custom-task-button.active { border-style: solid; border-color: var(--acid); background: rgba(200,255,77,.055); }
+.arena-nav b { font-size: .84rem; }
+
+body.arena-mode .labbar { grid-template-columns: 1fr auto; }
+body.arena-mode .agent-switch { display: none; }
+body.arena-mode .trace-panel { display: none; }
+body.arena-mode .chat-workspace { grid-column: 2 / -1; }
+body.arena-mode .chat-workspace > :not(.arena-screen) { display: none !important; }
+.arena-screen { display: grid; gap: 20px; }
+.arena-heading > span { color: var(--blue); font-size: .68rem; letter-spacing: .13em; }
+.arena-heading h1 { margin: 7px 0 8px; font-size: clamp(1.9rem, 3vw, 3.2rem); letter-spacing: -.045em; }
+.arena-heading p { max-width: 840px; margin: 0; color: var(--muted); line-height: 1.55; font-size: .88rem; }
+.arena-rubric { border: 1px solid var(--line-strong); background: rgba(139,168,255,.035); }
+.arena-section-head { display: flex; justify-content: space-between; gap: 16px; padding: 13px 16px; border-bottom: 1px solid var(--line); }
+.arena-section-head strong { font-size: .86rem; }
+.arena-section-head span { color: var(--muted); font-size: .74rem; }
+.arena-criteria { display: grid; gap: 0; padding: 4px 16px 12px; }
+.arena-criterion { display: grid; grid-template-columns: minmax(0,1fr) minmax(110px,.55fr) minmax(110px,.55fr); gap: 12px; align-items: start; padding: 11px 0; border-bottom: 1px solid var(--line); }
+.arena-criterion-head { padding: 8px 0; color: var(--blue); font-size: .65rem; letter-spacing: .06em; text-transform: uppercase; }
+.arena-criterion:last-child { border-bottom: 0; }
+.arena-criterion > div strong, .arena-criterion > div small { display: block; }
+.arena-criterion > div strong { font-size: .79rem; line-height: 1.4; }
+.arena-criterion > div small { margin-top: 4px; color: var(--muted); font-size: .72rem; line-height: 1.4; }
+.arena-verdict { padding: 7px 9px; border: 1px solid var(--line); font-size: .72rem; line-height: 1.4; }
+.arena-verdict b, .arena-verdict span { display: block; }
+.arena-verdict b { margin-bottom: 3px; }
+.arena-verdict.pass { border-color: rgba(200,255,77,.5); color: var(--good); }
+.arena-verdict.fail { border-color: rgba(255,128,110,.5); color: var(--bad); }
+.arena-verdict.uncertain { border-color: rgba(139,168,255,.6); color: var(--blue); }
+.arena-verdict span { color: var(--muted); }
+.arena-columns { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; align-items: stretch; }
+.arena-candidate { min-width: 0; display: flex; flex-direction: column; border: 1px solid var(--line-strong); background: rgba(139,168,255,.025); }
+.arena-candidate.optimized { border-color: rgba(200,255,77,.36); background: rgba(200,255,77,.025); }
+.arena-candidate > header { display: flex; justify-content: space-between; gap: 12px; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.arena-candidate > header span { color: var(--blue); font-size: .68rem; letter-spacing: .1em; }
+.arena-candidate.optimized > header span { color: var(--acid); }
+.arena-candidate > header strong { font-size: .72rem; text-align: right; }
+.arena-history { height: min(53vh,520px); min-height: 260px; overflow: auto; padding: 14px; }
+.arena-history .chat-bubble { width: 96%; }
+.arena-history .chat-empty { min-height: 210px; font-size: .84rem; }
+.arena-metrics { display: flex; flex-wrap: wrap; gap: 8px 14px; padding: 12px 14px; border-top: 1px solid var(--line); color: var(--muted); font-size: .72rem; }
+.arena-metrics b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.arena-trace { border-top: 1px solid var(--line); }
+.arena-trace summary { padding: 11px 14px; color: var(--blue); font-size: .74rem; cursor: pointer; }
+.arena-trace ol { margin: 0; padding: 3px 18px 10px 36px; max-height: 230px; overflow: auto; }
+.arena-trace li { margin-bottom: 7px; color: var(--muted); font-size: .72rem; line-height: 1.4; overflow-wrap: anywhere; }
+.arena-form { border: 1px solid var(--line-strong); }
 
 .config-diff { margin-top: 18px; border-top: 1px solid var(--line); }
 .config-diff summary { padding: 15px 4px; color: var(--muted); font-size: .78rem; cursor: pointer; }
@@ -271,6 +317,7 @@ button:focus-visible, summary:focus-visible, a:focus-visible { outline: 2px soli
   .runtime-badge { display: none; }
   .lab-shell { grid-template-columns: minmax(230px,.7fr) minmax(520px,1.5fr); }
   .trace-panel { grid-column: 1 / -1; display: grid; grid-template-columns: .8fr .8fr 1.4fr; border-left: 0; border-top: 1px solid var(--line); }
+  body.arena-mode .chat-workspace { grid-column: 2; }
 }
 @media (max-width: 780px) {
   .labbar { position: relative; grid-template-columns: 1fr; gap: 10px; padding: 14px 16px; }
@@ -294,6 +341,11 @@ button:focus-visible, summary:focus-visible, a:focus-visible { outline: 2px soli
   .free-chat { min-height: 460px; }
   .chat-history { padding: 14px; }
   .chat-bubble { width: 94%; }
+  body.arena-mode .agent-switch { display: none; }
+  .arena-columns { grid-template-columns: 1fr; }
+  .arena-criterion { grid-template-columns: minmax(0,1fr) minmax(90px,.5fr) minmax(90px,.5fr); gap: 6px; }
+  .arena-verdict { padding: 6px; font-size: .66rem; }
+  .arena-history { height: 360px; }
   .chat-actions { grid-template-columns: 1fr 1fr; }
   .chat-actions > span { grid-column: 1 / -1; grid-row: 1; text-align: left; }
 }

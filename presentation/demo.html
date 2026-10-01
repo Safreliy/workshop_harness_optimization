@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0d1018">
   <meta name="description" content="Интерактивное сравнение стартового ReAct-агента и meta-optimized harness на PostgreSQL-задачах.">
   <title>Harness Lab — сравнение агентов</title>
-  <link rel="stylesheet" href="demo.css?v=20261001-audit2">
+  <link rel="stylesheet" href="demo.css?v=20261001-arena2">
 </head>
 <body>
   <a class="skip-link" href="#workbench">К результату</a>
@@ -40,6 +40,9 @@
       <button class="custom-task-button" id="custom-task-button" type="button">
         <b>+</b><span>Свободный чат</span><small>история сохраняется · live</small>
       </button>
+      <button class="custom-task-button arena-nav" id="arena-button" type="button">
+        <b>⇄</b><span>Арена</span><small>один запрос · два агента · общие критерии</small>
+      </button>
       <details class="config-diff">
         <summary>Что изменил meta-harness</summary>
         <div class="diff-grid">
@@ -51,6 +54,40 @@
     </aside>
 
     <section class="chat-workspace" aria-label="Диалог с агентом">
+      <section class="arena-screen" id="arena-screen" hidden aria-label="Арена — сравнение двух агентов">
+        <div class="arena-heading">
+          <span>АРЕНА · ЖИВОЕ СРАВНЕНИЕ</span>
+          <h1>Один запрос. Два пайплайна.</h1>
+          <p>Стартовый ReAct и оптимизированный harness получают одинаковые сообщения пользователя. Их предыдущие ответы остаются в отдельных историях. Аудитор формирует один набор критериев до обоих запусков и применяет его к каждому ответу. Агенты запускаются по очереди, чтобы не перегружать модель.</p>
+        </div>
+        <section class="arena-rubric" aria-label="Общие критерии внешнего аудитора">
+          <div class="arena-section-head"><strong>Общие критерии</strong><span id="arena-rubric-state">Ожидаем запрос</span></div>
+          <div id="arena-criteria" class="arena-criteria"></div>
+        </section>
+        <div class="arena-columns">
+          <section class="arena-candidate" data-arena-agent="baseline" aria-label="Стартовый ReAct">
+            <header><span>01 · СТАРТОВЫЙ REACT</span><strong id="arena-baseline-status">Готов</strong></header>
+            <div class="arena-history" id="arena-baseline-history"></div>
+            <div class="arena-metrics" id="arena-baseline-metrics"></div>
+            <details class="arena-trace"><summary>Траектория и инструменты</summary><ol id="arena-baseline-trace"></ol></details>
+          </section>
+          <section class="arena-candidate optimized" data-arena-agent="optimized" aria-label="Оптимизированный harness">
+            <header><span>02 · ОПТИМИЗИРОВАННЫЙ HARNESS</span><strong id="arena-optimized-status">Готов</strong></header>
+            <div class="arena-history" id="arena-optimized-history"></div>
+            <div class="arena-metrics" id="arena-optimized-metrics"></div>
+            <details class="arena-trace"><summary>Траектория и инструменты</summary><ol id="arena-optimized-trace"></ol></details>
+          </section>
+        </div>
+        <form class="chat-form arena-form" id="arena-form">
+          <label for="arena-input">Один запрос для обоих агентов</label>
+          <textarea id="arena-input" rows="3" maxlength="20000" placeholder="Например: проверь, какие тарифы есть в базе, и предложи краткий отчёт"></textarea>
+          <div class="chat-actions">
+            <button class="clear-chat" id="arena-clear" type="button">Очистить арену</button>
+            <span id="arena-state">Enter — отправить · Shift+Enter — новая строка</span>
+            <button class="send-chat" id="arena-send" type="submit">Сравнить ↗</button>
+          </div>
+        </form>
+      </section>
       <header class="case-header">
         <div>
           <span id="case-kicker">ЗАДАЧА</span>
@@ -137,6 +174,6 @@
   <div class="toast" id="toast" role="status" hidden></div>
   <script src="assets/vendor/markdown-it.umd.min.js?v=20261001-audit2"></script>
   <script src="assets/vendor/purify.min.js?v=20261001-audit2"></script>
-  <script src="demo.js?v=20261001-audit2"></script>
+  <script src="demo.js?v=20261001-arena2"></script>
 </body>
 </html>

@@ -1,4 +1,5 @@
 const STORAGE_KEY = 'harness-lab-chat-v2';
+const ARENA_STORAGE_KEY = 'harness-lab-arena-v1';
 const REQUEST_TIMEOUT_MS = 90_000;
 const AUDIT_TIMEOUT_MS = 45_000;
 const markdown = window.markdownit?.({ html: false, linkify: true, breaks: true });
@@ -11,6 +12,8 @@ const state = {
   running: false,
   shown: false,
   customMode: false,
+  arenaMode: false,
+  arena: loadArena(),
   liveResults: new Map(),
   histories: loadHistories(),
   lastChatResults: { baseline: null, optimized: null },
@@ -44,6 +47,8 @@ const chatForm = $('#chat-form');
 const chatState = $('#chat-state');
 const clearChatButton = $('#clear-chat');
 const sendChatButton = $('#send-chat');
+const arenaButton = $('#arena-button');
+const arenaInput = $('#arena-input');
 
 const number = (value, digits = 3) => Number(value || 0).toFixed(digits).replace('.', ',');
 const signed = (value) => `${Number(value) >= 0 ? '+' : ''}${number(value)}`;
@@ -51,6 +56,39 @@ const activeTask = () => state.data.tasks[state.selectedTask];
 const resultKey = () => `${activeTask().id}:${state.agent}`;
 const activeResult = () => state.liveResults.get(resultKey()) || activeTask().agents[state.agent];
 const activeHistory = () => state.histories[state.agent];
+
+function loadArena() {
+  const fresh = () => ({ histories: { baseline: [], optimized: [] }, criteria: [], evaluations: {}, results: {}, statuses: {}, error: '', controllers: new Set(), stopRequested: false });
+  const arena = fresh();
+  try {
+    const saved = JSON.parse(localStorage.getItem(ARENA_STORAGE_KEY) || '{}');
+    for (const agent of ['baseline', 'optimized']) {
+      arena.histories[agent] = Array.isArray(saved.histories?.[agent])
+        ? saved.histories[agent].filter((item) => item && ['user', 'assistant'].includes(item.role) && typeof item.content === 'string').slice(-24)
+          .map(({ role, content, audit }) => ({ role, content, ...(audit && role === 'assistant' ? { audit } : {}) }))
+        : [];
+    }
+    if (Array.isArray(saved.criteria)) arena.criteria = saved.criteria;
+    if (saved.evaluations && typeof saved.evaluations === 'object') arena.evaluations = saved.evaluations;
+  } catch (_) { /* unavailable or old local history */ }
+  return arena;
+}
+
+function persistArena() {
+  try {
+    localStorage.setItem(ARENA_STORAGE_KEY, JSON.stringify({
+      histories: state.arena.histories, criteria: state.arena.criteria, evaluations: state.arena.evaluations,
+    }));
+  } catch (_) { /* private browser modes may disable localStorage */ }
+}
+
+function trimArenaHistories() {
+  for (const agent of ['baseline', 'optimized']) {
+    const history = state.arena.histories[agent];
+    const userIndexes = history.flatMap((message, index) => message.role === 'user' ? [index] : []);
+    if (userIndexes.length > 8) state.arena.histories[agent] = history.slice(userIndexes.at(-8));
+  }
+}
 
 function loadHistories() {
   const empty = { baseline: [], optimized: [] };
@@ -95,7 +133,8 @@ function setAgent(agent, { preserveShown = false } = {}) {
   swapButton.textContent = agent === 'baseline'
     ? 'Сравнить с оптимизированным →'
     : '← Сравнить со стартовым';
-  if (state.customMode) renderFreeChat();
+  if (state.arenaMode) renderArena();
+  else if (state.customMode) renderFreeChat();
   else renderResult();
 }
 
@@ -104,7 +143,7 @@ function renderTaskList() {
   state.data.tasks.forEach((task, index) => {
     const button = document.createElement('button');
     button.type = 'button';
-    const selected = !state.customMode && index === state.selectedTask;
+    const selected = !state.customMode && !state.arenaMode && index === state.selectedTask;
     button.className = `task-button${selected ? ' active' : ''}`;
     button.setAttribute('aria-pressed', String(selected));
     const order = document.createElement('b');
@@ -120,6 +159,9 @@ function renderTaskList() {
       if (state.running) return;
       state.selectedTask = index;
       state.customMode = false;
+      state.arenaMode = false;
+      document.body.classList.remove('arena-mode');
+      $('#arena-screen').hidden = true;
       state.shown = false;
       renderTaskList();
       renderCase();
@@ -127,7 +169,8 @@ function renderTaskList() {
     });
     taskList.append(button);
   });
-  customTaskButton.classList.toggle('active', state.customMode);
+  customTaskButton.classList.toggle('active', state.customMode && !state.arenaMode);
+  arenaButton.classList.toggle('active', state.arenaMode);
 }
 
 function renderInput(task) {
@@ -155,6 +198,7 @@ function renderInput(task) {
 }
 
 function renderCase() {
+  if (state.arenaMode) return;
   if (state.customMode) {
     renderFreeChat();
     return;
@@ -280,7 +324,7 @@ function resetBenchmarkResult() {
 }
 
 function renderResult() {
-  if (!state.data || state.customMode) return;
+  if (!state.data || state.customMode || state.arenaMode) return;
   $('#output-label').textContent = 'ответ';
   $('#trajectory-label').textContent = 'траектория';
   runButton.disabled = state.running;
@@ -319,11 +363,11 @@ function renderResult() {
   renderTrace(result);
 }
 
-function chatBubble(role, content, extraClass = '', audit = null) {
+function chatBubble(role, content, extraClass = '', audit = null, agent = state.agent) {
   const node = document.createElement('div');
   node.className = `chat-bubble ${role}${extraClass ? ` ${extraClass}` : ''}`;
   const label = document.createElement('small');
-  label.textContent = role === 'user' ? 'Вы' : state.agent === 'baseline' ? 'Стартовый ReAct' : 'Оптимизированный harness';
+  label.textContent = role === 'user' ? 'Вы' : agent === 'baseline' ? 'Стартовый ReAct' : 'Оптимизированный harness';
   const body = document.createElement(!extraClass ? 'div' : 'p');
   if (!extraClass && markdown && window.DOMPurify) {
     body.className = 'chat-markdown';
@@ -479,7 +523,7 @@ function timedFetch(url, options, timeoutMs = REQUEST_TIMEOUT_MS) {
 }
 
 async function runCurrent() {
-  if (state.customMode) return;
+  if (state.customMode || state.arenaMode) return;
   if (state.running) {
     state.controller?.abort();
     return;
@@ -625,6 +669,226 @@ async function sendChat() {
   }
 }
 
+function renderArenaCriterion(criterion) {
+  const row = document.createElement('div');
+  row.className = 'arena-criterion';
+  const description = document.createElement('div');
+  const title = document.createElement('strong');
+  title.textContent = `${criterion.id}. ${criterion.expectation}`;
+  const evidence = document.createElement('small');
+  evidence.textContent = `Признак: ${criterion.evidence}`;
+  description.append(title, evidence);
+  row.append(description);
+  for (const agent of ['baseline', 'optimized']) {
+    const cell = document.createElement('div');
+    const verdict = state.arena.evaluations[agent]?.criteria?.find((item) => item.id === criterion.id);
+    cell.className = `arena-verdict${verdict ? ` ${verdict.verdict}` : ''}`;
+    const label = document.createElement('b');
+    label.textContent = verdict
+      ? { pass: 'Подтверждено', fail: 'Не выполнено', uncertain: 'Неоднозначно' }[verdict.verdict] || 'Неоднозначно'
+      : /^(Ошибка|Остановлен)/.test(state.arena.statuses[agent] || '') ? 'Нет оценки' : 'Ожидаем';
+    const signals = document.createElement('span');
+    signals.textContent = verdict
+      ? `модель: ${{ pass: 'да', fail: 'нет', unclear: 'неясно', unavailable: 'нет ответа' }[verdict.model_verdict] || 'нет ответа'} · Jev: ${verdict.jev_probability == null ? 'нет ответа' : `${Math.round(verdict.jev_probability * 100)}%`}`
+      : agent === 'baseline' ? 'Стартовый' : 'Оптимизированный';
+    cell.append(label, signals);
+    if (verdict?.reason) {
+      const reason = document.createElement('span');
+      reason.textContent = verdict.reason;
+      cell.append(reason);
+    }
+    row.append(cell);
+  }
+  return row;
+}
+
+function renderArena() {
+  if (!state.arenaMode) return;
+  $('#arena-screen').hidden = false;
+  const arena = state.arena;
+  const rubric = $('#arena-criteria');
+  rubric.replaceChildren();
+  if (arena.criteria.length) {
+    const header = document.createElement('div');
+    header.className = 'arena-criterion arena-criterion-head';
+    for (const label of ['Критерий', 'Стартовый ReAct', 'Оптимизированный']) {
+      const cell = document.createElement('strong');
+      cell.textContent = label;
+      header.append(cell);
+    }
+    rubric.replaceChildren(header, ...arena.criteria.map(renderArenaCriterion));
+    $('#arena-rubric-state').textContent = 'Один набор · сформирован до ответов';
+  } else {
+    const note = document.createElement('p');
+    note.textContent = arena.error
+      ? `Аудит недоступен: ${arena.error}. Ответы сравниваются без оценки.`
+      : state.auditor.enabled
+        ? state.running ? 'Аудитор формирует единые критерии до запуска обоих агентов…' : 'Критерии появятся после отправки общего запроса.'
+        : 'Внешний аудитор выключен. Добавьте OPENROUTER_API_KEY; ответы сравниваются без оценки.';
+    rubric.append(note);
+    $('#arena-rubric-state').textContent = state.auditor.enabled ? 'Пока нет критериев' : 'Без внешней оценки';
+  }
+  for (const agent of ['baseline', 'optimized']) {
+    const history = $(`#arena-${agent}-history`);
+    history.replaceChildren();
+    if (!arena.histories[agent].length) {
+      const empty = document.createElement('div');
+      empty.className = 'chat-empty';
+      empty.textContent = 'Здесь появится ответ на общий запрос.';
+      history.append(empty);
+    } else {
+      arena.histories[agent].forEach((message) => history.append(chatBubble(message.role, message.content, '', message.audit, agent)));
+    }
+    const status = arena.statuses[agent] || (arena.histories[agent].at(-1)?.role === 'assistant' ? 'Ответ получен' : 'Готов');
+    $(`#arena-${agent}-status`).textContent = status;
+    const result = arena.results[agent];
+    const evaluation = arena.evaluations[agent];
+    const metrics = $(`#arena-${agent}-metrics`);
+    metrics.replaceChildren();
+    const labels = [
+      ['Аудит', evaluation ? `${evaluation.passed}/${evaluation.total} подтверждено` : '—'],
+      ['Tools', result ? String(result.tool_calls ?? 0) : '—'],
+      ['LLM', result ? String(result.llm_calls ?? 0) : '—'],
+      ['Время', result ? `${Number(result.latency_seconds || 0).toFixed(1).replace('.', ',')} с` : '—'],
+    ];
+    for (const [name, value] of labels) {
+      const span = document.createElement('span');
+      const strong = document.createElement('b');
+      strong.textContent = value;
+      span.append(`${name}: `, strong);
+      metrics.append(span);
+    }
+    const trace = $(`#arena-${agent}-trace`);
+    trace.replaceChildren();
+    if (result) {
+      (result.events || []).forEach((event) => trace.append(traceNode(event, trace.childElementCount)));
+    } else {
+      const item = document.createElement('li');
+      item.textContent = 'Траектория появится после запуска и доступна до перезагрузки страницы.';
+      trace.append(item);
+    }
+    requestAnimationFrame(() => { history.scrollTop = history.scrollHeight; });
+  }
+  arenaInput.disabled = state.running || state.runtime !== 'live';
+  $('#arena-clear').disabled = state.running || !arena.histories.baseline.length;
+  $('#arena-send').disabled = state.runtime !== 'live' || (!state.running && !arenaInput.value.trim());
+  $('#arena-send').textContent = state.running ? 'Остановить' : 'Сравнить ↗';
+  $('#arena-state').textContent = state.runtime !== 'live'
+    ? 'Для запуска откройте локальный demo-сервер.'
+    : state.running ? 'Выполняется; можно остановить ожидание.' : 'Enter — отправить · Shift+Enter — новая строка';
+}
+
+async function arenaFetch(url, body, timeoutMs) {
+  const controller = new AbortController();
+  state.arena.controllers.add(controller);
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body), signal: controller.signal,
+    });
+    const payload = await response.json();
+    if (!response.ok || payload.error) {
+      const error = new Error(payload.message || payload.error || 'request failed');
+      error.result = payload.result;
+      throw error;
+    }
+    return payload;
+  } finally {
+    clearTimeout(timer);
+    state.arena.controllers.delete(controller);
+  }
+}
+
+async function runArenaCandidate(agent, messages, auditId) {
+  const arena = state.arena;
+  arena.statuses[agent] = 'Агент отвечает…';
+  renderArena();
+  try {
+    const payload = await arenaFetch('/api/chat', { agent, messages, ...(auditId ? { audit_id: auditId } : {}) }, REQUEST_TIMEOUT_MS);
+    if (arena.stopRequested) return;
+    arena.results[agent] = payload.result;
+    const reply = { role: 'assistant', content: payload.result.output };
+    arena.histories[agent].push(reply);
+    arena.statuses[agent] = auditId ? 'Аудитор проверяет…' : 'Ответ получен';
+    persistArena();
+    renderArena();
+    if (auditId) {
+      try {
+        const checked = await arenaFetch('/api/audit/check', { audit_id: auditId, agent }, AUDIT_TIMEOUT_MS);
+        if (arena.stopRequested) return;
+        arena.evaluations[agent] = checked.evaluation;
+        reply.audit = { evaluation: checked.evaluation };
+        arena.statuses[agent] = 'Оценка готова';
+        persistArena();
+      } catch (error) {
+        arena.statuses[agent] = error.name === 'AbortError' ? 'Ответ · аудит остановлен' : `Ответ · аудит недоступен: ${error.message}`;
+      }
+    }
+  } catch (error) {
+    if (error.result) arena.results[agent] = error.result;
+    arena.statuses[agent] = error.name === 'AbortError' ? 'Остановлен или тайм-аут' : `Ошибка: ${error.message}`;
+  } finally {
+    renderArena();
+  }
+}
+
+async function sendArena() {
+  const arena = state.arena;
+  if (state.running) {
+    arena.stopRequested = true;
+    arena.controllers.forEach((controller) => controller.abort());
+    return;
+  }
+  const content = arenaInput.value.trim();
+  if (!content || state.runtime !== 'live') return;
+  arena.stopRequested = false;
+  arena.criteria = [];
+  arena.evaluations = {};
+  arena.results = {};
+  arena.statuses = {};
+  arena.error = '';
+  for (const agent of ['baseline', 'optimized']) arena.histories[agent].push({ role: 'user', content });
+  trimArenaHistories();
+  const histories = Object.fromEntries(['baseline', 'optimized'].map((agent) => [
+    agent, arena.histories[agent].map(({ role, content: text }) => ({ role, content: text })),
+  ]));
+  persistArena();
+  arenaInput.value = '';
+  state.running = true;
+  renderArena();
+  try {
+    let auditIds = {};
+    if (state.auditor.enabled) {
+      try {
+        const plan = await arenaFetch('/api/arena/plan', { histories }, AUDIT_TIMEOUT_MS);
+        auditIds = plan.audit_ids;
+        arena.criteria = plan.criteria;
+        persistArena();
+        renderArena();
+      } catch (error) {
+        if (arena.stopRequested) return;
+        arena.error = error.name === 'AbortError' ? 'формирование критериев превысило 45 секунд' : error.message;
+        renderArena();
+      }
+    }
+    if (arena.stopRequested) return;
+    arena.statuses.optimized = 'Ждёт своей очереди…';
+    renderArena();
+    // This gateway reliably serves one internal model request at a time.
+    // Sequential runs preserve identical precommitted criteria without overload.
+    for (const agent of ['baseline', 'optimized']) {
+      if (arena.stopRequested) break;
+      await runArenaCandidate(agent, histories[agent], auditIds[agent]);
+    }
+  } finally {
+    state.running = false;
+    persistArena();
+    renderArena();
+    if (!arena.stopRequested) arenaInput.focus();
+  }
+}
+
 document.querySelectorAll('.agent-button').forEach((button) => {
   button.addEventListener('click', () => setAgent(button.dataset.agent));
 });
@@ -632,11 +896,50 @@ document.querySelectorAll('.agent-button').forEach((button) => {
 customTaskButton.addEventListener('click', () => {
   if (state.running) return;
   state.customMode = true;
+  state.arenaMode = false;
+  document.body.classList.remove('arena-mode');
+  $('#arena-screen').hidden = true;
   state.shown = false;
   state.chatError = '';
   renderTaskList();
   renderFreeChat();
   if (state.runtime === 'live') chatInput.focus();
+});
+
+arenaButton.addEventListener('click', () => {
+  if (state.running) return;
+  state.customMode = false;
+  state.arenaMode = true;
+  document.body.classList.add('arena-mode');
+  renderTaskList();
+  renderArena();
+  if (state.runtime === 'live') arenaInput.focus();
+});
+
+$('#arena-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  sendArena();
+});
+
+arenaInput.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault();
+    sendArena();
+  }
+});
+arenaInput.addEventListener('input', renderArena);
+$('#arena-clear').addEventListener('click', () => {
+  if (state.running || !state.arena.histories.baseline.length) return;
+  if (!window.confirm('Очистить обе истории Арены и общие критерии?')) return;
+  state.arena.histories = { baseline: [], optimized: [] };
+  state.arena.criteria = [];
+  state.arena.evaluations = {};
+  state.arena.results = {};
+  state.arena.statuses = {};
+  state.arena.error = '';
+  persistArena();
+  renderArena();
+  arenaInput.focus();
 });
 
 runButton.addEventListener('click', runCurrent);

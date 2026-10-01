@@ -389,6 +389,20 @@ def validate_chat_messages(value: Any) -> list[dict[str, str]]:
     return clean
 
 
+def validate_arena_histories(value: Any) -> dict[str, list[dict[str, str]]]:
+    """The two candidates may have different replies, but receive the same user turns."""
+    if not isinstance(value, dict) or set(value) != {"baseline", "optimized"}:
+        raise ValueError("arena requires histories for both agents")
+    histories = {agent: validate_chat_messages(value[agent]) for agent in ("baseline", "optimized")}
+    user_turns = [
+        [message["content"] for message in histories[agent] if message["role"] == "user"]
+        for agent in ("baseline", "optimized")
+    ]
+    if user_turns[0] != user_turns[1]:
+        raise ValueError("arena agents must receive the same user turns")
+    return histories
+
+
 def _chat_needs_database(messages: list[dict[str, str]]) -> bool:
     recent = "\n".join(item["content"] for item in messages[-4:]).lower()
     signals = (
@@ -591,7 +605,7 @@ class DemoHandler(SimpleHTTPRequestHandler):
         endpoint = self.path.rstrip("/")
         if endpoint not in {
             "/api/run", "/api/run-custom", "/api/chat",
-            "/api/audit/plan", "/api/audit/check",
+            "/api/audit/plan", "/api/audit/check", "/api/arena/plan",
         }:
             self._json({"error": "not_found"}, HTTPStatus.NOT_FOUND)
             return
@@ -600,6 +614,24 @@ class DemoHandler(SimpleHTTPRequestHandler):
             if length <= 0 or length > 100_000:
                 raise ValueError("invalid request size")
             body = json.loads(self.rfile.read(length))
+            if endpoint == "/api/arena/plan":
+                histories = validate_arena_histories(body.get("histories"))
+                # Commit one rubric using only user turns, before either answer exists.
+                user_history = [
+                    message for message in histories["baseline"] if message["role"] == "user"
+                ]
+                criteria = OpenRouterAuditor(self.settings).plan(user_history)
+                audit_ids = {
+                    agent: self.audit_store.create(agent, histories[agent], criteria)
+                    for agent in ("baseline", "optimized")
+                }
+                self._json({
+                    "audit_ids": audit_ids,
+                    "criteria": criteria,
+                    "model": self.settings.auditor_model,
+                    "jev_model": self.settings.jev_model,
+                })
+                return
             agent_key = str(body.get("agent", ""))
             if agent_key not in self.configs:
                 raise ValueError("unknown agent")
