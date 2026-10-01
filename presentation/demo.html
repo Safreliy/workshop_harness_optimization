@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0d1018">
   <meta name="description" content="Интерактивное сравнение стартового ReAct-агента и meta-optimized harness на PostgreSQL-задачах.">
   <title>Harness Lab — сравнение агентов</title>
-  <link rel="stylesheet" href="demo.css">
+  <link rel="stylesheet" href="demo.css?v=20261001-audit2">
 </head>
 <body>
   <a class="skip-link" href="#workbench">К результату</a>
@@ -119,8 +119,8 @@
       <section class="result-card" id="result-card">
         <div class="result-head"><span>РЕЗУЛЬТАТ</span><strong id="result-verdict">—</strong></div>
         <div class="score-pair">
-          <div><span>ответ</span><strong id="output-score">—</strong></div>
-          <div><span>траектория</span><strong id="trajectory-score">—</strong></div>
+          <div><span id="output-label">ответ</span><strong id="output-score">—</strong></div>
+          <div><span id="trajectory-label">траектория</span><strong id="trajectory-score">—</strong></div>
           <div><span>LLM</span><strong id="llm-calls">—</strong></div>
         </div>
         <div class="grader-note" id="grader-note">Результат появится после запуска.</div>
@@ -135,6 +135,8 @@
   </main>
 
   <div class="toast" id="toast" role="status" hidden></div>
-  <script src="demo.js"></script>
+  <script src="assets/vendor/markdown-it.umd.min.js?v=20261001-audit2"></script>
+  <script src="assets/vendor/purify.min.js?v=20261001-audit2"></script>
+  <script src="demo.js?v=20261001-audit2"></script>
 </body>
 </html>

@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from .agent import AgentEvent, AgentResult, HarnessAgent
+from .auditor import AuditError, AuditStore, OpenRouterAuditor, history_fingerprint
 from .cases import BenchmarkCase, DialogueTurn, load_cases, public_case_payload
 from .config import HarnessConfig
 from .db import PostgresSandbox
@@ -547,12 +548,14 @@ class DemoHandler(SimpleHTTPRequestHandler):
         cases: dict[str, BenchmarkCase],
         configs: dict[str, HarnessConfig],
         artifact_root: Path,
+        audit_store: AuditStore,
         **kwargs: Any,
     ) -> None:
         self.settings = settings
         self.cases = cases
         self.configs = configs
         self.artifact_root = artifact_root
+        self.audit_store = audit_store
         super().__init__(*args, directory=directory, **kwargs)
 
     def _json(self, payload: Any, status: int = HTTPStatus.OK) -> None:
@@ -574,6 +577,11 @@ class DemoHandler(SimpleHTTPRequestHandler):
                     "mode": "live",
                     "model": self.settings.model_name,
                     "task_ids": list(self.cases),
+                    "auditor": {
+                        "enabled": bool(self.settings.openrouter_api_key),
+                        "model": self.settings.auditor_model,
+                        "jev_model": self.settings.jev_model,
+                    },
                 }
             )
             return
@@ -581,7 +589,10 @@ class DemoHandler(SimpleHTTPRequestHandler):
 
     def do_POST(self) -> None:  # noqa: N802 - stdlib handler API
         endpoint = self.path.rstrip("/")
-        if endpoint not in {"/api/run", "/api/run-custom", "/api/chat"}:
+        if endpoint not in {
+            "/api/run", "/api/run-custom", "/api/chat",
+            "/api/audit/plan", "/api/audit/check",
+        }:
             self._json({"error": "not_found"}, HTTPStatus.NOT_FOUND)
             return
         try:
@@ -592,8 +603,43 @@ class DemoHandler(SimpleHTTPRequestHandler):
             agent_key = str(body.get("agent", ""))
             if agent_key not in self.configs:
                 raise ValueError("unknown agent")
+            if endpoint == "/api/audit/plan":
+                history = validate_chat_messages(body.get("messages"))
+                criteria = OpenRouterAuditor(self.settings).plan(history)
+                audit_id = self.audit_store.create(agent_key, history, criteria)
+                self._json(
+                    {
+                        "audit_id": audit_id,
+                        "criteria": criteria,
+                        "model": self.settings.auditor_model,
+                        "jev_model": self.settings.jev_model,
+                    }
+                )
+                return
+            if endpoint == "/api/audit/check":
+                audit_id = str(body.get("audit_id", ""))
+                session = self.audit_store.get(audit_id)
+                if session.agent != agent_key or session.result is None:
+                    raise ValueError("для этой оценки нет завершённого ответа агента")
+                if session.evaluation is None:
+                    evaluation = OpenRouterAuditor(self.settings).evaluate(
+                        session.history,
+                        session.criteria,
+                        str(session.result["output"]),
+                        session.result["events"],
+                    )
+                    self.audit_store.record_evaluation(audit_id, evaluation)
+                else:
+                    evaluation = session.evaluation
+                self._json({"audit_id": audit_id, "evaluation": evaluation})
+                return
             if endpoint == "/api/chat":
                 history = validate_chat_messages(body.get("messages"))
+                audit_id = str(body.get("audit_id", ""))
+                if audit_id:
+                    session = self.audit_store.get(audit_id)
+                    if session.agent != agent_key or history_fingerprint(session.history) != history_fingerprint(history):
+                        raise ValueError("оценка не соответствует запросу или агенту")
                 chat_result, latency = run_free_chat(
                     self.settings, self.configs[agent_key], history
                 )
@@ -607,6 +653,14 @@ class DemoHandler(SimpleHTTPRequestHandler):
                     payload.update(error="chat_failed", message=chat_result.error)
                     self._json(payload, HTTPStatus.BAD_GATEWAY)
                 else:
+                    if audit_id:
+                        self.audit_store.record_result(
+                            audit_id, agent_key, history,
+                            {
+                                "output": chat_result.output,
+                                "events": [asdict(event) for event in chat_result.events],
+                            },
+                        )
                     self._json(payload)
                 return
             if endpoint == "/api/run-custom":
@@ -650,6 +704,11 @@ class DemoHandler(SimpleHTTPRequestHandler):
                     "result": _live_record_payload(result.records[0]),
                 }
             )
+        except AuditError as exc:
+            self._json(
+                {"error": "audit_failed", "message": str(exc)},
+                HTTPStatus.BAD_GATEWAY,
+            )
         except Exception as exc:
             self._json(
                 {"error": type(exc).__name__, "message": str(exc)},
@@ -678,6 +737,7 @@ def serve_demo(args: argparse.Namespace) -> int:
         cases=cases,
         configs=configs,
         artifact_root=Path(args.artifact_root),
+        audit_store=AuditStore(),
     )
     server = ThreadingHTTPServer((args.host, args.port), factory)
     print(f"Harness Lab demo: http://{args.host}:{args.port}/demo.html")

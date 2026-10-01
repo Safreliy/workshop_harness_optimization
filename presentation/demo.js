@@ -1,5 +1,7 @@
 const STORAGE_KEY = 'harness-lab-chat-v2';
 const REQUEST_TIMEOUT_MS = 90_000;
+const AUDIT_TIMEOUT_MS = 45_000;
+const markdown = window.markdownit?.({ html: false, linkify: true, breaks: true });
 
 const state = {
   data: null,
@@ -12,6 +14,10 @@ const state = {
   liveResults: new Map(),
   histories: loadHistories(),
   lastChatResults: { baseline: null, optimized: null },
+  currentAudits: { baseline: null, optimized: null },
+  auditor: { enabled: false, model: '', jev_model: '' },
+  chatPhase: '',
+  stopRequested: false,
   chatError: '',
   controller: null,
   elapsedTimer: null,
@@ -55,7 +61,7 @@ function loadHistories() {
       empty[agent] = saved[agent]
         .filter((item) => item && ['user', 'assistant'].includes(item.role) && typeof item.content === 'string')
         .slice(-40)
-        .map(({ role, content }) => ({ role, content }));
+        .map(({ role, content, audit }) => ({ role, content, ...(role === 'assistant' && audit ? { audit } : {}) }));
     }
   } catch (_) { /* start with an empty local history */ }
   return empty;
@@ -251,7 +257,7 @@ function renderTrace(result) {
 }
 
 function resetMetrics(note = 'Результат появится после запуска.') {
-  resultCard.classList.remove('pass', 'fail');
+  resultCard.classList.remove('pass', 'fail', 'uncertain');
   $('#result-verdict').textContent = '—';
   $('#output-score').textContent = '—';
   $('#trajectory-score').textContent = '—';
@@ -275,6 +281,8 @@ function resetBenchmarkResult() {
 
 function renderResult() {
   if (!state.data || state.customMode) return;
+  $('#output-label').textContent = 'ответ';
+  $('#trajectory-label').textContent = 'траектория';
   runButton.disabled = state.running;
   swapButton.disabled = state.running;
   runButton.querySelector('b').textContent = state.runtime === 'live' ? 'Запустить агента' : 'Воспроизвести прогон';
@@ -299,7 +307,7 @@ function renderResult() {
   answer.classList.remove('expanded');
   answerToggle.textContent = 'Показать ответ целиком';
   $('#assistant-status').textContent = result.error ? 'ошибка запуска' : 'завершён';
-  resultCard.classList.remove('pass', 'fail');
+  resultCard.classList.remove('pass', 'fail', 'uncertain');
   resultCard.classList.add(result.passed ? 'pass' : 'fail');
   $('#result-verdict').textContent = result.passed ? 'ПРОШЁЛ' : 'НЕ ПРОШЁЛ';
   $('#output-score').textContent = number(result.output_score);
@@ -311,14 +319,29 @@ function renderResult() {
   renderTrace(result);
 }
 
-function chatBubble(role, content, extraClass = '') {
+function chatBubble(role, content, extraClass = '', audit = null) {
   const node = document.createElement('div');
   node.className = `chat-bubble ${role}${extraClass ? ` ${extraClass}` : ''}`;
   const label = document.createElement('small');
   label.textContent = role === 'user' ? 'Вы' : state.agent === 'baseline' ? 'Стартовый ReAct' : 'Оптимизированный harness';
-  const body = document.createElement('p');
-  body.textContent = content;
+  const body = document.createElement(!extraClass ? 'div' : 'p');
+  if (!extraClass && markdown && window.DOMPurify) {
+    body.className = 'chat-markdown';
+    body.innerHTML = window.DOMPurify.sanitize(markdown.render(content));
+    body.querySelectorAll('a[href]').forEach((link) => {
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+    });
+  } else {
+    body.textContent = content;
+  }
   node.append(label, body);
+  if (audit?.evaluation) {
+    const tag = document.createElement('small');
+    tag.className = 'chat-audit-tag';
+    tag.textContent = `Аудитор: ${audit.evaluation.passed}/${audit.evaluation.total} подтверждено`;
+    node.append(tag);
+  }
   return node;
 }
 
@@ -335,8 +358,8 @@ function renderChatHistory() {
     empty.append(title, copy);
     chatHistory.append(empty);
   } else {
-    history.forEach((message) => chatHistory.append(chatBubble(message.role, message.content)));
-    if (state.running) chatHistory.append(chatBubble('assistant', 'Готовлю ответ…', 'pending'));
+    history.forEach((message) => chatHistory.append(chatBubble(message.role, message.content, '', message.audit)));
+    if (state.running && history.at(-1)?.role !== 'assistant') chatHistory.append(chatBubble('assistant', state.chatPhase === 'plan' ? 'Аудитор формирует критерии…' : 'Готовлю ответ…', 'pending'));
     if (state.chatError) chatHistory.append(chatBubble('assistant', state.chatError, 'error'));
   }
   requestAnimationFrame(() => { chatHistory.scrollTop = chatHistory.scrollHeight; });
@@ -344,20 +367,73 @@ function renderChatHistory() {
 
 function renderChatMetrics() {
   const result = state.lastChatResults[state.agent];
+  const audit = state.currentAudits[state.agent] || [...activeHistory()].reverse().find((item) => item.audit)?.audit;
+  $('#output-label').textContent = 'аудитор';
+  $('#trajectory-label').textContent = 'инструменты';
   if (!result) {
-    resetMetrics('Свободный чат не имеет эталонного ответа. После ответа покажем стоимость и фактическую траекторию.');
+    if (audit?.evaluation) {
+      resetMetrics(`${audit.evaluation.summary} Оценка сохранена в истории браузера; траектория доступна только в текущей сессии.`);
+      resultCard.classList.add(audit.evaluation.failed ? 'fail' : audit.evaluation.uncertain ? 'uncertain' : 'pass');
+      $('#result-verdict').textContent = audit.evaluation.failed ? 'ЕСТЬ ПРОВАЛЫ' : audit.evaluation.uncertain ? 'НЕОДНОЗНАЧНО' : 'ПОДТВЕРЖДЕНО';
+      $('#output-score').textContent = `${audit.evaluation.passed}/${audit.evaluation.total}`;
+      return;
+    }
+    resetMetrics(state.auditor.enabled
+      ? 'Для каждого запроса внешний аудитор сначала формирует проверяемые критерии, затем независимо оценивает ответ.'
+      : 'Внешний аудит выключен: добавьте OPENROUTER_API_KEY в .env и перезапустите сервер. Чат работает без него.');
     return;
   }
-  resultCard.classList.remove('pass', 'fail');
-  resultCard.classList.add(result.error ? 'fail' : 'pass');
-  $('#result-verdict').textContent = result.error ? 'ОШИБКА' : 'ОТВЕТ ПОЛУЧЕН';
-  $('#output-score').textContent = '—';
+  resultCard.classList.remove('pass', 'fail', 'uncertain');
+  if (audit?.evaluation) resultCard.classList.add(audit.evaluation.failed ? 'fail' : audit.evaluation.uncertain ? 'uncertain' : 'pass');
+  else if (result.error) resultCard.classList.add('fail');
+  $('#result-verdict').textContent = audit?.evaluation
+    ? audit.evaluation.failed ? 'ЕСТЬ ПРОВАЛЫ' : audit.evaluation.uncertain ? 'НЕОДНОЗНАЧНО' : 'ПОДТВЕРЖДЕНО'
+    : state.chatPhase === 'check' ? 'АУДИТОР ПРОВЕРЯЕТ' : result.error ? 'ОШИБКА' : 'ОТВЕТ ПОЛУЧЕН';
+  $('#output-score').textContent = audit?.evaluation ? `${audit.evaluation.passed}/${audit.evaluation.total}` : '—';
   const toolCalls = (result.events || []).filter((event) => event.stage === 'tool').length;
-  $('#trajectory-score').textContent = `${toolCalls} tools`;
+  $('#trajectory-score').textContent = String(toolCalls);
   $('#llm-calls').textContent = String(result.llm_calls ?? '—');
   const latency = Number(result.latency_seconds || 0).toFixed(1).replace('.', ',');
-  $('#grader-note').textContent = `Автооценки корректности здесь нет: это свободный запрос. Показана наблюдаемая траектория; время ответа — ${latency} с.`;
+  $('#grader-note').textContent = audit?.evaluation
+    ? `${audit.evaluation.summary} Внешняя модель: ${state.auditor.model}; Jev: ${state.auditor.jev_model}.${audit.evaluation.errors?.length ? ` Сбой проверки: ${audit.evaluation.errors.join('; ')}.` : ''} Это модельная оценка, не эталон. Ответ: ${latency} с.`
+    : audit?.error ? `Ответ получен, но внешний аудит не завершён: ${audit.error}`
+      : state.chatPhase === 'check' ? 'Проверяем ответ по сформированным до запуска критериям…'
+        : `Показана фактическая траектория; ответ: ${latency} с.`;
   renderTrace(result);
+}
+
+function renderAuditCriteria() {
+  const list = $('#expectation-list');
+  const audit = state.currentAudits[state.agent] || [...activeHistory()].reverse().find((item) => item.audit)?.audit;
+  list.replaceChildren();
+  if (!audit?.criteria?.length) {
+    const li = document.createElement('li');
+    li.textContent = audit?.error ? `Аудит недоступен: ${audit.error}` : state.auditor.enabled
+      ? 'Критерии появятся после отправки запроса — до запуска агента.'
+      : 'Внешний аудитор недоступен без OPENROUTER_API_KEY.';
+    list.append(li);
+    return;
+  }
+  for (const criterion of audit.criteria) {
+    const verdict = audit.evaluation?.criteria?.find((item) => item.id === criterion.id);
+    const li = document.createElement('li');
+    if (verdict) li.className = verdict.verdict;
+    const title = document.createElement('strong');
+    title.textContent = `${criterion.id}. ${criterion.expectation}`;
+    const detail = document.createElement('small');
+    detail.textContent = `Проверка: ${criterion.evidence}`;
+    li.append(title, detail);
+    if (verdict) {
+      const outcome = document.createElement('em');
+      const modelVerdict = { pass: 'да', fail: 'нет', unclear: 'неясно', unavailable: 'нет ответа' }[verdict.model_verdict] || 'нет ответа';
+      outcome.textContent = `${verdict.verdict === 'pass' ? 'Подтверждено' : verdict.verdict === 'fail' ? 'Не выполнено' : 'Неоднозначно'} · модель: ${modelVerdict} · Jev: ${verdict.jev_probability == null ? 'нет ответа' : `${Math.round(verdict.jev_probability * 100)}%`}`;
+      li.append(outcome);
+      const evidence = document.createElement('small');
+      evidence.textContent = verdict.reason || (verdict.verdict === 'uncertain' ? 'Проверяющие не пришли к согласованному выводу.' : '');
+      li.append(evidence);
+    }
+    list.append(li);
+  }
 }
 
 function updateChatControls() {
@@ -383,19 +459,9 @@ function renderFreeChat() {
   $('#case-kicker').textContent = 'СВОБОДНЫЙ ЧАТ · ЖИВОЙ ЗАПУСК';
   $('#case-title').textContent = state.agent === 'baseline' ? 'Диалог со стартовым ReAct' : 'Диалог с оптимизированным harness';
   $('#case-why').textContent = state.runtime === 'live'
-    ? 'Формата нет: пишите обычным текстом, вставляйте SQL в сообщение и задавайте уточняющие вопросы. История сохраняется отдельно для каждого агента в этом браузере.'
+    ? `Формата нет: пишите обычным текстом, вставляйте SQL в сообщение и задавайте уточняющие вопросы. История сохраняется отдельно для каждого агента в этом браузере.${state.auditor.enabled ? ' При включённом аудите запрос, ответ и наблюдения инструментов передаются OpenRouter.' : ''}`
     : 'Публичная версия показывает eval-прогоны, но не получает секретный ключ модели. Для живого чата откройте локальный demo-сервер.';
-  const expectations = [
-    'свободный текст вместо обязательной формы',
-    'история передаётся модели в каждом следующем сообщении',
-    'контекст стартового и оптимизированного агентов хранится отдельно',
-    'запрос можно остановить; таймаут — 90 секунд',
-  ];
-  $('#expectation-list').replaceChildren(...expectations.map((text) => {
-    const item = document.createElement('li');
-    item.textContent = text;
-    return item;
-  }));
+  renderAuditCriteria();
   renderChatHistory();
   renderChatMetrics();
   updateChatControls();
@@ -448,13 +514,13 @@ async function runCurrent() {
   }
 }
 
-function startElapsedTimer() {
+function startElapsedTimer(label, limitSeconds) {
   clearInterval(state.elapsedTimer);
   state.startedAt = Date.now();
   const update = () => {
     if (!state.running) return;
     const seconds = Math.floor((Date.now() - state.startedAt) / 1000);
-    chatState.textContent = `Ждём ответ · ${seconds} с · максимум 90 с`;
+    chatState.textContent = `${label} · ${seconds} с · максимум ${limitSeconds} с`;
   };
   update();
   state.elapsedTimer = setInterval(update, 1000);
@@ -462,6 +528,7 @@ function startElapsedTimer() {
 
 async function sendChat() {
   if (state.running) {
+    state.stopRequested = true;
     state.controller?.abort();
     return;
   }
@@ -469,25 +536,80 @@ async function sendChat() {
   if (!content || state.runtime !== 'live') return;
   const agentAtStart = state.agent;
   state.chatError = '';
+  state.currentAudits[agentAtStart] = { criteria: [] };
+  state.lastChatResults[agentAtStart] = null;
   state.histories[agentAtStart].push({ role: 'user', content });
   state.histories[agentAtStart] = state.histories[agentAtStart].slice(-40);
+  const requestHistory = state.histories[agentAtStart].map(({ role, content }) => ({ role, content }));
   persistHistories();
   chatInput.value = '';
   state.running = true;
-  startElapsedTimer();
+  state.stopRequested = false;
+  state.chatPhase = state.auditor.enabled ? 'plan' : 'answer';
+  startElapsedTimer(state.auditor.enabled ? 'Аудитор формирует критерии' : 'Ждём ответ', state.auditor.enabled ? 45 : 90);
   renderFreeChat();
   try {
+    let auditId = null;
+    if (state.auditor.enabled) {
+      try {
+        const planResponse = await timedFetch('/api/audit/plan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ agent: agentAtStart, messages: requestHistory }),
+        }, AUDIT_TIMEOUT_MS);
+        const plan = await planResponse.json();
+        if (!planResponse.ok || plan.error) throw new Error(plan.message || plan.error || 'audit plan failed');
+        auditId = plan.audit_id;
+        state.currentAudits[agentAtStart] = { criteria: plan.criteria };
+        renderFreeChat();
+      } catch (error) {
+        if (state.stopRequested) throw error;
+        state.currentAudits[agentAtStart] = {
+          criteria: [],
+          error: error.name === 'AbortError' ? 'формирование критериев превысило 45 секунд' : error.message,
+        };
+        renderFreeChat();
+      }
+    }
+    if (state.stopRequested) throw new DOMException('Запрос остановлен', 'AbortError');
+    state.chatPhase = 'answer';
+    startElapsedTimer('Ждём ответ агента', 90);
+    renderFreeChat();
     const response = await timedFetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ agent: agentAtStart, messages: state.histories[agentAtStart] }),
+      body: JSON.stringify({ agent: agentAtStart, messages: requestHistory, ...(auditId ? { audit_id: auditId } : {}) }),
     });
     const payload = await response.json();
     if (!response.ok || payload.error) throw new Error(payload.message || payload.error || 'chat failed');
-    state.histories[agentAtStart].push({ role: 'assistant', content: payload.result.output });
+    if (state.stopRequested) throw new DOMException('Запрос остановлен', 'AbortError');
+    const reply = { role: 'assistant', content: payload.result.output };
+    state.histories[agentAtStart].push(reply);
     state.histories[agentAtStart] = state.histories[agentAtStart].slice(-40);
     state.lastChatResults[agentAtStart] = payload.result;
     persistHistories();
+    renderFreeChat();
+    if (auditId) {
+      state.chatPhase = 'check';
+      startElapsedTimer('Аудитор проверяет ответ', 45);
+      renderFreeChat();
+      try {
+        const checkResponse = await timedFetch('/api/audit/check', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ audit_id: auditId, agent: agentAtStart }),
+        }, AUDIT_TIMEOUT_MS);
+        const checked = await checkResponse.json();
+        if (!checkResponse.ok || checked.error) throw new Error(checked.message || checked.error || 'audit check failed');
+        state.currentAudits[agentAtStart].evaluation = checked.evaluation;
+        reply.audit = state.currentAudits[agentAtStart];
+        persistHistories();
+      } catch (error) {
+        state.currentAudits[agentAtStart].error = error.name === 'AbortError'
+          ? 'проверка остановлена или превысила 45 секунд'
+          : error.message;
+      }
+    }
   } catch (error) {
     const aborted = error.name === 'AbortError';
     state.chatError = aborted
@@ -497,6 +619,7 @@ async function sendChat() {
     clearInterval(state.elapsedTimer);
     state.elapsedTimer = null;
     state.running = false;
+    state.chatPhase = '';
     renderFreeChat();
     if (!state.chatError) chatInput.focus();
   }
@@ -549,6 +672,7 @@ clearChatButton.addEventListener('click', () => {
   if (!window.confirm(`Очистить историю ${state.agent === 'baseline' ? 'стартового' : 'оптимизированного'} агента?`)) return;
   state.histories[state.agent] = [];
   state.lastChatResults[state.agent] = null;
+  state.currentAudits[state.agent] = null;
   state.chatError = '';
   persistHistories();
   renderFreeChat();
@@ -563,6 +687,7 @@ async function detectRuntime() {
     const payload = await response.json();
     if (response.ok && payload.mode === 'live') {
       state.runtime = 'live';
+      state.auditor = payload.auditor || state.auditor;
       runtimeBadge.classList.add('live');
       runtimeBadge.querySelector('span').textContent = `живой запуск · ${payload.model}`;
       $('#run-note').textContent = 'Ответ будет рассчитан заново этой же моделью';

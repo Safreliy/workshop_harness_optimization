@@ -13,6 +13,9 @@ class Settings:
     base_url: str
     model_name: str
     pg_dsn: str
+    openrouter_api_key: str = ""
+    auditor_model: str = "openai/gpt-5.4"
+    jev_model: str = "typesafe/jev-1.13"
 
     @classmethod
     def load(cls, env_file: str | Path = ".env") -> "Settings":
@@ -25,6 +28,9 @@ class Settings:
                 "PG_DSN",
                 "postgresql://workshop:workshop@localhost:55432/workshop",
             ),
+            openrouter_api_key=os.getenv("OPENROUTER_API_KEY", ""),
+            auditor_model=os.getenv("OPENROUTER_AUDITOR_MODEL", "openai/gpt-5.4"),
+            jev_model=os.getenv("OPENROUTER_JEV_MODEL", "typesafe/jev-1.13"),
         )
 
     def validate_model(self) -> list[str]:

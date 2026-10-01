@@ -124,13 +124,34 @@ button { color: inherit; }
 .chat-empty { min-height: 230px; display: grid; place-content: center; gap: 8px; color: var(--muted); text-align: center; }
 .chat-empty strong { color: var(--ink); font-size: 1.05rem; }
 .chat-empty span { max-width: 500px; line-height: 1.5; }
-.chat-bubble { width: min(86%,760px); margin-bottom: 16px; padding: 14px 16px; border: 1px solid var(--line); line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; }
+.chat-bubble { width: min(86%,760px); margin-bottom: 16px; padding: 14px 16px; border: 1px solid var(--line); line-height: 1.55; overflow-wrap: anywhere; }
 .chat-bubble.user { margin-left: auto; border-color: rgba(139,168,255,.35); background: rgba(139,168,255,.075); }
 .chat-bubble.assistant { margin-right: auto; border-left: 3px solid var(--acid); background: rgba(200,255,77,.04); }
 .chat-bubble.pending { color: var(--muted); border-left-color: var(--blue); background: linear-gradient(90deg,rgba(139,168,255,.025),rgba(139,168,255,.085),rgba(139,168,255,.025)); background-size: 70% 100%; animation: scan 1.25s infinite linear; }
 .chat-bubble.error { border-left-color: var(--coral); color: #ffc2b8; }
 .chat-bubble small { display: block; margin-bottom: 6px; color: var(--muted); font-size: .68rem; letter-spacing: .09em; text-transform: uppercase; }
-.chat-bubble p { margin: 0; }
+.chat-bubble p { margin: 0; white-space: pre-wrap; }
+.chat-markdown { min-width: 0; }
+.chat-markdown > :first-child { margin-top: 0; }
+.chat-markdown > :last-child { margin-bottom: 0; }
+.chat-markdown p { margin: .55em 0; white-space: normal; }
+.chat-markdown h1, .chat-markdown h2, .chat-markdown h3 { margin: .85em 0 .35em; line-height: 1.25; }
+.chat-markdown h1 { font-size: 1.25rem; }
+.chat-markdown h2 { font-size: 1.12rem; }
+.chat-markdown h3 { font-size: 1rem; }
+.chat-markdown ul, .chat-markdown ol { margin: .5em 0; padding-left: 1.5em; }
+.chat-markdown li + li { margin-top: .25em; }
+.chat-markdown a { color: #b8caff; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+.chat-markdown code { padding: .1em .3em; border: 1px solid var(--line); background: #080b12; font-family: Consolas, monospace; font-size: .9em; }
+.chat-markdown pre { max-width: 100%; margin: .75em 0; padding: 12px; overflow: auto; background: #070a10; border: 1px solid var(--line); }
+.chat-markdown pre code { padding: 0; border: 0; background: transparent; white-space: pre; }
+.chat-markdown blockquote { margin: .6em 0; padding-left: 12px; border-left: 2px solid var(--blue); color: var(--muted); }
+.chat-markdown table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; }
+.chat-markdown th, .chat-markdown td { padding: 5px 8px; border: 1px solid var(--line); }
+.chat-markdown th { background: rgba(255,255,255,.04); }
+.chat-audit-tag { display: block; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--line); color: var(--blue); font-size: .72rem; }
+.chat-audit-tag.pass { color: var(--good); }
+.chat-audit-tag.uncertain { color: var(--muted); }
 .chat-form { display: grid; grid-template-columns: 1fr; gap: 8px; padding: 14px; border-top: 1px solid var(--line); background: #0a0d14; }
 .chat-form > label { color: var(--blue); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; }
 .chat-form textarea { width: 100%; min-height: 82px; max-height: 240px; resize: vertical; padding: 12px 13px; border: 1px solid var(--line); border-radius: 0; outline: 0; background: #070a10; color: var(--ink); font: .92rem/1.5 "Segoe UI Variable", "Segoe UI", Arial, sans-serif; }
@@ -201,14 +222,22 @@ button { color: inherit; }
 .expectation-card ul { margin: 0; padding: 0; list-style: none; }
 .expectation-card li { position: relative; padding: 8px 0 8px 22px; border-top: 1px solid rgba(255,255,255,.065); color: #cfd5de; font-size: .8rem; line-height: 1.4; }
 .expectation-card li::before { content: ""; position: absolute; left: 2px; top: 14px; width: 7px; height: 7px; border: 1px solid var(--blue); }
+.expectation-card li.pass::before { border-color: var(--good); background: var(--good); }
+.expectation-card li.fail::before { border-color: var(--bad); background: var(--bad); }
+.expectation-card li.uncertain::before { border-color: var(--blue); background: transparent; }
+.expectation-card li strong { display: block; font-weight: 600; }
+.expectation-card li small { display: block; margin-top: 4px; color: var(--muted); font-size: .72rem; line-height: 1.45; }
+.expectation-card li em { display: inline-block; margin-top: 5px; color: var(--blue); font-size: .69rem; font-style: normal; }
 
 .result-card { padding: 16px; border: 1px solid var(--line); background: rgba(255,255,255,.02); }
 .result-card.pass { border-color: rgba(200,255,77,.45); }
 .result-card.fail { border-color: rgba(255,128,110,.45); }
+.result-card.uncertain { border-color: rgba(139,168,255,.65); }
 .result-head, .trace-head { display: flex; justify-content: space-between; gap: 14px; align-items: baseline; }
 .result-head strong, .trace-head strong { font-size: .78rem; }
 .result-card.pass .result-head strong { color: var(--good); }
 .result-card.fail .result-head strong { color: var(--bad); }
+.result-card.uncertain .result-head strong { color: var(--blue); }
 .score-pair { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; margin-top: 14px; }
 .score-pair div { padding-top: 9px; border-top: 1px solid var(--line); }
 .score-pair span { display: block; color: var(--muted); font-size: .66rem; }

@@ -103,6 +103,8 @@ class ModelClient:
         *,
         tools: list[dict[str, Any]] | None = None,
         temperature: float = 0.0,
+        response_format: dict[str, Any] | None = None,
+        max_tokens: int | None = None,
     ) -> ModelTurn:
         payload: dict[str, Any] = {
             "model": self.model_name,
@@ -112,6 +114,10 @@ class ModelClient:
         if tools:
             payload["tools"] = tools
             payload["tool_choice"] = "auto"
+        if response_format is not None:
+            payload["response_format"] = response_format
+        if max_tokens is not None:
+            payload["max_tokens"] = max_tokens
         response = self._request("POST", "/chat/completions", payload)
         try:
             message = response["choices"][0]["message"]
