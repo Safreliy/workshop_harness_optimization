@@ -12,10 +12,8 @@ import threading
 import time
 import uuid
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any
-from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
 
 from .model import GatewayError, ModelClient
 from .settings import Settings
@@ -109,13 +107,14 @@ class OpenRouterAuditor:
             raise AuditError("OPENROUTER_API_KEY не задан в .env")
         self.model_name = settings.auditor_model
         self.jev_model = settings.jev_model
-        router_settings = Settings(
+        router_settings = replace(settings,
             api_key=settings.openrouter_api_key,
             base_url="https://openrouter.ai/api/v1",
             model_name=settings.auditor_model,
-            pg_dsn=settings.pg_dsn,
+            model_ca_file="", model_ca_allow_legacy=False,
         )
         self.model = ModelClient(router_settings, timeout=38, max_attempts=1)
+        self.decision_model = ModelClient(replace(router_settings, base_url="https://openrouter.ai/api"), timeout=28, max_attempts=1)
         self.api_key = settings.openrouter_api_key
 
     def _chat_json(self, system: str, user: dict[str, Any], max_tokens: int) -> dict[str, Any]:
@@ -164,22 +163,10 @@ class OpenRouterAuditor:
             {"model": self.jev_model, "state": state, "questions": questions},
             ensure_ascii=False,
         ).encode("utf-8")
-        request = Request(
-            "https://openrouter.ai/api/alpha/decisions",
-            data=body,
-            headers={
-                "Authorization": f"Bearer {self.api_key}",
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-            },
-        )
         try:
-            with urlopen(request, timeout=28) as response:
-                payload = json.load(response)
-        except HTTPError as exc:
-            raise AuditError(f"Jev: OpenRouter вернул HTTP {exc.code}") from exc
-        except (URLError, TimeoutError) as exc:
-            raise AuditError("Jev: OpenRouter не ответил") from exc
+            payload = self.decision_model._request("POST", "/alpha/decisions", json.loads(body))
+        except GatewayError as exc:
+            raise AuditError(f"Jev: {exc}") from exc
         answers = payload.get("answers") if isinstance(payload, dict) else None
         if not isinstance(answers, dict):
             raise AuditError("Jev вернул ответ без решений")

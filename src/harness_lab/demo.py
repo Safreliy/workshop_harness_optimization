@@ -16,7 +16,8 @@ from .auditor import AuditError, AuditStore, OpenRouterAuditor, history_fingerpr
 from .cases import BenchmarkCase, DialogueTurn, load_cases, public_case_payload
 from .config import HarnessConfig
 from .db import PostgresSandbox
-from .model import ModelClient
+from .model import ModelClient, redact_error
+from .connections import profiles_for, same_origin
 from .runner import BenchmarkRecord, run_benchmark
 from .settings import Settings
 from .tools import ToolExecutor, build_tool_schemas
@@ -456,8 +457,17 @@ def run_free_chat(
     settings: Settings,
     config: HarnessConfig,
     history: list[dict[str, str]],
+    *,
+    model_timeout: float = 20.0,
+    total_timeout: float | None = None,
+    max_tokens: int | None = None,
 ) -> tuple[AgentResult, float]:
+    if model_timeout <= 0 or (total_timeout is not None and total_timeout <= 0):
+        raise ValueError("chat timeouts must be positive")
+    if max_tokens is not None and max_tokens < 1:
+        raise ValueError("chat max_tokens must be positive")
     started = time.monotonic()
+    deadline = started + total_timeout if total_timeout is not None else None
     result = AgentResult(case_id="free_chat", output="")
     database_mode = _chat_needs_database(history)
     schemas = build_tool_schemas(config)
@@ -467,13 +477,29 @@ def run_free_chat(
         {"role": "system", "content": _chat_system_prompt(config, database_mode)},
         *history,
     ]
-    # Three tool rounds plus one forced final stay inside the UI's 90-second cap
-    # even when the upstream model uses its full per-call timeout.
-    model = ModelClient(settings, timeout=20.0, max_attempts=1)
+    # V1 keeps its short calls; V2 can allow a slower provider without retries
+    # or an unbounded sequence of model/tool actions.
+    model = ModelClient(settings, timeout=model_timeout, max_attempts=1)
     tools = ToolExecutor(PostgresSandbox(settings.pg_dsn))
+
+    def remaining_time() -> float:
+        if deadline is None:
+            return model_timeout
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise TimeoutError("chat execution time budget exhausted")
+        return remaining
+
+    def complete(schemas):
+        model.timeout = min(model_timeout, remaining_time())
+        options = {"tools": schemas, "temperature": config.temperature}
+        if max_tokens is not None:
+            options["max_tokens"] = max_tokens
+        return model.complete(messages, **options)
+
     try:
         for step in range(1, min(config.max_steps, 3) + 1):
-            turn = model.complete(messages, tools=schemas, temperature=config.temperature)
+            turn = complete(schemas)
             result.add_turn(turn)
             messages.append(turn.as_message())
             if not turn.tool_calls:
@@ -482,6 +508,7 @@ def run_free_chat(
                 break
             names: list[str] = []
             for call in turn.tool_calls:
+                remaining_time()
                 names.append(call.name)
                 output = tools.execute(call.name, call.arguments)
                 messages.append(
@@ -511,7 +538,7 @@ def run_free_chat(
                     ),
                 }
             )
-            turn = model.complete(messages, tools=None, temperature=config.temperature)
+            turn = complete(None)
             result.add_turn(turn)
             result.output = turn.content
             result.events.append(
@@ -553,6 +580,7 @@ def _chat_result_payload(result: AgentResult, latency_seconds: float) -> dict[st
 
 class DemoHandler(SimpleHTTPRequestHandler):
     server_version = "HarnessLabDemo/0.1"
+    chat_options: dict[str, Any] = {}
 
     def __init__(
         self,
@@ -585,7 +613,23 @@ class DemoHandler(SimpleHTTPRequestHandler):
             pass
 
     def do_GET(self) -> None:  # noqa: N802 - stdlib handler API
+        if self.path in {"/connection-settings.js", "/connection-settings.css"}:
+            file = Path(__file__).parent / "web" / self.path.lstrip("/")
+            if not file.is_file():
+                self.send_error(404)
+                return
+            data = file.read_bytes()
+            self.send_response(200)
+            self.send_header("Content-Type", "text/javascript" if file.suffix == ".js" else "text/css")
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+            return
+        if self.path.rstrip("/") == "/api/connections":
+            self._json(profiles_for(self.server, self.settings).public())
+            return
         if self.path.rstrip("/") == "/api/status":
+            self.settings = profiles_for(self.server, self.settings).settings()
             self._json(
                 {
                     "mode": "live",
@@ -606,14 +650,25 @@ class DemoHandler(SimpleHTTPRequestHandler):
         if endpoint not in {
             "/api/run", "/api/run-custom", "/api/chat",
             "/api/audit/plan", "/api/audit/check", "/api/arena/plan",
+            "/api/connections",
         }:
             self._json({"error": "not_found"}, HTTPStatus.NOT_FOUND)
+            return
+        if not same_origin(self):
+            self._json({"error": "Origin rejected"}, HTTPStatus.FORBIDDEN)
             return
         try:
             length = int(self.headers.get("Content-Length", "0"))
             if length <= 0 or length > 100_000:
                 raise ValueError("invalid request size")
             body = json.loads(self.rfile.read(length))
+            if not isinstance(body, dict):
+                raise ValueError("Expected an object")
+            store = profiles_for(self.server, self.settings)
+            if endpoint == "/api/connections":
+                self._json(store.update(body))
+                return
+            self.settings = store.settings()
             if endpoint == "/api/arena/plan":
                 histories = validate_arena_histories(body.get("histories"))
                 # Commit one rubric using only user turns, before either answer exists.
@@ -673,7 +728,7 @@ class DemoHandler(SimpleHTTPRequestHandler):
                     if session.agent != agent_key or history_fingerprint(session.history) != history_fingerprint(history):
                         raise ValueError("оценка не соответствует запросу или агенту")
                 chat_result, latency = run_free_chat(
-                    self.settings, self.configs[agent_key], history
+                    self.settings, self.configs[agent_key], history, **self.chat_options
                 )
                 payload = {
                     "mode": "live",
@@ -738,21 +793,18 @@ class DemoHandler(SimpleHTTPRequestHandler):
             )
         except AuditError as exc:
             self._json(
-                {"error": "audit_failed", "message": str(exc)},
+                {"error": "audit_failed", "message": redact_error(exc, self.settings)},
                 HTTPStatus.BAD_GATEWAY,
             )
         except Exception as exc:
             self._json(
-                {"error": type(exc).__name__, "message": str(exc)},
+                {"error": type(exc).__name__, "message": redact_error(exc, self.settings)},
                 HTTPStatus.BAD_REQUEST,
             )
 
 
 def serve_demo(args: argparse.Namespace) -> int:
     settings = Settings.load(args.env)
-    missing = settings.validate_model()
-    if missing:
-        raise ValueError(f"missing model settings: {', '.join(missing)}")
     all_cases = {case.id: case for case in load_cases(args.benchmark_dir, split="eval")}
     cases = {case_id: all_cases[case_id] for case_id in CURATED_TASKS}
     configs = {

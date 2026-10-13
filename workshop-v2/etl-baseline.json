@@ -1,0 +1,15 @@
+{
+  "name": "baseline",
+  "prompt_patch": "",
+  "max_steps": 6,
+  "workflow": "react",
+  "review": "none",
+  "tools": [
+    "list_sources",
+    "inspect_source",
+    "query",
+    "execute_pipeline"
+  ],
+  "max_tokens": 3000,
+  "temperature": 0.0
+}

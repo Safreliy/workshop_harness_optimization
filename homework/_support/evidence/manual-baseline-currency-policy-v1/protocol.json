@@ -1,0 +1,152 @@
+{
+  "experiment": "manual-baseline-currency-policy-v1",
+  "prepared_utc": "2026-10-12T21:41:44.126764+00:00",
+  "model": "DeepSeek-V4-Flash-0731",
+  "dataset": "benchmarks/etl",
+  "scope": "20 disclosed-case baseline repetitions; no candidate comparison, no adaptive stopping.",
+  "configs": {
+    "currency-policy": {
+      "name": "baseline",
+      "prompt_patch": "CURRENCY CHECK: Before summing payments/refunds, normalize and compare each event currency with the currency of its latest order. Unknown/orphan and mismatched currencies must not contribute. A WHERE filtering only settled/non-null amounts does NOT enforce currency equality. When an aggregate differs from your manual expectation, query the exact contributing rows under that same WHERE before rerunning SUM or suspecting the SQL engine. Apply the currency condition for every order, not a literal USD.",
+      "max_steps": 6,
+      "workflow": "react",
+      "review": "none",
+      "tools": [
+        "list_sources",
+        "inspect_source",
+        "query",
+        "execute_pipeline"
+      ],
+      "max_tokens": 3000,
+      "temperature": 0.0
+    }
+  },
+  "base_source": "etl-workshop/results/full-test-v1/baseline/repeat-1/records/test-legacy_sales-03.json",
+  "base_sha256": "f0fe26da3ff9b9fd7217bbf293dc2b1a8516a3c2fe8a4eee37d79002ae992a5e",
+  "planned": [
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 1,
+      "arm": "currency-policy"
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 1,
+      "arm": "currency-policy"
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 2,
+      "arm": "currency-policy"
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 2,
+      "arm": "currency-policy"
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 3,
+      "arm": "currency-policy"
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 3,
+      "arm": "currency-policy"
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 4,
+      "arm": "currency-policy"
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 4,
+      "arm": "currency-policy"
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 5,
+      "arm": "currency-policy"
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 5,
+      "arm": "currency-policy"
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 6,
+      "arm": "currency-policy"
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 6,
+      "arm": "currency-policy"
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 7,
+      "arm": "currency-policy"
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 7,
+      "arm": "currency-policy"
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 8,
+      "arm": "currency-policy"
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 8,
+      "arm": "currency-policy"
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 9,
+      "arm": "currency-policy"
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 9,
+      "arm": "currency-policy"
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 10,
+      "arm": "currency-policy"
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 10,
+      "arm": "currency-policy"
+    }
+  ],
+  "task_fingerprints": {
+    "test-marketplace_events-00": "7511afa0bc3efc44a639d098cb00dca4343a97203436fceb428de407bb749ca0",
+    "test-legacy_sales-03": "b7b77339debf97c74d28a23e1446beaf0a85631073acf6dc5972dfdf6a209481"
+  },
+  "gold_sha256": {
+    "test-marketplace_events-00": "3f0c42434062cb567161d8cee634fdc332201b7306df04cd3d861ec64306176a",
+    "test-legacy_sales-03": "61d773c4f244126f266b7bd558163d23a002732c485ffb61a54a10b78c1cc236"
+  },
+  "code_sha256": {
+    "src/harness_lab/etl_agent.py": "55741f515e4c6d7e84ea106f219d4d2c50335e5328827d671e37686743e49217",
+    "src/harness_lab/etl_env.py": "23e371ef888d282bb800320627aa4f6e0cecc631467f9655f49e3e3ab0fb554c",
+    "src/harness_lab/model.py": "5cef21f1b300675d6d30b6bd66770fc9454dc95c3538d07bd8d9c778c9360cab"
+  },
+  "workers": 2,
+  "max_attempts_per_http_request": 1,
+  "retain_all_failures": true,
+  "changed_fields": [
+    "prompt_patch"
+  ],
+  "patch": "CURRENCY CHECK: Before summing payments/refunds, normalize and compare each event currency with the currency of its latest order. Unknown/orphan and mismatched currencies must not contribute. A WHERE filtering only settled/non-null amounts does NOT enforce currency equality. When an aggregate differs from your manual expectation, query the exact contributing rows under that same WHERE before rerunning SUM or suspecting the SQL engine. Apply the currency condition for every order, not a literal USD.",
+  "paired_control_protocol": {
+    "path": "workshop-v2/evidence/manual-baseline-reproduction-v1/protocol.json",
+    "sha256": "6559ea07014fb88678c5c3d619544ff70101776b47bc26982309b95a2ce7f726"
+  }
+}

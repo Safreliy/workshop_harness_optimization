@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Полная сохранённая траектория · Harness</title><link rel="stylesheet" href="trajectory.css"></head>
+<body><header><a href="index.html#failure">← К презентации</a><span>HARNESS / ТРАЕКТОРИЯ</span></header>
+<main><p class="eyebrow">ОТ ЗАДАЧИ ДО ФИНАЛЬНОГО ОТЧЁТА</p><h1>Что агент видел<br>и что сделал</h1><div class="tabs" id="cases"></div>
+<p id="intro"></p><div class="metrics" id="metrics"></div><p class="muted">Все события из сохранённой записи, в исходном порядке. Тексты модели, аргументы и ответы инструментов приведены полностью. Начальный prompt и служебные сообщения не были записаны как отдельные события: их устройство можно проверить по коду управляющего цикла.</p>
+<details class="provenance"><summary>Источник, конфигурация и граница видимости</summary><div id="provenance"></div><h3>Публичное условие задачи</h3><p class="muted">Файл условия из benchmark; это источник контракта, а не отдельное сообщение, извлечённое из API-лога. В модель отправляется его публичная часть. Скрытых правильных строк здесь нет.</p><pre id="task"></pre></details>
+<div class="toolbar"><label>Показать <select id="filter"><option value="all">Все события</option><option value="model">Ответы модели</option><option value="tools">Инструменты</option><option value="external">Вне контекста модели</option></select></label><button id="expand">Раскрыть всё</button><button id="collapse">Свернуть всё</button><button id="download">Скачать исходный JSON</button></div>
+<p class="muted" id="count"></p><div id="events"></div>
+<details class="provenance"><summary>Оценка после запуска · модель её не получала</summary><p class="muted">Private grader сравнивает итоговую таблицу со скрытым gold после окончания агентного цикла. Это внешняя оценка эксперимента.</p><pre id="grade"></pre></details>
+</main><script src="trajectory-data.js"></script><script src="trajectory.js"></script></body></html>

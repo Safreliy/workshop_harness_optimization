@@ -1,0 +1,1999 @@
+{
+  "schema_version": 1,
+  "mode": "recorded_eval",
+  "model": "DeepSeek-V4-Flash-0731",
+  "notice": "Это воспроизведение сохранённых eval-прогонов. Для живого запуска откройте страницу через команду harness-lab demo.",
+  "summary": {
+    "baseline": {
+      "config": "baseline_react",
+      "config_fingerprint": "244d500bd0",
+      "cases": 7,
+      "score": 0.5236,
+      "pass_rate": 0.0,
+      "output_score": 0.6007,
+      "trajectory_score": 0.2925,
+      "avg_llm_calls": 6.143,
+      "input_tokens": 85106,
+      "output_tokens": 14014,
+      "by_kind": {
+        "report": {
+          "cases": 4,
+          "score": 0.6964,
+          "pass_rate": 0.0,
+          "output_score": 0.8906,
+          "trajectory_score": 0.1137
+        },
+        "sql": {
+          "cases": 3,
+          "score": 0.2933,
+          "pass_rate": 0.0,
+          "output_score": 0.2142,
+          "trajectory_score": 0.5308
+        }
+      },
+      "model": "DeepSeek-V4-Flash-0731",
+      "created_at": "2026-09-04T16:28:36.863760+00:00",
+      "run_label": "eval-baseline"
+    },
+    "optimized": {
+      "config": "trained_harness",
+      "config_fingerprint": "cf08a85920",
+      "cases": 7,
+      "score": 0.9335,
+      "pass_rate": 0.8571,
+      "output_score": 0.9174,
+      "trajectory_score": 0.9818,
+      "avg_llm_calls": 3.143,
+      "input_tokens": 41527,
+      "output_tokens": 7165,
+      "by_kind": {
+        "report": {
+          "cases": 4,
+          "score": 0.9179,
+          "pass_rate": 0.75,
+          "output_score": 0.8906,
+          "trajectory_score": 1.0
+        },
+        "sql": {
+          "cases": 3,
+          "score": 0.9542,
+          "pass_rate": 1.0,
+          "output_score": 0.9531,
+          "trajectory_score": 0.9575
+        }
+      },
+      "model": "DeepSeek-V4-Flash-0731",
+      "created_at": "2026-09-04T16:30:17.721561+00:00",
+      "run_label": "eval-candidate"
+    },
+    "delta": 0.4099
+  },
+  "agent_configs": {
+    "baseline": {
+      "name": "baseline_react",
+      "prompt_profile": "baseline",
+      "prompt_patch": "",
+      "routing": "none",
+      "workflow": "react",
+      "context_strategy": "raw",
+      "context_partition": "shared",
+      "review_mode": "none",
+      "tool_description_profile": "terse",
+      "enabled_tools": [
+        "list_tables",
+        "describe_table",
+        "explain_query",
+        "run_readonly_query"
+      ],
+      "tool_description_overrides": {},
+      "max_steps": 6,
+      "max_context_chars": 60000,
+      "temperature": 0.0
+    },
+    "optimized": {
+      "name": "trained_harness",
+      "prompt_profile": "baseline",
+      "prompt_patch": "Before running any sample queries, first inspect the schema and form a clear plan for the query and any index trials. Avoid repeated sampling; each sample should test a specific hypothesis.",
+      "routing": "task_kind",
+      "workflow": "react",
+      "context_strategy": "raw",
+      "context_partition": "shared",
+      "review_mode": "none",
+      "tool_description_profile": "diagnostic",
+      "enabled_tools": [
+        "list_tables",
+        "describe_table",
+        "explain_query",
+        "run_readonly_query",
+        "trial_index_plan"
+      ],
+      "tool_description_overrides": {},
+      "max_steps": 8,
+      "max_context_chars": 60000,
+      "temperature": 0.0
+    }
+  },
+  "tasks": [
+    {
+      "id": "report_eval_01",
+      "kind": "report",
+      "title": "Удержание клиентов по месяцам",
+      "source_title": "Monthly logo retention",
+      "label": "Хороший ответ, плохая траектория",
+      "difficulty": "контекст + стоимость",
+      "why": "Стартовый агент способен собрать почти правильное ТЗ, но тратит семь вызовов и десять раз обращается к БД, хотя данные уже есть в диалоге.",
+      "expectations": [
+        "учесть последние правки о Europe/London и периоде ожидания 7 дней",
+        "не дублировать клиента по каналам продаж",
+        "не обращаться к PostgreSQL без необходимости",
+        "вернуть итоговый JSON до исчерпания бюджета"
+      ],
+      "input": {
+        "id": "report_eval_01",
+        "kind": "report",
+        "title": "Monthly logo retention",
+        "dialogue": [
+          {
+            "role": "customer_success",
+            "content": "Нужен retention по клиентам: сколько компаний остаётся активными месяц к месяцу. Начнём с любого заказа как признака активности."
+          },
+          {
+            "role": "finance",
+            "content": "Для logo retention активность — не заказ, а наличие хотя бы одного paid заказа. Cancelled и refunded не считаются."
+          },
+          {
+            "role": "analyst",
+            "content": "Когорту возьму по первому paid order, календарный месяц UTC. Сегмент — tenants.plan."
+          },
+          {
+            "role": "customer_success",
+            "content": "Нас больше волнует база на начало месяца и удержание из неё, а не классический cohort retention."
+          },
+          {
+            "role": "analyst",
+            "content": "То есть denominator: tenants с paid-заказом в предыдущем месяце?"
+          },
+          {
+            "role": "finance",
+            "content": "Нет. Eligibility на начало месяца: tenant имел paid order когда-либо раньше и не был помечен churned. Но поля churned у нас нет."
+          },
+          {
+            "role": "customer_success",
+            "content": "Тогда v1: база — tenant с paid order в предыдущем календарном месяце; retained — есть paid order в текущем. Это явно rolling_logo_retention, не contractual retention."
+          },
+          {
+            "role": "legal",
+            "content": "Test tenants исключаем. В customers есть is_test, но logo — tenant-level, поэтому исключите tenant, если все его customers тестовые; смешанные tenant пока оставить и открыть вопрос."
+          },
+          {
+            "role": "analyst",
+            "content": "Timezone оставляем UTC?"
+          },
+          {
+            "role": "customer_success",
+            "content": "Поправка от UK-команды: Europe/London. Месяцы режем в этой зоне. Нужны plan и sales_channel прошлого заказа?"
+          },
+          {
+            "role": "finance",
+            "content": "Только plan. Канал убрать — logo не должен дублироваться по каналам. Grain: month × plan. Метрики eligible_logos, retained_logos, rolling_logo_retention."
+          },
+          {
+            "role": "customer_success",
+            "content": "Дайте 7-дневный grace period после конца месяца: late arriving paid orders учитываем до седьмого числа, затем месяц замораживаем. Выгрузка parquet 8-го числа в 09:00 Europe/London."
+          }
+        ]
+      },
+      "delta": 0.25,
+      "agents": {
+        "baseline": {
+          "score": 0.6437,
+          "passed": false,
+          "output_score": 0.8583,
+          "trajectory_score": 0.0,
+          "llm_calls": 7,
+          "input_tokens": 20750,
+          "output_tokens": 3613,
+          "output": "{\n  \"report_name\": \"monthly_logo_retention\",\n  \"objective\": \"Track rolling logo retention: the share of tenants (logos) active in the previous calendar month that remain active (have at least one paid order) in the current calendar month, broken down by tenant plan.\",\n  \"grain\": \"calendar month (Europe/London) × tenant plan\",\n  \"timezone\": \"Europe/London\",\n  \"population\": {\n    \"include\": [\n      \"tenants with at least one paid order in the previous calendar month (eligible base)\",\n      \"tenants with at least one paid order in the current calendar month (retained)\"\n    ],\n    \"exclude\": [\n      \"tenants where ALL customers are test (is_test = true); mixed tenants are kept\",\n      \"orders with status = 'cancelled' or 'refunded' are not counted as activity\"\n    ]\n  },\n  \"metrics\": [\n    {\n      \"id\": \"eligible_logos\",\n      \"definition\": \"Number of distinct tenants with at least one paid order in the previous calendar month (Europe/London), excluding test-only tenants.\",\n      \"formula_sql\": \"COUNT(DISTINCT t.id) FROM tenants t WHERE EXISTS (SELECT 1 FROM orders o WHERE o.tenant_id = t.id AND o.status = 'paid' AND o.created_at >= (date_trunc('month', :month) - INTERVAL '1 month') AT TIME ZONE 'Europe/London' AND o.created_at < date_trunc('month', :month) AT TIME ZONE 'Europe/London') AND NOT (SELECT bool_and(c.is_test) FROM customers c WHERE c.tenant_id = t.id)\",\n      \"owner\": \"analyst\"\n    },\n    {\n      \"id\": \"retained_logos\",\n      \"definition\": \"Number of distinct eligible tenants (paid order in previous month) that have at least one paid order in the current calendar month (Europe/London), including orders arriving within the 7-day grace period.\",\n      \"formula_sql\": \"COUNT(DISTINCT t.id) FROM tenants t WHERE EXISTS (SELECT 1 FROM orders o WHERE o.tenant_id = t.id AND o.status = 'paid' AND o.created_at >= date_trunc('month', :month) AT TIME ZONE 'Europe/London' AND o.created_at < (date_trunc('month', :month) + INTERVAL '1 month' + INTERVAL '7 days') AT TIME ZONE 'Europe/London') AND EXISTS (SELECT 1 FROM orders o2 WHERE o2.tenant_id = t.id AND o2.status = 'paid' AND o2.created_at >= (date_trunc('month', :month) - INTERVAL '1 month') AT TIME ZONE 'Europe/London' AND o2.created_at < date_trunc('month', :month) AT TIME ZONE 'Europe/London') AND NOT (SELECT bool_and(c.is_test) FROM customers c WHERE c.tenant_id = t.id)\",\n      \"owner\": \"analyst\"\n    },\n    {\n      \"id\": \"rolling_logo_retention\",\n      \"definition\": \"Ratio of retained_logos to eligible_logos for the month.\",\n      \"formula_sql\": \"retained_logos / NULLIF(eligible_logos, 0)\",\n      \"owner\": \"analyst\"\n    }\n  ],\n  \"dimensions\": [\"tenants.plan\"],\n  \"filters\": [\n    \"orders.status = 'paid' (cancelled and refunded excluded)\",\n    \"exclude tenants where all customers are test (is_test = true); mixed tenants kept\",\n    \"months sliced in Europe/London timezone\",\n    \"7-day grace period after month end for late arriving paid orders\"\n  ],\n  \"comparisons\": [\"month-over-month rolling_logo_retention trend\"],\n  \"delivery\": {\n    \"format\": \"parquet\",\n    \"cadence\": \"monthly, on the 8th day at 09:00 Europe/London\"\n  },\n  \"assumptions\": [\n    \"Activity is defined as having at least one paid order (status = 'paid'); cancelled and refunded orders do not count.\",\n    \"Rolling (non-contractual) logo retention: base = tenants with paid order in previous calendar month; retained = paid order in current calendar month.\",\n    \"Months are sliced in Europe/London timezone.\",\n    \"A 7-day grace period after the end of the month allows late-arriving paid orders to be counted; the month is then frozen.\",\n    \"Tenant plan is taken from tenants.plan at reporting time.\",\n    \"Sales channel is not a dimension; a logo is counted once per month regardless of channel.\"\n  ],\n  \"open_questions\": [\n    \"How to handle mixed tenants (some customers test, some not) — currently kept; decision pending.\",\n    \"Whether tenant plan should be taken as of the reporting month or as of the previous month (plan changes over time).\",\n    \"Whether a churned flag should be introduced for contractual retention in the future.\"\n  ],\n  \"validation_checks\": [\n    \"eligible_logos for month M equals retained_logos for month M-1 (consistency across consecutive months).\",\n    \"rolling_logo_retention is between 0 and 1.\",\n    \"No tenant counted more than once per month per plan (grain uniqueness).\",\n    \"Test-only tenants are excluded; spot-check a sample of excluded tenants.\",\n    \"Orders with status cancelled/refunded are not counted in either eligible or retained sets.\"\n  ]\n}",
+          "error": null,
+          "issues": [
+            {
+              "id": "excessive_llm_calls",
+              "label": "слишком много вызовов модели"
+            },
+            {
+              "id": "forced_final_after_step_budget",
+              "label": "ответ сформирован после исчерпания шагов"
+            },
+            {
+              "id": "report_unnecessary_database_tools",
+              "label": "БД-инструменты не нужны для этой задачи"
+            }
+          ],
+          "tool_calls": 10,
+          "tool_sequence": [
+            "list_tables",
+            "describe_table",
+            "describe_table",
+            "describe_table",
+            "run_readonly_query",
+            "run_readonly_query",
+            "run_readonly_query",
+            "run_readonly_query",
+            "run_readonly_query",
+            "run_readonly_query"
+          ],
+          "forced_final": true,
+          "grade_details": {
+            "schema_score": 1.0,
+            "requirements_score": 0.8333,
+            "checks": [
+              {
+                "kind": "equals",
+                "target": "report_name",
+                "ok": false,
+                "actual": "monthly_logo_retention"
+              },
+              {
+                "kind": "equals",
+                "target": "timezone",
+                "ok": true,
+                "actual": "Europe/London"
+              },
+              {
+                "kind": "contains",
+                "target": "grain",
+                "ok": true,
+                "actual": "calendar month (Europe/London) × tenant plan"
+              },
+              {
+                "kind": "contains",
+                "target": "grain",
+                "ok": true,
+                "actual": "calendar month (Europe/London) × tenant plan"
+              },
+              {
+                "kind": "metric_contains",
+                "target": "eligible_logos",
+                "ok": true,
+                "actual": {
+                  "id": "eligible_logos",
+                  "definition": "Number of distinct tenants with at least one paid order in the previous calendar month (Europe/London), excluding test-only tenants.",
+                  "formula_sql": "COUNT(DISTINCT t.id) FROM tenants t WHERE EXISTS (SELECT 1 FROM orders o WHERE o.tenant_id = t.id AND o.status = 'paid' AND o.created_at >= (date_trunc('month', :month) - INTERVAL '1 month') AT TIME ZONE 'Europe/London' AND o.created_at < date_trunc('month', :month) AT TIME ZONE 'Europe/London') AND NOT (SELECT bool_and(c.is_test) FROM customers c WHERE c.tenant_id = t.id)",
+                  "owner": "analyst"
+                }
+              },
+              {
+                "kind": "metric_contains",
+                "target": "retained_logos",
+                "ok": false,
+                "actual": {
+                  "id": "eligible_logos",
+                  "definition": "Number of distinct tenants with at least one paid order in the previous calendar month (Europe/London), excluding test-only tenants.",
+                  "formula_sql": "COUNT(DISTINCT t.id) FROM tenants t WHERE EXISTS (SELECT 1 FROM orders o WHERE o.tenant_id = t.id AND o.status = 'paid' AND o.created_at >= (date_trunc('month', :month) - INTERVAL '1 month') AT TIME ZONE 'Europe/London' AND o.created_at < date_trunc('month', :month) AT TIME ZONE 'Europe/London') AND NOT (SELECT bool_and(c.is_test) FROM customers c WHERE c.tenant_id = t.id)",
+                  "owner": "analyst"
+                }
+              },
+              {
+                "kind": "metric_contains",
+                "target": "rolling_logo_retention",
+                "ok": true,
+                "actual": {
+                  "id": "rolling_logo_retention",
+                  "definition": "Ratio of retained_logos to eligible_logos for the month.",
+                  "formula_sql": "retained_logos / NULLIF(eligible_logos, 0)",
+                  "owner": "analyst"
+                }
+              },
+              {
+                "kind": "list_contains",
+                "target": "population.exclude",
+                "ok": true,
+                "actual": [
+                  "tenants where ALL customers are test (is_test = true); mixed tenants are kept",
+                  "orders with status = 'cancelled' or 'refunded' are not counted as activity"
+                ]
+              },
+              {
+                "kind": "list_contains",
+                "target": "filters",
+                "ok": true,
+                "actual": [
+                  "orders.status = 'paid' (cancelled and refunded excluded)",
+                  "exclude tenants where all customers are test (is_test = true); mixed tenants kept",
+                  "months sliced in Europe/London timezone",
+                  "7-day grace period after month end for late arriving paid orders"
+                ]
+              },
+              {
+                "kind": "equals",
+                "target": "delivery.format",
+                "ok": true,
+                "actual": "parquet"
+              },
+              {
+                "kind": "contains",
+                "target": "delivery.cadence",
+                "ok": true,
+                "actual": "monthly, on the 8th day at 09:00 Europe/London"
+              },
+              {
+                "kind": "list_contains",
+                "target": "open_questions",
+                "ok": true,
+                "actual": [
+                  "How to handle mixed tenants (some customers test, some not) — currently kept; decision pending.",
+                  "Whether tenant plan should be taken as of the reporting month or as of the previous month (plan changes over time).",
+                  "Whether a churned flag should be introduced for contractual retention in the future."
+                ]
+              }
+            ]
+          },
+          "events": [
+            {
+              "stage": "tool",
+              "step": 1,
+              "name": "list_tables",
+              "arguments": {},
+              "observation": "найдено таблиц: 8"
+            },
+            {
+              "stage": "tool",
+              "step": 2,
+              "name": "describe_table",
+              "arguments": {
+                "table": "tenants"
+              },
+              "observation": "tenants: 4 столбцов, 1 индексов, ~200 строк"
+            },
+            {
+              "stage": "tool",
+              "step": 2,
+              "name": "describe_table",
+              "arguments": {
+                "table": "orders"
+              },
+              "observation": "orders: 11 столбцов, 3 индексов, ~220000 строк"
+            },
+            {
+              "stage": "tool",
+              "step": 2,
+              "name": "describe_table",
+              "arguments": {
+                "table": "customers"
+              },
+              "observation": "customers: 7 столбцов, 2 индексов, ~60000 строк"
+            },
+            {
+              "stage": "tool",
+              "step": 3,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT DISTINCT status FROM orders;"
+              },
+              "observation": "4 строк · status · [[\"cancelled\"], [\"paid\"]]"
+            },
+            {
+              "stage": "tool",
+              "step": 3,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT DISTINCT plan FROM tenants;"
+              },
+              "observation": "3 строк · plan · [[\"growth\"], [\"starter\"]]"
+            },
+            {
+              "stage": "tool",
+              "step": 3,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT DISTINCT sales_channel FROM orders;"
+              },
+              "observation": "3 строк · sales_channel · [[\"mobile\"], [\"partner\"]]"
+            },
+            {
+              "stage": "tool",
+              "step": 4,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT COUNT(*) AS total_tenants, COUNT(*) FILTER (WHERE NOT EXISTS (SELECT 1 FROM customers c WHERE c.tenant_id = t.id AND c.is_test = false)) AS test_only_tenants FROM tenants t;"
+              },
+              "observation": "1 строк · total_tenants, test_only_tenants · [[200, 0]]"
+            },
+            {
+              "stage": "tool",
+              "step": 5,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT COUNT(*) AS total_customers, COUNT(*) FILTER (WHERE is_test) AS test_customers FROM customers;"
+              },
+              "observation": "1 строк · total_customers, test_customers · [[60000, 284]]"
+            },
+            {
+              "stage": "tool",
+              "step": 6,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT COUNT(*) AS total_orders, COUNT(*) FILTER (WHERE status='paid') AS paid_orders, COUNT(*) FILTER (WHERE status='cancelled') AS cancelled_orders, COUNT(*) FILTER (WHERE status='refunded') AS refunded_orders, COUNT(*) FILTER (WHERE status='pending') AS pending_orders FROM orders;"
+              },
+              "observation": "1 строк · total_orders, paid_orders, cancelled_orders, refunded_orders, pending_orders · [[220000, 150588, 18824, 12941, 37647]]"
+            },
+            {
+              "stage": "forced_final",
+              "step": null,
+              "data": {
+                "reason": "max_steps"
+              }
+            }
+          ]
+        },
+        "optimized": {
+          "score": 0.8937,
+          "passed": true,
+          "output_score": 0.8583,
+          "trajectory_score": 1.0,
+          "llm_calls": 1,
+          "input_tokens": 770,
+          "output_tokens": 907,
+          "output": "{\n  \"report_name\": \"monthly_logo_retention\",\n  \"objective\": \"Measure month-over-month retention of active tenant logos, where activity is defined as having at least one paid order (excluding cancelled and refunded) in the calendar month, with a 7-day grace period for late-arriving paid orders.\",\n  \"grain\": \"month (Europe/London) × plan\",\n  \"timezone\": \"Europe/London\",\n  \"population\": {\n    \"include\": [\n      \"Tenants with at least one paid order in the previous calendar month (eligible base)\",\n      \"Tenants with at least one paid order in the current calendar month (retained)\",\n      \"Tenants with mixed test/non-test customers (include for now)\"\n    ],\n    \"exclude\": [\n      \"Tenants where all customers are test (is_test = true)\",\n      \"Orders with status cancelled or refunded\"\n    ]\n  },\n  \"metrics\": [\n    {\n      \"id\": \"eligible_logos\",\n      \"definition\": \"Number of distinct tenants with at least one paid order in the previous calendar month (after excluding test-only tenants and non-paid orders).\",\n      \"formula_sql\": \"COUNT(DISTINCT tenant_id) FILTER (WHERE paid_order_prev_month)\",\n      \"owner\": \"analyst\"\n    },\n    {\n      \"id\": \"retained_logos\",\n      \"definition\": \"Number of distinct tenants from the eligible base that have at least one paid order in the current calendar month.\",\n      \"formula_sql\": \"COUNT(DISTINCT tenant_id) FILTER (WHERE paid_order_curr_month AND tenant_id IN (eligible_base))\",\n      \"owner\": \"analyst\"\n    },\n    {\n      \"id\": \"rolling_logo_retention\",\n      \"definition\": \"Percentage of eligible logos retained in the current month: retained_logos / eligible_logos.\",\n      \"formula_sql\": \"retained_logos::float / NULLIF(eligible_logos, 0)\",\n      \"owner\": \"finance\"\n    }\n  ],\n  \"dimensions\": [\"plan\"],\n  \"filters\": [\n    \"Order status not in ('cancelled', 'refunded')\",\n    \"Exclude tenants where all customers have is_test = true\",\n    \"Month boundaries in Europe/London timezone\",\n    \"Include paid orders arriving up to 7 days after month end (grace period)\"\n  ],\n  \"comparisons\": [\"Month-over-month (current vs previous month)\"],\n  \"delivery\": {\n    \"format\": \"parquet\",\n    \"cadence\": \"Monthly on the 8th at 09:00 Europe/London\"\n  },\n  \"assumptions\": [\n    \"Activity is defined by at least one paid order (not cancelled/refunded).\",\n    \"Eligible base is tenants with paid order in the previous calendar month (rolling retention, not contractual).\",\n    \"Month boundaries are in Europe/London timezone.\",\n    \"Tenant plan is taken from the previous month's paid order (or current? Clarify).\",\n    \"Mixed test/non-test tenants are included for now; will revisit.\",\n    \"Sales channel is not used; logo is counted once per tenant per month.\"\n  ],\n  \"open_questions\": [\n    \"Should plan be taken from the previous month's paid order or the current month's?\",\n    \"How to handle tenants with multiple plans in a month? (e.g., primary plan or split?)\",\n    \"Should we exclude tenants with no paid order in the previous month but with a paid order in the current month? (No, they are not in eligible base.)\",\n    \"How to treat refunds that occur after the grace period?\",\n    \"Should we include tenants with only test customers? (Currently excluded, but mixed tenants included.)\"\n  ],\n  \"validation_checks\": [\n    \"Ensure eligible_logos > 0 for each month/plan to avoid division by zero.\",\n    \"Check that retained_logos <= eligible_logos for each month/plan.\",\n    \"Verify that orders with status cancelled/refunded are excluded from both eligible and retained counts.\",\n    \"Confirm that month boundaries are correctly converted to Europe/London timezone.\",\n    \"Test that grace period logic includes orders with paid_at within 7 days after month end.\"\n  ]\n}",
+          "error": null,
+          "issues": [],
+          "tool_calls": 0,
+          "tool_sequence": [],
+          "forced_final": false,
+          "grade_details": {
+            "schema_score": 1.0,
+            "requirements_score": 0.8333,
+            "checks": [
+              {
+                "kind": "equals",
+                "target": "report_name",
+                "ok": false,
+                "actual": "monthly_logo_retention"
+              },
+              {
+                "kind": "equals",
+                "target": "timezone",
+                "ok": true,
+                "actual": "Europe/London"
+              },
+              {
+                "kind": "contains",
+                "target": "grain",
+                "ok": true,
+                "actual": "month (Europe/London) × plan"
+              },
+              {
+                "kind": "contains",
+                "target": "grain",
+                "ok": true,
+                "actual": "month (Europe/London) × plan"
+              },
+              {
+                "kind": "metric_contains",
+                "target": "eligible_logos",
+                "ok": true,
+                "actual": {
+                  "id": "eligible_logos",
+                  "definition": "Number of distinct tenants with at least one paid order in the previous calendar month (after excluding test-only tenants and non-paid orders).",
+                  "formula_sql": "COUNT(DISTINCT tenant_id) FILTER (WHERE paid_order_prev_month)",
+                  "owner": "analyst"
+                }
+              },
+              {
+                "kind": "metric_contains",
+                "target": "retained_logos",
+                "ok": false,
+                "actual": {
+                  "id": "eligible_logos",
+                  "definition": "Number of distinct tenants with at least one paid order in the previous calendar month (after excluding test-only tenants and non-paid orders).",
+                  "formula_sql": "COUNT(DISTINCT tenant_id) FILTER (WHERE paid_order_prev_month)",
+                  "owner": "analyst"
+                }
+              },
+              {
+                "kind": "metric_contains",
+                "target": "rolling_logo_retention",
+                "ok": true,
+                "actual": {
+                  "id": "rolling_logo_retention",
+                  "definition": "Percentage of eligible logos retained in the current month: retained_logos / eligible_logos.",
+                  "formula_sql": "retained_logos::float / NULLIF(eligible_logos, 0)",
+                  "owner": "finance"
+                }
+              },
+              {
+                "kind": "list_contains",
+                "target": "population.exclude",
+                "ok": true,
+                "actual": [
+                  "Tenants where all customers are test (is_test = true)",
+                  "Orders with status cancelled or refunded"
+                ]
+              },
+              {
+                "kind": "list_contains",
+                "target": "filters",
+                "ok": true,
+                "actual": [
+                  "Order status not in ('cancelled', 'refunded')",
+                  "Exclude tenants where all customers have is_test = true",
+                  "Month boundaries in Europe/London timezone",
+                  "Include paid orders arriving up to 7 days after month end (grace period)"
+                ]
+              },
+              {
+                "kind": "equals",
+                "target": "delivery.format",
+                "ok": true,
+                "actual": "parquet"
+              },
+              {
+                "kind": "contains",
+                "target": "delivery.cadence",
+                "ok": true,
+                "actual": "Monthly on the 8th at 09:00 Europe/London"
+              },
+              {
+                "kind": "list_contains",
+                "target": "open_questions",
+                "ok": true,
+                "actual": [
+                  "Should plan be taken from the previous month's paid order or the current month's?",
+                  "How to handle tenants with multiple plans in a month? (e.g., primary plan or split?)",
+                  "Should we exclude tenants with no paid order in the previous month but with a paid order in the current month? (No, they are not in eligible base.)",
+                  "How to treat refunds that occur after the grace period?",
+                  "Should we include tenants with only test customers? (Currently excluded, but mixed tenants included.)"
+                ]
+              }
+            ]
+          },
+          "events": [
+            {
+              "stage": "final_candidate",
+              "step": 1,
+              "data": {
+                "step": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "report_eval_03",
+      "kind": "report",
+      "title": "Недельная активность проектов",
+      "source_title": "Недельная активность проектов",
+      "label": "Маршрутизация по типу задачи",
+      "difficulty": "поздние правки",
+      "why": "ТЗ полностью задано в двенадцати репликах. Разница возникает не в модели, а в том, разрешает ли harness ненужные инструменты для отчётной задачи.",
+      "expectations": [
+        "последняя зона — Asia/Singapore, а не UTC",
+        "группировка — ISO-неделя и устройство, без страны",
+        "plan оставить открытым вопросом, а не выдумывать связь",
+        "закончить без обращений к БД"
+      ],
+      "input": {
+        "id": "report_eval_03",
+        "kind": "report",
+        "title": "Недельная активность проектов",
+        "dialogue": [
+          {
+            "role": "product",
+            "content": "Нужен ежедневный DAU по всем событиям и странам, timezone UTC."
+          },
+          {
+            "role": "analyst",
+            "content": "В events есть project_id, actor_id, event_type, occurred_at и properties с device/country. Связи project_id с tenant и plan нет."
+          },
+          {
+            "role": "product",
+            "content": "Переходим на weekly_engaged_projects: уникальные project_id, где за неделю был checkout или purchase. Actor DAU больше не нужен."
+          },
+          {
+            "role": "growth",
+            "content": "Добавим plan и customer segment."
+          },
+          {
+            "role": "data_engineer",
+            "content": "Plan и customer segment к project_id надёжно присоединить нельзя. Не угадываем связь; оба разреза записать как открытые вопросы."
+          },
+          {
+            "role": "security",
+            "content": "project_id 79 и 80 — внутренние, их исключить. properties.device='bot' тоже исключить."
+          },
+          {
+            "role": "analyst",
+            "content": "Grain iso_week × country × device, timezone UTC."
+          },
+          {
+            "role": "apac_lead",
+            "content": "Последняя поправка: timezone Asia/Singapore. Country убрать, оставить только iso_week × device."
+          },
+          {
+            "role": "product",
+            "content": "Метрики weekly_engaged_projects = COUNT(DISTINCT project_id), checkout_projects и purchase_projects."
+          },
+          {
+            "role": "growth",
+            "content": "Добавьте WoW для weekly_engaged_projects и проверку, что engaged не меньше каждого из двух подмножеств."
+          },
+          {
+            "role": "analyst",
+            "content": "Parquet каждую пятницу к 11:00 Asia/Singapore."
+          },
+          {
+            "role": "product",
+            "content": "Owner — Product Analytics. Неделя ISO, понедельник-воскресенье."
+          }
+        ]
+      },
+      "delta": 0.2238,
+      "agents": {
+        "baseline": {
+          "score": 0.7762,
+          "passed": false,
+          "output_score": 1.0,
+          "trajectory_score": 0.105,
+          "llm_calls": 6,
+          "input_tokens": 10663,
+          "output_tokens": 1693,
+          "output": "Now I have a good understanding of the data. Let me synthesize the final specification based on the dialogue, with later corrections overriding earlier requests.\n\nLet me trace through the dialogue carefully:\n\n1. **[01]** product: Daily DAU by all events and countries, UTC.\n2. **[02]** analyst: events has project_id, actor_id, event_type, occurred_at, properties (device/country). No project_id→tenant/plan link.\n3. **[03]** product: Switch to weekly_engaged_projects: unique project_id where checkout or purchase happened in the week. Actor DAU no longer needed.\n4. **[04]** growth: Add plan and customer segment.\n5. **[05]** data_engineer: Plan and customer segment can't be reliably joined to project_id. Don't guess the link; record both cuts as open questions.\n6. **[06]** security: Exclude project_id 79 and 80 (internal). Exclude properties.device='bot'.\n7. **[07]** analyst: Grain iso_week × country × device, UTC.\n8. **[08]** apac_lead: Last correction: timezone Asia/Singapore. Remove country, keep only iso_week × device.\n9. **[09]** product: Metrics: weekly_engaged_projects = COUNT(DISTINCT project_id), checkout_projects, purchase_projects.\n10. **[10]** growth: Add WoW for weekly_engaged_projects and check that engaged ≥ each of the two subsets.\n11. **[11]** analyst: Parquet every Friday at 11:00 Asia/Singapore.\n12. **[12]** product: Owner — Product Analytics. ISO week, Monday-Sunday.\n\nFinal spec:\n- **Report name**: weekly_engaged_projects\n- **Objective**: Track weekly engaged projects (projects with checkout or purchase events) by device, in Asia/Singapore timezone.\n- **Grain**: iso_week × device\n- **Timezone**: Asia/Singapore\n- **Population include**: projects with checkout or purchase events in the week\n- **Population exclude**: project_id 79, 80; properties.device='bot'\n- **Metrics**: weekly_engaged_projects (COUNT DISTINCT project_id), checkout_projects, purchase_projects, WoW for weekly_engaged_projects\n- **Dimensions**: device\n- **Filters**: exclude project_id 79, 80; exclude device='bot'; event_type in (checkout, purchase)\n- **Comparisons**: WoW (week-over-week) for weekly_engaged_projects\n- **Delivery**: Parquet, every Friday at 11:00 Asia/Singapore\n- **Assumptions**: ISO week Monday-Sunday; timezone Asia/Singapore\n- **Open questions**: plan and customer segment cuts (can't be reliably joined)\n- **Validation checks**: engaged ≥ checkout_projects and engaged ≥ purchase_projects\n\n```json\n{\n  \"report_name\": \"weekly_engaged_projects\",\n  \"objective\": \"Track weekly engaged projects (projects with at least one checkout or purchase event) by device, in Asia/Singapore timezone, to monitor product engagement trends.\",\n  \"grain\": \"iso_week × device\",\n  \"timezone\": \"Asia/Singapore\",\n  \"population\": {\n    \"include\": [\"projects with at least one checkout or purchase event during the ISO week\"],\n    \"exclude\": [\"project_id 79\", \"project_id 80\", \"properties.device = 'bot'\"]\n  },\n  \"metrics\": [\n    {\n      \"id\": \"weekly_engaged_projects\",\n      \"definition\": \"Number of distinct project_id with at least one checkout or purchase event in the ISO week\",\n      \"formula_sql\": \"COUNT(DISTINCT project_id) FILTER (WHERE event_type IN ('checkout','purchase'))\",\n      \"owner\": \"Product Analytics\"\n    },\n    {\n      \"id\": \"checkout_projects\",\n      \"definition\": \"Number of distinct project_id with at least one checkout event in the ISO week\",\n      \"formula_sql\": \"COUNT(DISTINCT project_id) FILTER (WHERE event_type = 'checkout')\",\n      \"owner\": \"Product Analytics\"\n    },\n    {\n      \"id\": \"purchase_projects\",\n      \"definition\": \"Number of distinct project_id with at least one purchase event in the ISO week\",\n      \"formula_sql\": \"COUNT(DISTINCT project_id) FILTER (WHERE event_type = 'purchase')\",\n      \"owner\": \"Product Analytics\"\n    },\n    {\n      \"id\": \"weekly_engaged_projects_wow\",\n      \"definition\": \"Week-over-week change in weekly_engaged_projects (current week vs previous ISO week)\",\n      \"formula_sql\": \"(weekly_engaged_projects_current - weekly_engaged_projects_previous) / NULLIF(weekly_engaged_projects_previous, 0)\",\n      \"owner\": \"Product Analytics\"\n    }\n  ],\n  \"dimensions\": [\"device\"],\n  \"filters\": [\n    \"event_type IN ('checkout', 'purchase')\",\n    \"project_id NOT IN (79, 80)\",\n    \"properties->>'device' != 'bot'\",\n    \"occurred_at within ISO week (Monday-Sunday) in Asia/Singapore timezone\"\n  ],\n  \"comparisons\": [\"WoW (week-over-week) for weekly_engaged_projects\"],\n  \"delivery\": {\n    \"format\": \"Parquet\",\n    \"cadence\": \"Every Friday at 11:00 Asia/Singapore\"\n  },\n  \"assumptions\": [\n    \"ISO week definition: Monday through Sunday\",\n    \"All timestamps converted to Asia/Singapore timezone for week bucketing\",\n    \"project_id is the unique identifier for a project\"\n  ],\n  \"open_questions\": [\n    \"Plan (tenant.plan) cannot be reliably joined to project_id — cut by plan is unresolved\",\n    \"Customer segment (customers.segment) cannot be reliably joined to project_id — cut by segment is unresolved\"\n  ],\n  \"validation_checks\": [\n    \"weekly_engaged_projects >= checkout_projects\",\n    \"weekly_engaged_projects >= purchase_projects\"\n  ]\n}\n```",
+          "error": null,
+          "issues": [
+            {
+              "id": "excessive_llm_calls",
+              "label": "слишком много вызовов модели"
+            },
+            {
+              "id": "report_unnecessary_database_tools",
+              "label": "БД-инструменты не нужны для этой задачи"
+            }
+          ],
+          "tool_calls": 8,
+          "tool_sequence": [
+            "list_tables",
+            "describe_table",
+            "describe_table",
+            "describe_table",
+            "run_readonly_query",
+            "run_readonly_query",
+            "run_readonly_query",
+            "run_readonly_query"
+          ],
+          "forced_final": false,
+          "grade_details": {
+            "schema_score": 1.0,
+            "requirements_score": 1.0,
+            "checks": [
+              {
+                "kind": "equals",
+                "target": "report_name",
+                "ok": true,
+                "actual": "weekly_engaged_projects"
+              },
+              {
+                "kind": "equals",
+                "target": "timezone",
+                "ok": true,
+                "actual": "Asia/Singapore"
+              },
+              {
+                "kind": "contains",
+                "target": "grain",
+                "ok": true,
+                "actual": "iso_week × device"
+              },
+              {
+                "kind": "contains",
+                "target": "grain",
+                "ok": true,
+                "actual": "iso_week × device"
+              },
+              {
+                "kind": "list_contains",
+                "target": "population.exclude",
+                "ok": true,
+                "actual": [
+                  "project_id 79",
+                  "project_id 80",
+                  "properties.device = 'bot'"
+                ]
+              },
+              {
+                "kind": "list_contains",
+                "target": "population.exclude",
+                "ok": true,
+                "actual": [
+                  "project_id 79",
+                  "project_id 80",
+                  "properties.device = 'bot'"
+                ]
+              },
+              {
+                "kind": "list_contains",
+                "target": "population.exclude",
+                "ok": true,
+                "actual": [
+                  "project_id 79",
+                  "project_id 80",
+                  "properties.device = 'bot'"
+                ]
+              },
+              {
+                "kind": "metric_contains",
+                "target": "weekly_engaged_projects",
+                "ok": true,
+                "actual": {
+                  "id": "weekly_engaged_projects",
+                  "definition": "Number of distinct project_id with at least one checkout or purchase event in the ISO week",
+                  "formula_sql": "COUNT(DISTINCT project_id) FILTER (WHERE event_type IN ('checkout','purchase'))",
+                  "owner": "Product Analytics"
+                }
+              },
+              {
+                "kind": "metric_contains",
+                "target": "checkout_projects",
+                "ok": true,
+                "actual": {
+                  "id": "weekly_engaged_projects",
+                  "definition": "Number of distinct project_id with at least one checkout or purchase event in the ISO week",
+                  "formula_sql": "COUNT(DISTINCT project_id) FILTER (WHERE event_type IN ('checkout','purchase'))",
+                  "owner": "Product Analytics"
+                }
+              },
+              {
+                "kind": "metric_contains",
+                "target": "purchase_projects",
+                "ok": true,
+                "actual": {
+                  "id": "weekly_engaged_projects",
+                  "definition": "Number of distinct project_id with at least one checkout or purchase event in the ISO week",
+                  "formula_sql": "COUNT(DISTINCT project_id) FILTER (WHERE event_type IN ('checkout','purchase'))",
+                  "owner": "Product Analytics"
+                }
+              },
+              {
+                "kind": "list_contains",
+                "target": "comparisons",
+                "ok": true,
+                "actual": [
+                  "WoW (week-over-week) for weekly_engaged_projects"
+                ]
+              },
+              {
+                "kind": "equals",
+                "target": "delivery.format",
+                "ok": true,
+                "actual": "Parquet"
+              },
+              {
+                "kind": "contains",
+                "target": "delivery.cadence",
+                "ok": true,
+                "actual": "Every Friday at 11:00 Asia/Singapore"
+              },
+              {
+                "kind": "list_contains",
+                "target": "open_questions",
+                "ok": true,
+                "actual": [
+                  "Plan (tenant.plan) cannot be reliably joined to project_id — cut by plan is unresolved",
+                  "Customer segment (customers.segment) cannot be reliably joined to project_id — cut by segment is unresolved"
+                ]
+              }
+            ]
+          },
+          "events": [
+            {
+              "stage": "tool",
+              "step": 1,
+              "name": "list_tables",
+              "arguments": {},
+              "observation": "найдено таблиц: 8"
+            },
+            {
+              "stage": "tool",
+              "step": 2,
+              "name": "describe_table",
+              "arguments": {
+                "table": "events"
+              },
+              "observation": "events: 6 столбцов, 2 индексов, ~280000 строк"
+            },
+            {
+              "stage": "tool",
+              "step": 3,
+              "name": "describe_table",
+              "arguments": {
+                "table": "tenants"
+              },
+              "observation": "tenants: 4 столбцов, 1 индексов, ~200 строк"
+            },
+            {
+              "stage": "tool",
+              "step": 3,
+              "name": "describe_table",
+              "arguments": {
+                "table": "customers"
+              },
+              "observation": "customers: 7 столбцов, 2 индексов, ~60000 строк"
+            },
+            {
+              "stage": "tool",
+              "step": 4,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT DISTINCT event_type FROM events LIMIT 50"
+              },
+              "observation": "5 строк · event_type · [[\"checkout\"], [\"login\"]]"
+            },
+            {
+              "stage": "tool",
+              "step": 4,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT properties->>'device' AS device, properties->>'country' AS country, COUNT(*) FROM events GROUP BY 1,2 LIMIT 20"
+              },
+              "observation": "12 строк · device, country, count · [[\"android\", \"AM\", 23333], [\"android\", \"GE\", 23333]]"
+            },
+            {
+              "stage": "tool",
+              "step": 5,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT DISTINCT properties->>'device' AS device FROM events"
+              },
+              "observation": "3 строк · device · [[\"ios\"], [\"web\"]]"
+            },
+            {
+              "stage": "tool",
+              "step": 5,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT project_id, COUNT(*) FROM events WHERE project_id IN (79,80) GROUP BY project_id"
+              },
+              "observation": "2 строк · project_id, count · [[79, 3500], [80, 3500]]"
+            },
+            {
+              "stage": "final_candidate",
+              "step": 6,
+              "data": {
+                "step": 6
+              }
+            }
+          ]
+        },
+        "optimized": {
+          "score": 1.0,
+          "passed": true,
+          "output_score": 1.0,
+          "trajectory_score": 1.0,
+          "llm_calls": 1,
+          "input_tokens": 654,
+          "output_tokens": 612,
+          "output": "{\n  \"report_name\": \"weekly_engaged_projects\",\n  \"objective\": \"Track weekly engagement of projects by checkout or purchase events, broken down by device, with WoW comparison and validation that engaged projects are at least as many as each subset.\",\n  \"grain\": \"iso_week × device\",\n  \"timezone\": \"Asia/Singapore\",\n  \"population\": {\n    \"include\": [\"projects with at least one checkout or purchase event in the ISO week\"],\n    \"exclude\": [\"project_id 79 and 80 (internal)\", \"events with properties.device = 'bot'\"]\n  },\n  \"metrics\": [\n    {\n      \"id\": \"weekly_engaged_projects\",\n      \"definition\": \"Number of distinct project_id with at least one checkout or purchase event in the ISO week, excluding internal projects and bot devices.\",\n      \"formula_sql\": \"COUNT(DISTINCT project_id)\",\n      \"owner\": \"Product Analytics\"\n    },\n    {\n      \"id\": \"checkout_projects\",\n      \"definition\": \"Number of distinct project_id with at least one checkout event in the ISO week, excluding internal projects and bot devices.\",\n      \"formula_sql\": \"COUNT(DISTINCT project_id) FILTER (WHERE event_type = 'checkout')\",\n      \"owner\": \"Product Analytics\"\n    },\n    {\n      \"id\": \"purchase_projects\",\n      \"definition\": \"Number of distinct project_id with at least one purchase event in the ISO week, excluding internal projects and bot devices.\",\n      \"formula_sql\": \"COUNT(DISTINCT project_id) FILTER (WHERE event_type = 'purchase')\",\n      \"owner\": \"Product Analytics\"\n    }\n  ],\n  \"dimensions\": [\"iso_week\", \"device\"],\n  \"filters\": [\n    \"event_type IN ('checkout', 'purchase')\",\n    \"project_id NOT IN (79, 80)\",\n    \"properties.device != 'bot'\"\n  ],\n  \"comparisons\": [\"WoW (week-over-week) change for weekly_engaged_projects\"],\n  \"delivery\": {\n    \"format\": \"Parquet\",\n    \"cadence\": \"Every Friday at 11:00 Asia/Singapore\"\n  },\n  \"assumptions\": [\n    \"ISO week runs Monday to Sunday.\",\n    \"Events are timestamped in UTC and converted to Asia/Singapore for week bucketing.\",\n    \"The 'device' field is taken from properties.device.\",\n    \"A project is considered engaged if it has at least one checkout or purchase event in the week.\"\n  ],\n  \"open_questions\": [\n    \"How to reliably join plan and customer segment to project_id? (Data engineering says not reliable; left as open question.)\"\n  ],\n  \"validation_checks\": [\n    \"weekly_engaged_projects >= checkout_projects\",\n    \"weekly_engaged_projects >= purchase_projects\"\n  ]\n}",
+          "error": null,
+          "issues": [],
+          "tool_calls": 0,
+          "tool_sequence": [],
+          "forced_final": false,
+          "grade_details": {
+            "schema_score": 1.0,
+            "requirements_score": 1.0,
+            "checks": [
+              {
+                "kind": "equals",
+                "target": "report_name",
+                "ok": true,
+                "actual": "weekly_engaged_projects"
+              },
+              {
+                "kind": "equals",
+                "target": "timezone",
+                "ok": true,
+                "actual": "Asia/Singapore"
+              },
+              {
+                "kind": "contains",
+                "target": "grain",
+                "ok": true,
+                "actual": "iso_week × device"
+              },
+              {
+                "kind": "contains",
+                "target": "grain",
+                "ok": true,
+                "actual": "iso_week × device"
+              },
+              {
+                "kind": "list_contains",
+                "target": "population.exclude",
+                "ok": true,
+                "actual": [
+                  "project_id 79 and 80 (internal)",
+                  "events with properties.device = 'bot'"
+                ]
+              },
+              {
+                "kind": "list_contains",
+                "target": "population.exclude",
+                "ok": true,
+                "actual": [
+                  "project_id 79 and 80 (internal)",
+                  "events with properties.device = 'bot'"
+                ]
+              },
+              {
+                "kind": "list_contains",
+                "target": "population.exclude",
+                "ok": true,
+                "actual": [
+                  "project_id 79 and 80 (internal)",
+                  "events with properties.device = 'bot'"
+                ]
+              },
+              {
+                "kind": "metric_contains",
+                "target": "weekly_engaged_projects",
+                "ok": true,
+                "actual": {
+                  "id": "weekly_engaged_projects",
+                  "definition": "Number of distinct project_id with at least one checkout or purchase event in the ISO week, excluding internal projects and bot devices.",
+                  "formula_sql": "COUNT(DISTINCT project_id)",
+                  "owner": "Product Analytics"
+                }
+              },
+              {
+                "kind": "metric_contains",
+                "target": "checkout_projects",
+                "ok": true,
+                "actual": {
+                  "id": "weekly_engaged_projects",
+                  "definition": "Number of distinct project_id with at least one checkout or purchase event in the ISO week, excluding internal projects and bot devices.",
+                  "formula_sql": "COUNT(DISTINCT project_id)",
+                  "owner": "Product Analytics"
+                }
+              },
+              {
+                "kind": "metric_contains",
+                "target": "purchase_projects",
+                "ok": true,
+                "actual": {
+                  "id": "weekly_engaged_projects",
+                  "definition": "Number of distinct project_id with at least one checkout or purchase event in the ISO week, excluding internal projects and bot devices.",
+                  "formula_sql": "COUNT(DISTINCT project_id)",
+                  "owner": "Product Analytics"
+                }
+              },
+              {
+                "kind": "list_contains",
+                "target": "comparisons",
+                "ok": true,
+                "actual": [
+                  "WoW (week-over-week) change for weekly_engaged_projects"
+                ]
+              },
+              {
+                "kind": "equals",
+                "target": "delivery.format",
+                "ok": true,
+                "actual": "Parquet"
+              },
+              {
+                "kind": "contains",
+                "target": "delivery.cadence",
+                "ok": true,
+                "actual": "Every Friday at 11:00 Asia/Singapore"
+              },
+              {
+                "kind": "list_contains",
+                "target": "open_questions",
+                "ok": true,
+                "actual": [
+                  "How to reliably join plan and customer segment to project_id? (Data engineering says not reliable; left as open question.)"
+                ]
+              }
+            ]
+          },
+          "events": [
+            {
+              "stage": "final_candidate",
+              "step": 1,
+              "data": {
+                "step": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "sql_eval_02",
+      "kind": "sql",
+      "title": "Заказы по редкому продукту",
+      "source_title": "Заказы по редкому продукту",
+      "label": "Недостающий инструмент",
+      "difficulty": "индекс для JOIN",
+      "why": "Нужно не только предположить индекс, но и проверить его внутри откатываемой транзакции. У стартового агента такого инструмента нет.",
+      "expectations": [
+        "сохранить агрегацию и фильтры paid/non-test",
+        "найти последовательное чтение 360 000 строк order_items",
+        "проверить индекс по product_id на точном запросе",
+        "вернуть измеренные стоимости и отношение улучшения"
+      ],
+      "input": {
+        "id": "sql_eval_02",
+        "kind": "sql",
+        "title": "Заказы по редкому продукту",
+        "question": "Ускорь запрос к заказам по product_id, сохрани агрегацию и семантику paid/non-test. Используй только оправданные индексы.",
+        "sql": "SELECT o.tenant_id, count(DISTINCT o.id) AS orders_count, sum(oi.quantity * oi.unit_price) AS item_revenue FROM order_items oi JOIN orders o ON o.id = oi.order_id WHERE oi.product_id = 341 AND o.status = 'paid' AND o.is_test = false GROUP BY o.tenant_id ORDER BY item_revenue DESC, o.tenant_id LIMIT 25"
+      },
+      "delta": 0.8269,
+      "agents": {
+        "baseline": {
+          "score": 0.1275,
+          "passed": false,
+          "output_score": 0.0,
+          "trajectory_score": 0.51,
+          "llm_calls": 7,
+          "input_tokens": 13890,
+          "output_tokens": 823,
+          "output": "\n\n<｜DSML｜tool_calls>\n<｜DSML｜invoke name=\"run_readonly_query\">\n<｜DSML｜parameter name=\"query\" string=\"true\">SELECT 1</｜DSML｜parameter>\n</｜DSML｜invoke>\n</｜DSML｜tool_calls>",
+          "error": null,
+          "issues": [
+            {
+              "id": "excessive_sample_queries",
+              "label": "слишком много выборочных запросов"
+            },
+            {
+              "id": "forced_final_after_step_budget",
+              "label": "ответ сформирован после исчерпания шагов"
+            },
+            {
+              "id": "missing_transactional_index_trial",
+              "label": "missing_transactional_index_trial"
+            },
+            {
+              "id": "tool_errors",
+              "label": "tool_errors"
+            }
+          ],
+          "tool_calls": 9,
+          "tool_sequence": [
+            "list_tables",
+            "describe_table",
+            "describe_table",
+            "explain_query",
+            "run_readonly_query",
+            "run_readonly_query",
+            "run_readonly_query",
+            "run_readonly_query",
+            "run_readonly_query"
+          ],
+          "forced_final": true,
+          "grade_details": {
+            "parse_error": "no valid JSON object found"
+          },
+          "events": [
+            {
+              "stage": "tool",
+              "step": 1,
+              "name": "list_tables",
+              "arguments": {},
+              "observation": "найдено таблиц: 8"
+            },
+            {
+              "stage": "tool",
+              "step": 2,
+              "name": "describe_table",
+              "arguments": {
+                "table": "order_items"
+              },
+              "observation": "order_items: 5 столбцов, 2 индексов, ~360000 строк"
+            },
+            {
+              "stage": "tool",
+              "step": 2,
+              "name": "describe_table",
+              "arguments": {
+                "table": "orders"
+              },
+              "observation": "orders: 11 столбцов, 3 индексов, ~220000 строк"
+            },
+            {
+              "stage": "tool",
+              "step": 3,
+              "name": "explain_query",
+              "arguments": {
+                "query": "SELECT o.tenant_id, count(DISTINCT o.id) AS orders_count, sum(oi.quantity * oi.unit_price) AS item_revenue FROM order_items oi JOIN orders o ON o.id = oi.order_id WHERE oi.product_id = 341 AND o.status = 'paid' AND o.is_test = false GROUP BY o.tenant_id ORDER BY item_revenue DESC, o.tenant_id LIMIT 25"
+              },
+              "observation": "стоимость плана: 6649.17"
+            },
+            {
+              "stage": "tool",
+              "step": 4,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT count(*) FROM order_items WHERE product_id = 341"
+              },
+              "observation": "1 строк · count · [[72]]"
+            },
+            {
+              "stage": "tool",
+              "step": 4,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT count(DISTINCT product_id) FROM order_items"
+              },
+              "observation": "1 строк · count · [[5000]]"
+            },
+            {
+              "stage": "tool",
+              "step": 4,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT count(*) FROM orders WHERE status='paid' AND is_test=false"
+              },
+              "observation": "1 строк · count · [[149035]]"
+            },
+            {
+              "stage": "tool",
+              "step": 5,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT o.tenant_id, count(DISTINCT o.id) AS orders_count, sum(oi.quantity * oi.unit_price) AS item_revenue FROM order_items oi JOIN orders o ON o.id = oi.order_id WHERE oi.product_id = 341 AND o.status = 'paid' AND o.is_test = false GROUP BY o.tenant_id ORDER BY item_revenue DESC, o.tenant_id LIMIT 25"
+              },
+              "observation": "1 строк · tenant_id, orders_count, item_revenue · [[154, 36, \"10999.40\"]]"
+            },
+            {
+              "stage": "tool",
+              "step": 6,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "CREATE INDEX idx_order_items_product ON public.order_items USING btree (product_id)"
+              },
+              "observation": "ошибка: only SELECT/WITH queries are allowed"
+            },
+            {
+              "stage": "forced_final",
+              "step": null,
+              "data": {
+                "reason": "max_steps"
+              }
+            }
+          ]
+        },
+        "optimized": {
+          "score": 0.9544,
+          "passed": true,
+          "output_score": 0.9667,
+          "trajectory_score": 0.9175,
+          "llm_calls": 7,
+          "input_tokens": 18462,
+          "output_tokens": 1630,
+          "output": "The query returns valid results. The optimization is complete.\n\n```json\n{\n  \"diagnosis\": \"The baseline plan performs a full Seq Scan on order_items (cost 5295) filtering product_id=341, which is wasteful because product 341 is extremely rare (only 72 of 360,000 order_items rows). The query already drives from the selective order_items side and joins to orders via the PK, so no rewrite is needed. The single bottleneck is the missing index on order_items(product_id). Adding it lets the planner use a Bitmap Index Scan (72 rows) instead of scanning the whole table, cutting total cost from 6649.17 to 854.10 (7.785x).\",\n  \"optimized_sql\": \"SELECT o.tenant_id, count(DISTINCT o.id) AS orders_count, sum(oi.quantity * oi.unit_price) AS item_revenue FROM order_items oi JOIN orders o ON o.id = oi.order_id WHERE oi.product_id = 341 AND o.status = 'paid' AND o.is_test = false GROUP BY o.tenant_id ORDER BY item_revenue DESC, o.tenant_id LIMIT 25\",\n  \"index_statements\": [\"CREATE INDEX idx_order_items_product ON public.order_items USING btree (product_id)\"],\n  \"tradeoffs\": [\n    \"The new index adds write overhead on every INSERT/UPDATE/DELETE to order_items and consumes additional disk space (~a few hundred KB for 360k rows).\",\n    \"The index is only beneficial for selective product_id lookups; for common products the planner may still prefer a seq scan, so it is justified here because product 341 is rare.\",\n    \"A composite index (product_id, order_id) was considered but not needed: the join to orders already uses the orders PK, and the bitmap scan on product_id alone is sufficient and cheaper to maintain.\"\n  ],\n  \"evidence\": {\n    \"baseline_total_cost\": 6649.17,\n    \"candidate_total_cost\": 854.1,\n    \"cost_ratio\": 7.785,\n    \"plan_change\": \"order_items access changed from Seq Scan (Filter: product_id=341, cost 5295) to Bitmap Heap Scan driven by Bitmap Index Scan on new idx_order_items_product (Index Cond: product_id=341, 72 rows); the rest of the plan (Nested Loop to orders via orders_pkey, Sort, Aggregate, Limit) is unchanged.\"\n  }\n}\n```",
+          "error": null,
+          "issues": [
+            {
+              "id": "excessive_sample_queries",
+              "label": "слишком много выборочных запросов"
+            }
+          ],
+          "tool_calls": 8,
+          "tool_sequence": [
+            "list_tables",
+            "describe_table",
+            "describe_table",
+            "run_readonly_query",
+            "run_readonly_query",
+            "explain_query",
+            "trial_index_plan",
+            "run_readonly_query"
+          ],
+          "forced_final": false,
+          "grade_details": {
+            "structure_score": 1.0,
+            "safe": true,
+            "equivalent": true,
+            "baseline_cost": 6649.17,
+            "candidate_cost": 854.1,
+            "cost_ratio": 7.785,
+            "target_cost_ratio": 3.0,
+            "improvement_score": 1.0,
+            "expected_index_score": 0.6667,
+            "expected_sql_score": 1.0,
+            "evidence_score": 1.0,
+            "evidence_error": null,
+            "db_error": null
+          },
+          "events": [
+            {
+              "stage": "tool",
+              "step": 1,
+              "name": "list_tables",
+              "arguments": {},
+              "observation": "найдено таблиц: 8"
+            },
+            {
+              "stage": "tool",
+              "step": 2,
+              "name": "describe_table",
+              "arguments": {
+                "table": "order_items"
+              },
+              "observation": "order_items: 5 столбцов, 2 индексов, ~360000 строк"
+            },
+            {
+              "stage": "tool",
+              "step": 2,
+              "name": "describe_table",
+              "arguments": {
+                "table": "orders"
+              },
+              "observation": "orders: 11 столбцов, 3 индексов, ~220000 строк"
+            },
+            {
+              "stage": "tool",
+              "step": 3,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT count(*) AS total_items, count(*) FILTER (WHERE product_id = 341) AS p341_items FROM order_items"
+              },
+              "observation": "1 строк · total_items, p341_items · [[360000, 72]]"
+            },
+            {
+              "stage": "tool",
+              "step": 3,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT count(*) AS total_orders, count(*) FILTER (WHERE status='paid' AND is_test=false) AS paid_non_test FROM orders"
+              },
+              "observation": "1 строк · total_orders, paid_non_test · [[220000, 149035]]"
+            },
+            {
+              "stage": "tool",
+              "step": 4,
+              "name": "explain_query",
+              "arguments": {
+                "query": "SELECT o.tenant_id, count(DISTINCT o.id) AS orders_count, sum(oi.quantity * oi.unit_price) AS item_revenue FROM order_items oi JOIN orders o ON o.id = oi.order_id WHERE oi.product_id = 341 AND o.status = 'paid' AND o.is_test = false GROUP BY o.tenant_id ORDER BY item_revenue DESC, o.tenant_id LIMIT 25"
+              },
+              "observation": "стоимость плана: 6649.17"
+            },
+            {
+              "stage": "tool",
+              "step": 5,
+              "name": "trial_index_plan",
+              "arguments": {
+                "baseline_query": "SELECT o.tenant_id, count(DISTINCT o.id) AS orders_count, sum(oi.quantity * oi.unit_price) AS item_revenue FROM order_items oi JOIN orders o ON o.id = oi.order_id WHERE oi.product_id = 341 AND o.status = 'paid' AND o.is_test = false GROUP BY o.tenant_id ORDER BY item_revenue DESC, o.tenant_id LIMIT 25",
+                "candidate_query": "SELECT o.tenant_id, count(DISTINCT o.id) AS orders_count, sum(oi.quantity * oi.unit_price) AS item_revenue FROM order_items oi JOIN orders o ON o.id = oi.order_id WHERE oi.product_id = 341 AND o.status = 'paid' AND o.is_test = false GROUP BY o.tenant_id ORDER BY item_revenue DESC, o.tenant_id LIMIT 25",
+                "index_statements": [
+                  "CREATE INDEX idx_order_items_product ON public.order_items USING btree (product_id)"
+                ]
+              },
+              "observation": "6649.17 → 854.1 · 7.785× · индекс откатан"
+            },
+            {
+              "stage": "tool",
+              "step": 6,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT o.tenant_id, count(DISTINCT o.id) AS orders_count, sum(oi.quantity * oi.unit_price) AS item_revenue FROM order_items oi JOIN orders o ON o.id = oi.order_id WHERE oi.product_id = 341 AND o.status = 'paid' AND o.is_test = false GROUP BY o.tenant_id ORDER BY item_revenue DESC, o.tenant_id LIMIT 25"
+              },
+              "observation": "1 строк · tenant_id, orders_count, item_revenue · [[154, 36, \"10999.40\"]]"
+            },
+            {
+              "stage": "final_candidate",
+              "step": 7,
+              "data": {
+                "step": 7
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "sql_eval_03",
+      "kind": "sql",
+      "title": "Редкая campaign внутри JSONB",
+      "source_title": "Редкая campaign в JSONB",
+      "label": "Выбор типа индекса",
+      "difficulty": "GIN + доказательство",
+      "why": "Агент должен сохранить оператор JSON containment, подобрать GIN и доказать эффект планом, а не ограничиться общей рекомендацией.",
+      "expectations": [
+        "не менять оператор properties @>",
+        "предложить GIN-индекс для properties",
+        "сравнить планы исходного и точного итогового SQL",
+        "зафиксировать, что пробный индекс был откатан"
+      ],
+      "input": {
+        "id": "sql_eval_03",
+        "kind": "sql",
+        "title": "Редкая campaign в JSONB",
+        "question": "Оптимизируй фильтр по JSONB campaign и времени. Не меняй оператор/семантику JSON containment.",
+        "sql": "SELECT project_id, count(*) AS events_count FROM events WHERE properties @> '{\"campaign\": \"campaign_347\"}'::jsonb AND occurred_at >= TIMESTAMPTZ '2025-10-01 00:00:00+00' GROUP BY project_id ORDER BY events_count DESC, project_id"
+      },
+      "delta": 0.8519,
+      "agents": {
+        "baseline": {
+          "score": 0.1369,
+          "passed": false,
+          "output_score": 0.0,
+          "trajectory_score": 0.5475,
+          "llm_calls": 7,
+          "input_tokens": 11401,
+          "output_tokens": 729,
+          "output": "\n\n<｜DSML｜tool_calls>\n<｜DSML｜invoke name=\"run_readonly_query\">\n<｜DSML｜parameter name=\"query\" string=\"true\">SELECT 1</｜DSML｜parameter>\n</｜DSML｜invoke>\n</｜DSML｜tool_calls>",
+          "error": null,
+          "issues": [
+            {
+              "id": "excessive_sample_queries",
+              "label": "слишком много выборочных запросов"
+            },
+            {
+              "id": "forced_final_after_step_budget",
+              "label": "ответ сформирован после исчерпания шагов"
+            },
+            {
+              "id": "missing_transactional_index_trial",
+              "label": "missing_transactional_index_trial"
+            },
+            {
+              "id": "tool_errors",
+              "label": "tool_errors"
+            }
+          ],
+          "tool_calls": 7,
+          "tool_sequence": [
+            "list_tables",
+            "describe_table",
+            "explain_query",
+            "run_readonly_query",
+            "run_readonly_query",
+            "run_readonly_query",
+            "run_readonly_query"
+          ],
+          "forced_final": true,
+          "grade_details": {
+            "parse_error": "no valid JSON object found"
+          },
+          "events": [
+            {
+              "stage": "tool",
+              "step": 1,
+              "name": "list_tables",
+              "arguments": {},
+              "observation": "найдено таблиц: 8"
+            },
+            {
+              "stage": "tool",
+              "step": 2,
+              "name": "describe_table",
+              "arguments": {
+                "table": "events"
+              },
+              "observation": "events: 6 столбцов, 2 индексов, ~280000 строк"
+            },
+            {
+              "stage": "tool",
+              "step": 3,
+              "name": "explain_query",
+              "arguments": {
+                "query": "SELECT project_id, count(*) AS events_count FROM events WHERE properties @> '{\"campaign\": \"campaign_347\"}'::jsonb AND occurred_at >= TIMESTAMPTZ '2025-10-01 00:00:00+00' GROUP BY project_id ORDER BY events_count DESC, project_id"
+              },
+              "observation": "стоимость плана: 7752.09"
+            },
+            {
+              "stage": "tool",
+              "step": 4,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT count(*) AS total, count(*) FILTER (WHERE properties @> '{\"campaign\": \"campaign_347\"}'::jsonb) AS campaign_matches, count(*) FILTER (WHERE occurred_at >= TIMESTAMPTZ '2025-10-01 00:00:00+00') AS time_matches, count(*) FILTER (WHERE properties @> '{\"campaign\": \"campaign_347\"}'::jsonb AND occurred_at >= TIMESTAMPTZ '2025-10-01 00:00:00+00') AS both_matches FROM events"
+              },
+              "observation": "1 строк · total, campaign_matches, time_matches, both_matches · [[280000, 280, 156605, 154]]"
+            },
+            {
+              "stage": "tool",
+              "step": 4,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT min(occurred_at), max(occurred_at) FROM events"
+              },
+              "observation": "1 строк · min, max · [[\"2025-01-01 00:03:00+00:00\", \"2026-09-12 23:59:19+00:00\"]]"
+            },
+            {
+              "stage": "tool",
+              "step": 5,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT count(DISTINCT project_id) FROM events WHERE properties @> '{\"campaign\": \"campaign_347\"}'::jsonb AND occurred_at >= TIMESTAMPTZ '2025-10-01 00:00:00+00'"
+              },
+              "observation": "1 строк · count · [[2]]"
+            },
+            {
+              "stage": "tool",
+              "step": 6,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "CREATE INDEX idx_events_properties_gin ON events USING gin (properties)"
+              },
+              "observation": "ошибка: only SELECT/WITH queries are allowed"
+            },
+            {
+              "stage": "forced_final",
+              "step": null,
+              "data": {
+                "reason": "max_steps"
+              }
+            }
+          ]
+        },
+        "optimized": {
+          "score": 0.9888,
+          "passed": true,
+          "output_score": 1.0,
+          "trajectory_score": 0.955,
+          "llm_calls": 6,
+          "input_tokens": 12072,
+          "output_tokens": 1352,
+          "output": "The GIN index on `properties` dramatically improves the plan: from a full sequential scan (7752.09) to a Bitmap Index Scan on the GIN index (128.6), a 60x cost reduction. The GIN index directly supports the JSONB containment operator `@>`, which is the most selective predicate.\n\nThe query itself doesn't need rewriting — the semantics are already optimal. The improvement comes purely from the index.\n\n```json\n{\n  \"diagnosis\": \"The query performs a full sequential scan over all 280,000 events because there is no index supporting the JSONB containment predicate (properties @> '{\\\"campaign\\\": ...}'). The campaign filter is highly selective (~280 rows, 0.1% of the table), while the occurred_at filter matches ~56% of rows, so the JSONB predicate is the dominant selectivity driver. The existing btree index on occurred_at cannot help because the planner must still evaluate the JSONB containment on every row. Adding a GIN index on properties lets PostgreSQL use a Bitmap Index Scan for the @> operator, then apply the time filter as a residual check on the small candidate set. The SQL itself is already semantically optimal and needs no rewrite.\",\n  \"optimized_sql\": \"SELECT project_id, count(*) AS events_count FROM events WHERE properties @> '{\\\"campaign\\\": \\\"campaign_347\\\"}'::jsonb AND occurred_at >= TIMESTAMPTZ '2025-10-01 00:00:00+00' GROUP BY project_id ORDER BY events_count DESC, project_id\",\n  \"index_statements\": [\"CREATE INDEX idx_events_properties_gin ON events USING gin (properties)\"],\n  \"tradeoffs\": [\n    \"GIN index adds write overhead on every INSERT/UPDATE/DELETE of the properties column and consumes additional disk space (roughly proportional to the number of distinct JSONB keys/values).\",\n    \"The index is only beneficial for queries that filter on JSONB containment (@>) or other GIN-supported operators; it does not help the time predicate alone.\",\n    \"If the campaign key is frequently queried with equality, a dedicated btree index on (properties->>'campaign') could be an alternative, but GIN is the correct choice for the @> containment operator used here.\"\n  ],\n  \"evidence\": {\n    \"baseline_total_cost\": 7752.09,\n    \"candidate_total_cost\": 128.6,\n    \"cost_ratio\": 60.281,\n    \"plan_change\": \"Seq Scan (full table, filter on both predicates) -> Bitmap Index Scan on idx_events_properties_gin (Index Cond: properties @> '{\\\"campaign\\\": \\\"campaign_347\\\"}') + Bitmap Heap Scan with residual occurred_at filter, then Sort/Aggregate. Total cost dropped from 7752.09 to 128.6.\"\n  }\n}\n```",
+          "error": null,
+          "issues": [],
+          "tool_calls": 6,
+          "tool_sequence": [
+            "list_tables",
+            "describe_table",
+            "explain_query",
+            "run_readonly_query",
+            "run_readonly_query",
+            "trial_index_plan"
+          ],
+          "forced_final": false,
+          "grade_details": {
+            "structure_score": 1.0,
+            "safe": true,
+            "equivalent": true,
+            "baseline_cost": 7752.09,
+            "candidate_cost": 128.6,
+            "cost_ratio": 60.281,
+            "target_cost_ratio": 1.8,
+            "improvement_score": 1.0,
+            "expected_index_score": 1.0,
+            "expected_sql_score": 1.0,
+            "evidence_score": 1.0,
+            "evidence_error": null,
+            "db_error": null
+          },
+          "events": [
+            {
+              "stage": "tool",
+              "step": 1,
+              "name": "list_tables",
+              "arguments": {},
+              "observation": "найдено таблиц: 8"
+            },
+            {
+              "stage": "tool",
+              "step": 2,
+              "name": "describe_table",
+              "arguments": {
+                "table": "events"
+              },
+              "observation": "events: 6 столбцов, 2 индексов, ~280000 строк"
+            },
+            {
+              "stage": "tool",
+              "step": 3,
+              "name": "explain_query",
+              "arguments": {
+                "query": "SELECT project_id, count(*) AS events_count FROM events WHERE properties @> '{\"campaign\": \"campaign_347\"}'::jsonb AND occurred_at >= TIMESTAMPTZ '2025-10-01 00:00:00+00' GROUP BY project_id ORDER BY events_count DESC, project_id"
+              },
+              "observation": "стоимость плана: 7752.09"
+            },
+            {
+              "stage": "tool",
+              "step": 4,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT count(*) AS total, count(*) FILTER (WHERE properties @> '{\"campaign\": \"campaign_347\"}'::jsonb) AS campaign_matches, count(*) FILTER (WHERE occurred_at >= TIMESTAMPTZ '2025-10-01 00:00:00+00') AS time_matches, count(*) FILTER (WHERE properties @> '{\"campaign\": \"campaign_347\"}'::jsonb AND occurred_at >= TIMESTAMPTZ '2025-10-01 00:00:00+00') AS both_matches FROM events"
+              },
+              "observation": "1 строк · total, campaign_matches, time_matches, both_matches · [[280000, 280, 156605, 154]]"
+            },
+            {
+              "stage": "tool",
+              "step": 4,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT min(occurred_at) AS min_t, max(occurred_at) AS max_t, count(DISTINCT project_id) AS projects FROM events"
+              },
+              "observation": "1 строк · min_t, max_t, projects · [[\"2025-01-01 00:03:00+00:00\", \"2026-09-12 23:59:19+00:00\", 80]]"
+            },
+            {
+              "stage": "tool",
+              "step": 5,
+              "name": "trial_index_plan",
+              "arguments": {
+                "baseline_query": "SELECT project_id, count(*) AS events_count FROM events WHERE properties @> '{\"campaign\": \"campaign_347\"}'::jsonb AND occurred_at >= TIMESTAMPTZ '2025-10-01 00:00:00+00' GROUP BY project_id ORDER BY events_count DESC, project_id",
+                "candidate_query": "SELECT project_id, count(*) AS events_count FROM events WHERE properties @> '{\"campaign\": \"campaign_347\"}'::jsonb AND occurred_at >= TIMESTAMPTZ '2025-10-01 00:00:00+00' GROUP BY project_id ORDER BY events_count DESC, project_id",
+                "index_statements": [
+                  "CREATE INDEX idx_events_properties_gin ON events USING gin (properties)"
+                ]
+              },
+              "observation": "7752.09 → 128.6 · 60.281× · индекс откатан"
+            },
+            {
+              "stage": "final_candidate",
+              "step": 6,
+              "data": {
+                "step": 6
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "report_eval_02",
+      "kind": "report",
+      "title": "CAC и атрибуция маркетинга",
+      "source_title": "CAC и атрибуция маркетинга",
+      "label": "Честная граница решения",
+      "difficulty": "неполные данные",
+      "why": "Оптимизированный harness убирает лишние действия и улучшает общую оценку, но всё ещё не закрывает все требования. Этот кейс защищает демо от cherry-picking.",
+      "expectations": [
+        "last non-direct touch за 30 дней",
+        "не выдумывать tax_amount и таблицу валютных курсов",
+        "CAC считать через NULLIF",
+        "вернуть только JSON установленной структуры"
+      ],
+      "input": {
+        "id": "report_eval_02",
+        "kind": "report",
+        "title": "CAC и атрибуция маркетинга",
+        "dialogue": [
+          {
+            "role": "growth",
+            "content": "Нужен ежедневный CAC по campaign. Доход привяжем к first-touch атрибуции за 90 дней."
+          },
+          {
+            "role": "finance",
+            "content": "CAC — spend / new paying customers, доход для него не нужен. Но рядом хотим net_new_customer_revenue."
+          },
+          {
+            "role": "analyst",
+            "content": "В events есть campaign в properties, в orders — total, discount, status, refunded_at. Прямой связи campaign→order нет, только actor_id к customer_id по договорённости."
+          },
+          {
+            "role": "growth",
+            "content": "Меняем атрибуцию на last non-direct touch за 30 дней до первого paid order. Direct не перебивает предыдущую non-direct кампанию."
+          },
+          {
+            "role": "finance",
+            "content": "Revenue = total - discount только paid и не refunded. Налог сейчас включён в total, но для управленческого revenue налог надо исключить."
+          },
+          {
+            "role": "data_engineer",
+            "content": "Поля tax нет. До появления tax_amount корректно исключить налог невозможно."
+          },
+          {
+            "role": "finance",
+            "content": "Тогда не выдумывать: v1 revenue включает налог, а отсутствие tax_amount — открытый вопрос. Fraud orders исключаем по metadata.source='fraud'."
+          },
+          {
+            "role": "analyst",
+            "content": "Spend приходит в USD, orders в локальной валюте. Как конвертировать?"
+          },
+          {
+            "role": "finance",
+            "content": "Всё приводим к USD по дневному FX на дату order.created_at. FX-таблицы ещё нет в этой схеме — второй блокирующий open question, не подставляйте фиксированный курс."
+          },
+          {
+            "role": "growth",
+            "content": "Когорта по дате первого paid order. Timezone UTC, отчёт по signup date."
+          },
+          {
+            "role": "analyst",
+            "content": "Signup date у нас нет, используем first paid order date как acquisition_date."
+          },
+          {
+            "role": "growth",
+            "content": "Верно. Последняя поправка: timezone America/New_York. Grain acquisition_day × campaign. Метрики new_paying_customers, spend_usd, cac_usd, net_new_customer_revenue_usd. Замораживаем день через 7 дней."
+          },
+          {
+            "role": "finance",
+            "content": "CSV каждый день 07:00 America/New_York. Owners: Growth для attribution и Finance для денежных определений. Нужна проверка cac_usd = spend_usd / NULLIF(new_paying_customers,0)."
+          }
+        ]
+      },
+      "delta": 0.2237,
+      "agents": {
+        "baseline": {
+          "score": 0.5941,
+          "passed": false,
+          "output_score": 0.7571,
+          "trajectory_score": 0.105,
+          "llm_calls": 5,
+          "input_tokens": 10945,
+          "output_tokens": 1963,
+          "output": "Now I have a clear picture. Let me construct the final specification.\n\nKey points to synthesize:\n- **Report name**: stable snake_case id\n- **Objective**: Daily CAC by campaign with last non-direct touch attribution\n- **Grain**: acquisition_day × campaign\n- **Timezone**: America/New_York\n- **Population**: include paid, non-refunded, non-fraud orders; exclude fraud (metadata.source='fraud'), test orders, cancelled/refunded\n- **Metrics**: new_paying_customers, spend_usd, cac_usd, net_new_customer_revenue_usd\n- **Attribution**: last non-direct touch within 30 days before first paid order; direct doesn't override previous non-direct\n- **Revenue**: total - discount, paid and not refunded, tax included (v1)\n- **FX**: daily FX on order.created_at date — open question (no FX table)\n- **Freeze**: 7 days\n- **Delivery**: CSV daily 07:00 America/New_York\n- **Owners**: Growth (attribution), Finance (money definitions)\n- **Validation**: cac_usd = spend_usd / NULLIF(new_paying_customers, 0)\n\n```json\n{\n  \"report_name\": \"cac_and_marketing_attribution\",\n  \"objective\": \"Ежедневный CAC по campaign с атрибуцией last non-direct touch за 30 дней до первого paid order, включая net_new_customer_revenue для новых платящих клиентов.\",\n  \"grain\": \"acquisition_day × campaign\",\n  \"timezone\": \"America/New_York\",\n  \"population\": {\n    \"include\": [\n      \"orders со status='paid' и refunded_at IS NULL\",\n      \"клиенты, у которых есть хотя бы один paid order (первый paid order определяет acquisition_date)\",\n      \"события (events) с campaign в properties для атрибуции\",\n      \"spend по campaign (в USD)\"\n    ],\n    \"exclude\": [\n      \"fraud orders (metadata.source='fraud')\",\n      \"test orders (is_test=true)\",\n      \"orders со status='cancelled' или 'refunded'\",\n      \"refunded orders (refunded_at IS NOT NULL)\",\n      \"direct touch не перебивает предыдущую non-direct кампанию (direct не считается атрибуционным касанием)\"\n    ]\n  },\n  \"metrics\": [\n    {\n      \"id\": \"new_paying_customers\",\n      \"definition\": \"Количество уникальных клиентов, совершивших первый paid order (status='paid', refunded_at IS NULL, не fraud) в данном acquisition_day, атрибутированных к campaign по last non-direct touch за 30 дней до первого paid order.\",\n      \"formula_sql\": \"COUNT(DISTINCT customer_id) FILTER (WHERE first_paid_order AND NOT fraud)\",\n      \"owner\": \"Growth\"\n    },\n    {\n      \"id\": \"spend_usd\",\n      \"definition\": \"Расходы на campaign в USD. Spend приходит в USD, конвертация не требуется.\",\n      \"formula_sql\": \"SUM(spend_usd)\",\n      \"owner\": \"Finance\"\n    },\n    {\n      \"id\": \"cac_usd\",\n      \"definition\": \"Customer Acquisition Cost = spend_usd / new_paying_customers.\",\n      \"formula_sql\": \"spend_usd / NULLIF(new_paying_customers, 0)\",\n      \"owner\": \"Finance\"\n    },\n    {\n      \"id\": \"net_new_customer_revenue_usd\",\n      \"definition\": \"Сумма (total - discount) по paid, не refunded, не fraud orders новых платящих клиентов, конвертированная в USD по дневному FX на дату order.created_at. Налог включён в total (v1).\",\n      \"formula_sql\": \"SUM((total - discount) * fx_rate_usd) FILTER (WHERE status='paid' AND refunded_at IS NULL AND metadata->>'source' <> 'fraud')\",\n      \"owner\": \"Finance\"\n    }\n  ],\n  \"dimensions\": [\"acquisition_day\", \"campaign\"],\n  \"filters\": [\n    \"orders.status = 'paid'\",\n    \"orders.refunded_at IS NULL\",\n    \"orders.metadata->>'source' <> 'fraud'\",\n    \"orders.is_test = false\",\n    \"атрибуция: last non-direct touch campaign в events.properties.campaign за 30 дней до первого paid order\",\n    \"direct touch не перебивает предыдущую non-direct кампанию\"\n  ],\n  \"comparisons\": [],\n  \"delivery\": {\n    \"format\": \"CSV\",\n    \"cadence\": \"ежедневно в 07:00 America/New_York\"\n  },\n  \"assumptions\": [\n    \"Прямая связь campaign→order отсутствует; связь через actor_id (events) к customer_id (orders) по договорённости.\",\n    \"Revenue v1 включает налог (total включает tax); исключение налога невозможно до появления поля tax_amount.\",\n    \"Spend приходит в USD; orders в локальной валюте.\",\n    \"Конвертация в USD по дневному FX на дату order.created_at.\",\n    \"acquisition_date = дата первого paid order (signup date отсутствует).\",\n    \"День замораживается через 7 дней после acquisition_day.\",\n    \"Direct touch не перебивает предыдущую non-direct кампанию в атрибуции.\"\n  ],\n  \"open_questions\": [\n    \"Отсутствует поле tax_amount — корректное исключение налога из revenue невозможно (блокирующий вопрос).\",\n    \"FX-таблица отсутствует в схеме — конвертация валют в USD по дневному FX невозможна; не подставлять фиксированный курс (блокирующий вопрос).\"\n  ],\n  \"validation_checks\": [\n    \"cac_usd = spend_usd / NULLIF(new_paying_customers, 0)\"\n  ]\n}\n```",
+          "error": null,
+          "issues": [
+            {
+              "id": "excessive_llm_calls",
+              "label": "слишком много вызовов модели"
+            },
+            {
+              "id": "report_unnecessary_database_tools",
+              "label": "БД-инструменты не нужны для этой задачи"
+            }
+          ],
+          "tool_calls": 8,
+          "tool_sequence": [
+            "list_tables",
+            "describe_table",
+            "describe_table",
+            "describe_table",
+            "run_readonly_query",
+            "run_readonly_query",
+            "run_readonly_query",
+            "run_readonly_query"
+          ],
+          "forced_final": false,
+          "grade_details": {
+            "schema_score": 1.0,
+            "requirements_score": 0.7143,
+            "checks": [
+              {
+                "kind": "equals",
+                "target": "report_name",
+                "ok": false,
+                "actual": "cac_and_marketing_attribution"
+              },
+              {
+                "kind": "equals",
+                "target": "timezone",
+                "ok": true,
+                "actual": "America/New_York"
+              },
+              {
+                "kind": "contains",
+                "target": "grain",
+                "ok": true,
+                "actual": "acquisition_day × campaign"
+              },
+              {
+                "kind": "contains",
+                "target": "grain",
+                "ok": true,
+                "actual": "acquisition_day × campaign"
+              },
+              {
+                "kind": "list_contains",
+                "target": "filters",
+                "ok": false,
+                "actual": [
+                  "orders.status = 'paid'",
+                  "orders.refunded_at IS NULL",
+                  "orders.metadata->>'source' <> 'fraud'",
+                  "orders.is_test = false",
+                  "атрибуция: last non-direct touch campaign в events.properties.campaign за 30 дней до первого paid order",
+                  "direct touch не перебивает предыдущую non-direct кампанию"
+                ]
+              },
+              {
+                "kind": "metric_contains",
+                "target": "new_paying_customers",
+                "ok": true,
+                "actual": {
+                  "id": "new_paying_customers",
+                  "definition": "Количество уникальных клиентов, совершивших первый paid order (status='paid', refunded_at IS NULL, не fraud) в данном acquisition_day, атрибутированных к campaign по last non-direct touch за 30 дней до первого paid order.",
+                  "formula_sql": "COUNT(DISTINCT customer_id) FILTER (WHERE first_paid_order AND NOT fraud)",
+                  "owner": "Growth"
+                }
+              },
+              {
+                "kind": "metric_contains",
+                "target": "cac_usd",
+                "ok": false,
+                "actual": {
+                  "id": "spend_usd",
+                  "definition": "Расходы на campaign в USD. Spend приходит в USD, конвертация не требуется.",
+                  "formula_sql": "SUM(spend_usd)",
+                  "owner": "Finance"
+                }
+              },
+              {
+                "kind": "metric_contains",
+                "target": "net_new_customer_revenue_usd",
+                "ok": false,
+                "actual": {
+                  "id": "new_paying_customers",
+                  "definition": "Количество уникальных клиентов, совершивших первый paid order (status='paid', refunded_at IS NULL, не fraud) в данном acquisition_day, атрибутированных к campaign по last non-direct touch за 30 дней до первого paid order.",
+                  "formula_sql": "COUNT(DISTINCT customer_id) FILTER (WHERE first_paid_order AND NOT fraud)",
+                  "owner": "Growth"
+                }
+              },
+              {
+                "kind": "list_contains",
+                "target": "population.exclude",
+                "ok": true,
+                "actual": [
+                  "fraud orders (metadata.source='fraud')",
+                  "test orders (is_test=true)",
+                  "orders со status='cancelled' или 'refunded'",
+                  "refunded orders (refunded_at IS NOT NULL)",
+                  "direct touch не перебивает предыдущую non-direct кампанию (direct не считается атрибуционным касанием)"
+                ]
+              },
+              {
+                "kind": "list_contains",
+                "target": "open_questions",
+                "ok": true,
+                "actual": [
+                  "Отсутствует поле tax_amount — корректное исключение налога из revenue невозможно (блокирующий вопрос).",
+                  "FX-таблица отсутствует в схеме — конвертация валют в USD по дневному FX невозможна; не подставлять фиксированный курс (блокирующий вопрос)."
+                ]
+              },
+              {
+                "kind": "list_contains",
+                "target": "open_questions",
+                "ok": true,
+                "actual": [
+                  "Отсутствует поле tax_amount — корректное исключение налога из revenue невозможно (блокирующий вопрос).",
+                  "FX-таблица отсутствует в схеме — конвертация валют в USD по дневному FX невозможна; не подставлять фиксированный курс (блокирующий вопрос)."
+                ]
+              },
+              {
+                "kind": "equals",
+                "target": "delivery.format",
+                "ok": true,
+                "actual": "CSV"
+              },
+              {
+                "kind": "contains",
+                "target": "delivery.cadence",
+                "ok": true,
+                "actual": "ежедневно в 07:00 America/New_York"
+              },
+              {
+                "kind": "list_contains",
+                "target": "validation_checks",
+                "ok": true,
+                "actual": [
+                  "cac_usd = spend_usd / NULLIF(new_paying_customers, 0)"
+                ]
+              }
+            ]
+          },
+          "events": [
+            {
+              "stage": "tool",
+              "step": 1,
+              "name": "list_tables",
+              "arguments": {},
+              "observation": "найдено таблиц: 8"
+            },
+            {
+              "stage": "tool",
+              "step": 2,
+              "name": "describe_table",
+              "arguments": {
+                "table": "events"
+              },
+              "observation": "events: 6 столбцов, 2 индексов, ~280000 строк"
+            },
+            {
+              "stage": "tool",
+              "step": 2,
+              "name": "describe_table",
+              "arguments": {
+                "table": "orders"
+              },
+              "observation": "orders: 11 столбцов, 3 индексов, ~220000 строк"
+            },
+            {
+              "stage": "tool",
+              "step": 2,
+              "name": "describe_table",
+              "arguments": {
+                "table": "customers"
+              },
+              "observation": "customers: 7 столбцов, 2 индексов, ~60000 строк"
+            },
+            {
+              "stage": "tool",
+              "step": 3,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT DISTINCT event_type FROM events LIMIT 20;"
+              },
+              "observation": "5 строк · event_type · [[\"checkout\"], [\"login\"]]"
+            },
+            {
+              "stage": "tool",
+              "step": 3,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT DISTINCT status FROM orders LIMIT 20;"
+              },
+              "observation": "4 строк · status · [[\"cancelled\"], [\"paid\"]]"
+            },
+            {
+              "stage": "tool",
+              "step": 4,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT properties FROM events WHERE properties ? 'campaign' LIMIT 5;"
+              },
+              "observation": "5 строк · properties · [[{\"device\": \"android\", \"country\": \"KZ\", \"campaign\": \"campaign_1\"}], [{\"device\": \"web\", \"country\": \"AM\", \"campaign\": \"ca"
+            },
+            {
+              "stage": "tool",
+              "step": 4,
+              "name": "run_readonly_query",
+              "arguments": {
+                "query": "SELECT metadata FROM orders WHERE metadata ? 'source' LIMIT 5;"
+              },
+              "observation": "5 строк · metadata · [[{\"source\": \"ads\"}], [{\"source\": \"referral\"}]]"
+            },
+            {
+              "stage": "final_candidate",
+              "step": 5,
+              "data": {
+                "step": 5
+              }
+            }
+          ]
+        },
+        "optimized": {
+          "score": 0.8178,
+          "passed": false,
+          "output_score": 0.7571,
+          "trajectory_score": 1.0,
+          "llm_calls": 1,
+          "input_tokens": 814,
+          "output_tokens": 903,
+          "output": "{\n  \"report_name\": \"cac_attribution_daily\",\n  \"objective\": \"Ежедневный CAC по campaign с атрибуцией last non-direct touch за 30 дней до первого paid order, включая net_new_customer_revenue в USD.\",\n  \"grain\": \"acquisition_day × campaign\",\n  \"timezone\": \"America/New_York\",\n  \"population\": {\n    \"include\": [\n      \"orders with status='paid' and refunded_at is null\",\n      \"orders with metadata.source != 'fraud'\",\n      \"customers with at least one paid order (new_paying_customers)\",\n      \"campaigns from events.properties.campaign (last non-direct touch within 30 days before first paid order)\"\n    ],\n    \"exclude\": [\n      \"orders with status != 'paid'\",\n      \"orders with refunded_at not null\",\n      \"orders with metadata.source='fraud'\",\n      \"direct touch campaigns (unless no prior non-direct touch)\"\n    ]\n  },\n  \"metrics\": [\n    {\n      \"id\": \"new_paying_customers\",\n      \"definition\": \"Количество уникальных customers, совершивших первый paid order (status='paid', refunded_at is null, metadata.source!='fraud') в данном acquisition_day и campaign.\",\n      \"formula_sql\": \"COUNT(DISTINCT customer_id)\",\n      \"owner\": \"Growth\"\n    },\n    {\n      \"id\": \"spend_usd\",\n      \"definition\": \"Сумма spend по campaign, приведённая к USD по дневному FX на дату order.created_at (FX-таблица отсутствует — open question).\",\n      \"formula_sql\": \"SUM(spend_usd)\",\n      \"owner\": \"Finance\"\n    },\n    {\n      \"id\": \"cac_usd\",\n      \"definition\": \"CAC = spend_usd / new_paying_customers (NULLIF для защиты от деления на ноль).\",\n      \"formula_sql\": \"spend_usd / NULLIF(new_paying_customers, 0)\",\n      \"owner\": \"Finance\"\n    },\n    {\n      \"id\": \"net_new_customer_revenue_usd\",\n      \"definition\": \"Сумма (total - discount) по paid и не refunded orders, исключая fraud, приведённая к USD по дневному FX на дату order.created_at. Налог включён (v1).\",\n      \"formula_sql\": \"SUM((total - discount) * fx_rate) FILTER (WHERE status='paid' AND refunded_at IS NULL AND metadata.source != 'fraud')\",\n      \"owner\": \"Finance\"\n    }\n  ],\n  \"dimensions\": [\"acquisition_day\", \"campaign\"],\n  \"filters\": [\n    \"orders.status = 'paid'\",\n    \"orders.refunded_at IS NULL\",\n    \"orders.metadata.source != 'fraud'\",\n    \"campaign attribution: last non-direct touch within 30 days before first paid order; direct does not override previous non-direct\"\n  ],\n  \"comparisons\": [\"day-over-day CAC and revenue trends (implied by daily grain)\"],\n  \"delivery\": {\n    \"format\": \"CSV\",\n    \"cadence\": \"daily at 07:00 America/New_York\"\n  },\n  \"assumptions\": [\n    \"Revenue includes tax (v1) until tax_amount field is available.\",\n    \"FX conversion to USD uses daily FX rate on order.created_at; no fixed rate.\",\n    \"acquisition_date = first paid order date (no signup date available).\",\n    \"Attribution window: 30 days before first paid order, last non-direct touch.\",\n    \"Direct touch does not override previous non-direct campaign.\",\n    \"Data is frozen after 7 days.\"\n  ],\n  \"open_questions\": [\n    \"Отсутствует tax_amount — корректное исключение налога невозможно до появления поля.\",\n    \"Отсутствует FX-таблица — конвертация в USD по дневному курсу невозможна до её добавления.\"\n  ],\n  \"validation_checks\": [\n    \"cac_usd = spend_usd / NULLIF(new_paying_customers, 0)\"\n  ]\n}",
+          "error": null,
+          "issues": [],
+          "tool_calls": 0,
+          "tool_sequence": [],
+          "forced_final": false,
+          "grade_details": {
+            "schema_score": 1.0,
+            "requirements_score": 0.7143,
+            "checks": [
+              {
+                "kind": "equals",
+                "target": "report_name",
+                "ok": false,
+                "actual": "cac_attribution_daily"
+              },
+              {
+                "kind": "equals",
+                "target": "timezone",
+                "ok": true,
+                "actual": "America/New_York"
+              },
+              {
+                "kind": "contains",
+                "target": "grain",
+                "ok": true,
+                "actual": "acquisition_day × campaign"
+              },
+              {
+                "kind": "contains",
+                "target": "grain",
+                "ok": true,
+                "actual": "acquisition_day × campaign"
+              },
+              {
+                "kind": "list_contains",
+                "target": "filters",
+                "ok": true,
+                "actual": [
+                  "orders.status = 'paid'",
+                  "orders.refunded_at IS NULL",
+                  "orders.metadata.source != 'fraud'",
+                  "campaign attribution: last non-direct touch within 30 days before first paid order; direct does not override previous non-direct"
+                ]
+              },
+              {
+                "kind": "metric_contains",
+                "target": "new_paying_customers",
+                "ok": false,
+                "actual": {
+                  "id": "new_paying_customers",
+                  "definition": "Количество уникальных customers, совершивших первый paid order (status='paid', refunded_at is null, metadata.source!='fraud') в данном acquisition_day и campaign.",
+                  "formula_sql": "COUNT(DISTINCT customer_id)",
+                  "owner": "Growth"
+                }
+              },
+              {
+                "kind": "metric_contains",
+                "target": "cac_usd",
+                "ok": false,
+                "actual": {
+                  "id": "spend_usd",
+                  "definition": "Сумма spend по campaign, приведённая к USD по дневному FX на дату order.created_at (FX-таблица отсутствует — open question).",
+                  "formula_sql": "SUM(spend_usd)",
+                  "owner": "Finance"
+                }
+              },
+              {
+                "kind": "metric_contains",
+                "target": "net_new_customer_revenue_usd",
+                "ok": false,
+                "actual": {
+                  "id": "new_paying_customers",
+                  "definition": "Количество уникальных customers, совершивших первый paid order (status='paid', refunded_at is null, metadata.source!='fraud') в данном acquisition_day и campaign.",
+                  "formula_sql": "COUNT(DISTINCT customer_id)",
+                  "owner": "Growth"
+                }
+              },
+              {
+                "kind": "list_contains",
+                "target": "population.exclude",
+                "ok": true,
+                "actual": [
+                  "orders with status != 'paid'",
+                  "orders with refunded_at not null",
+                  "orders with metadata.source='fraud'",
+                  "direct touch campaigns (unless no prior non-direct touch)"
+                ]
+              },
+              {
+                "kind": "list_contains",
+                "target": "open_questions",
+                "ok": true,
+                "actual": [
+                  "Отсутствует tax_amount — корректное исключение налога невозможно до появления поля.",
+                  "Отсутствует FX-таблица — конвертация в USD по дневному курсу невозможна до её добавления."
+                ]
+              },
+              {
+                "kind": "list_contains",
+                "target": "open_questions",
+                "ok": true,
+                "actual": [
+                  "Отсутствует tax_amount — корректное исключение налога невозможно до появления поля.",
+                  "Отсутствует FX-таблица — конвертация в USD по дневному курсу невозможна до её добавления."
+                ]
+              },
+              {
+                "kind": "equals",
+                "target": "delivery.format",
+                "ok": true,
+                "actual": "CSV"
+              },
+              {
+                "kind": "contains",
+                "target": "delivery.cadence",
+                "ok": true,
+                "actual": "daily at 07:00 America/New_York"
+              },
+              {
+                "kind": "list_contains",
+                "target": "validation_checks",
+                "ok": true,
+                "actual": [
+                  "cac_usd = spend_usd / NULLIF(new_paying_customers, 0)"
+                ]
+              }
+            ]
+          },
+          "events": [
+            {
+              "stage": "final_candidate",
+              "step": 1,
+              "data": {
+                "step": 1
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

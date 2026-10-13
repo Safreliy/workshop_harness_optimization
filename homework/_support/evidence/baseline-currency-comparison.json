@@ -1,0 +1,4125 @@
+{
+  "complete": true,
+  "observed": 40,
+  "expected": 40,
+  "model": "DeepSeek-V4-Flash-0731",
+  "base_config": {
+    "name": "baseline",
+    "prompt_patch": "",
+    "max_steps": 6,
+    "workflow": "react",
+    "review": "none",
+    "tools": [
+      "list_sources",
+      "inspect_source",
+      "query",
+      "execute_pipeline"
+    ],
+    "max_tokens": 3000,
+    "temperature": 0.0
+  },
+  "candidate_config": {
+    "name": "baseline",
+    "prompt_patch": "CURRENCY CHECK: Before summing payments/refunds, normalize and compare each event currency with the currency of its latest order. Unknown/orphan and mismatched currencies must not contribute. A WHERE filtering only settled/non-null amounts does NOT enforce currency equality. When an aggregate differs from your manual expectation, query the exact contributing rows under that same WHERE before rerunning SUM or suspecting the SQL engine. Apply the currency condition for every order, not a literal USD.",
+    "max_steps": 6,
+    "workflow": "react",
+    "review": "none",
+    "tools": [
+      "list_sources",
+      "inspect_source",
+      "query",
+      "execute_pipeline"
+    ],
+    "max_tokens": 3000,
+    "temperature": 0.0
+  },
+  "patch": "CURRENCY CHECK: Before summing payments/refunds, normalize and compare each event currency with the currency of its latest order. Unknown/orphan and mismatched currencies must not contribute. A WHERE filtering only settled/non-null amounts does NOT enforce currency equality. When an aggregate differs from your manual expectation, query the exact contributing rows under that same WHERE before rerunning SUM or suspecting the SQL engine. Apply the currency condition for every order, not a literal USD.",
+  "changed_fields": [
+    "prompt_patch"
+  ],
+  "cohort": {
+    "task_ids": [
+      "test-marketplace_events-00",
+      "test-legacy_sales-03"
+    ],
+    "task_count": 2,
+    "repeats": 10,
+    "episodes_per_arm": 20,
+    "scope": "Matched prompt-only A/B on two disclosed regression cases; not a closed test."
+  },
+  "arms": {
+    "control": {
+      "episodes": 20,
+      "passed": 15,
+      "executed": 19,
+      "false_public_success": 3,
+      "categories": {
+        "correct": 15,
+        "currency_defect": 0,
+        "money_sum_defect": 3,
+        "other_artifact_defect": 1,
+        "no_artifact": 1,
+        "transport": 0
+      },
+      "llm_calls": 131,
+      "input_tokens": 1200545,
+      "output_tokens": 103455,
+      "by_task": {
+        "test-marketplace_events-00": {
+          "observed": 10,
+          "passed": 8,
+          "categories": {
+            "correct": 8,
+            "currency_defect": 0,
+            "money_sum_defect": 2,
+            "other_artifact_defect": 0,
+            "no_artifact": 0,
+            "transport": 0
+          }
+        },
+        "test-legacy_sales-03": {
+          "observed": 10,
+          "passed": 7,
+          "categories": {
+            "correct": 7,
+            "currency_defect": 0,
+            "money_sum_defect": 1,
+            "other_artifact_defect": 1,
+            "no_artifact": 1,
+            "transport": 0
+          }
+        }
+      }
+    },
+    "currency-policy": {
+      "episodes": 20,
+      "passed": 7,
+      "executed": 13,
+      "false_public_success": 4,
+      "categories": {
+        "correct": 7,
+        "currency_defect": 0,
+        "money_sum_defect": 4,
+        "other_artifact_defect": 2,
+        "no_artifact": 7,
+        "transport": 0
+      },
+      "llm_calls": 138,
+      "input_tokens": 1299772,
+      "output_tokens": 86587,
+      "by_task": {
+        "test-marketplace_events-00": {
+          "observed": 10,
+          "passed": 4,
+          "categories": {
+            "correct": 4,
+            "currency_defect": 0,
+            "money_sum_defect": 3,
+            "other_artifact_defect": 1,
+            "no_artifact": 2,
+            "transport": 0
+          }
+        },
+        "test-legacy_sales-03": {
+          "observed": 10,
+          "passed": 3,
+          "categories": {
+            "correct": 3,
+            "currency_defect": 0,
+            "money_sum_defect": 1,
+            "other_artifact_defect": 1,
+            "no_artifact": 5,
+            "transport": 0
+          }
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 1,
+      "arm": "control",
+      "passed": false,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "money_sum_defect",
+      "error_category": "money_sum_defect",
+      "currency_check": {
+        "passed": false,
+        "mismatches": [
+          {
+            "order_id": "00002",
+            "column": "paid_cents",
+            "actual": 12306,
+            "expected": 6153
+          },
+          {
+            "order_id": "00002",
+            "column": "refunded_cents",
+            "actual": 3690,
+            "expected": 1845
+          },
+          {
+            "order_id": "00005",
+            "column": "paid_cents",
+            "actual": 3560,
+            "expected": 1780
+          },
+          {
+            "order_id": "00004",
+            "column": "refunded_cents",
+            "actual": 5854,
+            "expected": 2927
+          },
+          {
+            "order_id": "00006",
+            "column": "paid_cents",
+            "actual": 23610,
+            "expected": 11805
+          },
+          {
+            "order_id": "00006",
+            "column": "refunded_cents",
+            "actual": 3540,
+            "expected": 1770
+          },
+          {
+            "order_id": "00003",
+            "column": "paid_cents",
+            "actual": 37874,
+            "expected": 18937
+          },
+          {
+            "order_id": "00003",
+            "column": "refunded_cents",
+            "actual": 5680,
+            "expected": 2840
+          }
+        ],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "checked",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent",
+        "removed_event_ids": {
+          "payments": [
+            "FOREIGN-PX00002",
+            "FOREIGN-PX00003",
+            "FOREIGN-PX00007",
+            "FOREIGN-PX00005",
+            "FOREIGN-PX00001",
+            "FOREIGN-PX00004",
+            "FOREIGN-PX00006"
+          ],
+          "refunds": [
+            "FOREIGN-RX00005",
+            "FOREIGN-RX00001",
+            "FOREIGN-RX00003",
+            "FOREIGN-RX00006",
+            "FOREIGN-RX00002",
+            "FOREIGN-RX00004",
+            "FOREIGN-RX00007"
+          ]
+        },
+        "before_rows": [
+          {
+            "order_id": "00002",
+            "customer_id": "C002",
+            "currency": "USD",
+            "order_amount_cents": 18459,
+            "paid_cents": 12306,
+            "refunded_cents": 3690,
+            "net_cents": 8616,
+            "status": "completed"
+          },
+          {
+            "order_id": "00001",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 23658,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "completed"
+          },
+          {
+            "order_id": "00005",
+            "customer_id": "C003",
+            "currency": "USD",
+            "order_amount_cents": 5340,
+            "paid_cents": 3560,
+            "refunded_cents": 0,
+            "net_cents": 3560,
+            "status": "completed"
+          },
+          {
+            "order_id": "00004",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 29275,
+            "paid_cents": 0,
+            "refunded_cents": 5854,
+            "net_cents": -5854,
+            "status": "completed"
+          },
+          {
+            "order_id": "00007",
+            "customer_id": "C002",
+            "currency": "RUB",
+            "order_amount_cents": 19496,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "cancelled"
+          },
+          {
+            "order_id": "00006",
+            "customer_id": "C001",
+            "currency": "EUR",
+            "order_amount_cents": 17708,
+            "paid_cents": 23610,
+            "refunded_cents": 3540,
+            "net_cents": 20070,
+            "status": "completed"
+          },
+          {
+            "order_id": "00003",
+            "customer_id": "C001",
+            "currency": "EUR",
+            "order_amount_cents": 28404,
+            "paid_cents": 37874,
+            "refunded_cents": 5680,
+            "net_cents": 32194,
+            "status": "completed"
+          }
+        ],
+        "after_rows": [
+          {
+            "order_id": "00002",
+            "customer_id": "C002",
+            "currency": "USD",
+            "order_amount_cents": 18459,
+            "paid_cents": 12306,
+            "refunded_cents": 3690,
+            "net_cents": 8616,
+            "status": "completed"
+          },
+          {
+            "order_id": "00001",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 23658,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "completed"
+          },
+          {
+            "order_id": "00005",
+            "customer_id": "C003",
+            "currency": "USD",
+            "order_amount_cents": 5340,
+            "paid_cents": 3560,
+            "refunded_cents": 0,
+            "net_cents": 3560,
+            "status": "completed"
+          },
+          {
+            "order_id": "00004",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 29275,
+            "paid_cents": 0,
+            "refunded_cents": 5854,
+            "net_cents": -5854,
+            "status": "completed"
+          },
+          {
+            "order_id": "00007",
+            "customer_id": "C002",
+            "currency": "RUB",
+            "order_amount_cents": 19496,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "cancelled"
+          },
+          {
+            "order_id": "00006",
+            "customer_id": "C001",
+            "currency": "EUR",
+            "order_amount_cents": 17708,
+            "paid_cents": 23610,
+            "refunded_cents": 3540,
+            "net_cents": 20070,
+            "status": "completed"
+          },
+          {
+            "order_id": "00003",
+            "customer_id": "C001",
+            "currency": "EUR",
+            "order_amount_cents": 28404,
+            "paid_cents": 37874,
+            "refunded_cents": 5680,
+            "net_cents": 32194,
+            "status": "completed"
+          }
+        ],
+        "before_sum_mismatches": 8,
+        "after_sum_mismatches": 8,
+        "output_changed": false,
+        "foreign_event_influence": false,
+        "basis": "Same saved SQL rerun; remove ALL versions of latest settled valid foreign-currency event identifiers. Correct output must be invariant. Confirmation requires stable original rerun, complete order coverage and fewer wrong sums after removal.",
+        "limits": "Foreign-row removal must not change a correct result. output_changed proves an invariance violation even if remaining errors keep the wrong-cell count unchanged. confirmed uses the stricter count-reduction criterion. An unconfirmed result does not prove currency handling is correct. Neither criterion uniquely identifies an absent currency predicate versus a faulty join/dedup."
+      },
+      "correct_rows": 2,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 3
+      },
+      "pre_execution_tool_calls": 7,
+      "forced_final_event": 16,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 7,
+      "tool_calls": 9,
+      "input_tokens": 66040,
+      "output_tokens": 5699,
+      "latency_ms": 82833.17,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-reproduction-v1/records/test-marketplace_events-00--baseline--repeat-1.json",
+        "sha256": "e9dab50ac67131039ec2d2e6329ba30083c8f50dcbbeda4855fc03455e80fe8e"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-test-marketplace_events-00-r1",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 1,
+      "arm": "control",
+      "passed": true,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "correct",
+      "error_category": "correct",
+      "currency_check": {
+        "passed": true,
+        "mismatches": [],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "not_needed_correct_sums",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 7,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 3
+      },
+      "pre_execution_tool_calls": 7,
+      "forced_final_event": 16,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 7,
+      "tool_calls": 9,
+      "input_tokens": 68779,
+      "output_tokens": 5700,
+      "latency_ms": 82735.06,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-reproduction-v1/records/test-legacy_sales-03--baseline--repeat-1.json",
+        "sha256": "cc191f349b811f7ad8b9e7504e2a33dc050efd183b47190c37c212140a029be4"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-test-legacy_sales-03-r1",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 2,
+      "arm": "control",
+      "passed": true,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "correct",
+      "error_category": "correct",
+      "currency_check": {
+        "passed": true,
+        "mismatches": [],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "not_needed_correct_sums",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 7,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 3
+      },
+      "pre_execution_tool_calls": 7,
+      "forced_final_event": null,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 6,
+      "tool_calls": 8,
+      "input_tokens": 48801,
+      "output_tokens": 4532,
+      "latency_ms": 62899.4,
+      "budget_exhausted": false,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-reproduction-v1/records/test-marketplace_events-00--baseline--repeat-2.json",
+        "sha256": "ff99a85b790c13ecb8e5608e63719b6f9566887005bdc8659fa6475262bd90f4"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-test-marketplace_events-00-r2",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 2,
+      "arm": "control",
+      "passed": true,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "correct",
+      "error_category": "correct",
+      "currency_check": {
+        "passed": true,
+        "mismatches": [],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "not_needed_correct_sums",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 7,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 3
+      },
+      "pre_execution_tool_calls": 7,
+      "forced_final_event": null,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 6,
+      "tool_calls": 8,
+      "input_tokens": 51036,
+      "output_tokens": 4775,
+      "latency_ms": 66263.31,
+      "budget_exhausted": false,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-reproduction-v1/records/test-legacy_sales-03--baseline--repeat-2.json",
+        "sha256": "8f28e164815ec0039ee0b16ddd5d05d6bd783ab7a354eea2957a5eb11d41c607"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-test-legacy_sales-03-r2",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 3,
+      "arm": "control",
+      "passed": true,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "correct",
+      "error_category": "correct",
+      "currency_check": {
+        "passed": true,
+        "mismatches": [],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "not_needed_correct_sums",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 7,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 4
+      },
+      "pre_execution_tool_calls": 8,
+      "forced_final_event": null,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 0,
+      "llm_calls": 6,
+      "tool_calls": 9,
+      "input_tokens": 48329,
+      "output_tokens": 4853,
+      "latency_ms": 75024.9,
+      "budget_exhausted": false,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-reproduction-v1/records/test-marketplace_events-00--baseline--repeat-3.json",
+        "sha256": "00d767c86672251a5b9fba9e7096c2e760e41a54ba3e7d6d36628721e85b68da"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-test-marketplace_events-00-r3",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 3,
+      "arm": "control",
+      "passed": true,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "correct",
+      "error_category": "correct",
+      "currency_check": {
+        "passed": true,
+        "mismatches": [],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "not_needed_correct_sums",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 7,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 4
+      },
+      "pre_execution_tool_calls": 8,
+      "forced_final_event": null,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 0,
+      "llm_calls": 6,
+      "tool_calls": 9,
+      "input_tokens": 50227,
+      "output_tokens": 4171,
+      "latency_ms": 64484.97,
+      "budget_exhausted": false,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-reproduction-v1/records/test-legacy_sales-03--baseline--repeat-3.json",
+        "sha256": "a0c2b97ec924d18f90755b8a30db1b3e925272325f6b7c8852ad9faf2f042253"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-test-legacy_sales-03-r3",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 4,
+      "arm": "control",
+      "passed": true,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "correct",
+      "error_category": "correct",
+      "currency_check": {
+        "passed": true,
+        "mismatches": [],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "not_needed_correct_sums",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 7,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 3
+      },
+      "pre_execution_tool_calls": 7,
+      "forced_final_event": null,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 6,
+      "tool_calls": 8,
+      "input_tokens": 48761,
+      "output_tokens": 4762,
+      "latency_ms": 80940.44,
+      "budget_exhausted": false,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-reproduction-v1/records/test-marketplace_events-00--baseline--repeat-4.json",
+        "sha256": "48ad1a353cb469ec9010dbde82c3babe4e606020f3b1b2d5ff85c2c0bdea7bbe"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-test-marketplace_events-00-r4",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 4,
+      "arm": "control",
+      "passed": false,
+      "pipeline_executed": true,
+      "public_passed": false,
+      "error": null,
+      "category": "other_artifact_defect",
+      "error_category": "other_artifact_defect",
+      "currency_check": {
+        "passed": false,
+        "mismatches": [
+          {
+            "order_id": "00004",
+            "column": "refunded_cents",
+            "actual": 322,
+            "expected": 161
+          },
+          {
+            "order_id": "00005",
+            "column": "paid_cents",
+            "actual": 16548,
+            "expected": 8274
+          },
+          {
+            "order_id": "00006",
+            "column": "paid_cents",
+            "actual": 30778,
+            "expected": 15389
+          },
+          {
+            "order_id": "00006",
+            "column": "refunded_cents",
+            "actual": 4616,
+            "expected": 2308
+          },
+          {
+            "order_id": "00002",
+            "column": "paid_cents",
+            "actual": 11444,
+            "expected": 2861
+          },
+          {
+            "order_id": "00002",
+            "column": "refunded_cents",
+            "actual": 3432,
+            "expected": 858
+          },
+          {
+            "order_id": "00002",
+            "column": "paid_cents",
+            "actual": 11444,
+            "expected": 2861
+          },
+          {
+            "order_id": "00002",
+            "column": "refunded_cents",
+            "actual": 3432,
+            "expected": 858
+          },
+          {
+            "order_id": "00003",
+            "column": "paid_cents",
+            "actual": 32962,
+            "expected": 16481
+          },
+          {
+            "order_id": "00003",
+            "column": "refunded_cents",
+            "actual": 4944,
+            "expected": 2472
+          }
+        ],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": false
+      },
+      "currency_diagnostic": {
+        "status": "coverage_incomplete",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 2,
+      "expected_rows": 7,
+      "first_execution_event": 16,
+      "first_execution_step": 6,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 5
+      },
+      "pre_execution_tool_calls": 9,
+      "forced_final_event": 17,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 7,
+      "tool_calls": 10,
+      "input_tokens": 74378,
+      "output_tokens": 4921,
+      "latency_ms": 86477.98,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-reproduction-v1/records/test-legacy_sales-03--baseline--repeat-4.json",
+        "sha256": "29afcafc3d81ac6ce7b7bdcafa303bdf3b6706c3ff8245a07994906fbaaeed66"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-test-legacy_sales-03-r4",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 5,
+      "arm": "control",
+      "passed": true,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "correct",
+      "error_category": "correct",
+      "currency_check": {
+        "passed": true,
+        "mismatches": [],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "not_needed_correct_sums",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 7,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 3
+      },
+      "pre_execution_tool_calls": 7,
+      "forced_final_event": null,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 6,
+      "tool_calls": 8,
+      "input_tokens": 48663,
+      "output_tokens": 4561,
+      "latency_ms": 80417.59,
+      "budget_exhausted": false,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-reproduction-v1/records/test-marketplace_events-00--baseline--repeat-5.json",
+        "sha256": "17d8b902b38f6f2a0000cfaf05026bee67c4a46c76f39e23812cf2f374651dce"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-test-marketplace_events-00-r5",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 5,
+      "arm": "control",
+      "passed": true,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "correct",
+      "error_category": "correct",
+      "currency_check": {
+        "passed": true,
+        "mismatches": [],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "not_needed_correct_sums",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 7,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 3
+      },
+      "pre_execution_tool_calls": 7,
+      "forced_final_event": 16,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 7,
+      "tool_calls": 9,
+      "input_tokens": 69129,
+      "output_tokens": 5981,
+      "latency_ms": 99682.73,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-reproduction-v1/records/test-legacy_sales-03--baseline--repeat-5.json",
+        "sha256": "361df478b6e0f03731e312a2c71e6ba2189107097280cc775388f3174ed323b9"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-test-legacy_sales-03-r5",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 6,
+      "arm": "control",
+      "passed": true,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "correct",
+      "error_category": "correct",
+      "currency_check": {
+        "passed": true,
+        "mismatches": [],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "not_needed_correct_sums",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 7,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 3
+      },
+      "pre_execution_tool_calls": 7,
+      "forced_final_event": 16,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 7,
+      "tool_calls": 9,
+      "input_tokens": 65830,
+      "output_tokens": 5793,
+      "latency_ms": 84894.56,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-reproduction-v1/records/test-marketplace_events-00--baseline--repeat-6.json",
+        "sha256": "ecbbb575ff410bbaafaa45617b547e2726c2effb29aff4e713e6a60fd8275d4b"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-test-marketplace_events-00-r6",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 6,
+      "arm": "control",
+      "passed": false,
+      "pipeline_executed": false,
+      "public_passed": false,
+      "error": "no_pipeline_executed",
+      "category": "no_artifact",
+      "error_category": "no_artifact",
+      "currency_check": {
+        "passed": false,
+        "status": "not_executed",
+        "coverage_complete": false,
+        "mismatches": []
+      },
+      "currency_diagnostic": {
+        "status": "not_executed",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 0,
+      "expected_rows": 7,
+      "first_execution_event": null,
+      "first_execution_step": null,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 7
+      },
+      "pre_execution_tool_calls": 11,
+      "forced_final_event": 17,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 0,
+      "llm_calls": 7,
+      "tool_calls": 11,
+      "input_tokens": 69190,
+      "output_tokens": 5331,
+      "latency_ms": 74608.05,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-reproduction-v1/records/test-legacy_sales-03--baseline--repeat-6.json",
+        "sha256": "125a022c397b35a53e30433f0bf5c0df2d8e4c8ee795f499e0a806e0e4533242"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-test-legacy_sales-03-r6",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 7,
+      "arm": "control",
+      "passed": true,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "correct",
+      "error_category": "correct",
+      "currency_check": {
+        "passed": true,
+        "mismatches": [],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "not_needed_correct_sums",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 7,
+      "expected_rows": 7,
+      "first_execution_event": 17,
+      "first_execution_step": 6,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 6
+      },
+      "pre_execution_tool_calls": 10,
+      "forced_final_event": 18,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 7,
+      "tool_calls": 11,
+      "input_tokens": 68802,
+      "output_tokens": 4876,
+      "latency_ms": 83726.53,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-reproduction-v1/records/test-marketplace_events-00--baseline--repeat-7.json",
+        "sha256": "b02ca0af99b663a735e05d1baec9b5c1028549a4e99b4a65e898fa7fd2eabe90"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-test-marketplace_events-00-r7",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 7,
+      "arm": "control",
+      "passed": true,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "correct",
+      "error_category": "correct",
+      "currency_check": {
+        "passed": true,
+        "mismatches": [],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "not_needed_correct_sums",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 7,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 3
+      },
+      "pre_execution_tool_calls": 7,
+      "forced_final_event": null,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 6,
+      "tool_calls": 8,
+      "input_tokens": 50748,
+      "output_tokens": 4392,
+      "latency_ms": 80697.97,
+      "budget_exhausted": false,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-reproduction-v1/records/test-legacy_sales-03--baseline--repeat-7.json",
+        "sha256": "0ef69d4cd026bb38f33b5b94af6df009ec4983140a5d59986c55264f14ae810c"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-test-legacy_sales-03-r7",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 8,
+      "arm": "control",
+      "passed": true,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "correct",
+      "error_category": "correct",
+      "currency_check": {
+        "passed": true,
+        "mismatches": [],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "not_needed_correct_sums",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 7,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 3
+      },
+      "pre_execution_tool_calls": 7,
+      "forced_final_event": null,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 6,
+      "tool_calls": 8,
+      "input_tokens": 48850,
+      "output_tokens": 4914,
+      "latency_ms": 80913.57,
+      "budget_exhausted": false,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-reproduction-v1/records/test-marketplace_events-00--baseline--repeat-8.json",
+        "sha256": "7b8a2c592b65d70501aa4e2422ecf349c2d64586ff6e65c397a06aba40fc14c0"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-test-marketplace_events-00-r8",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 8,
+      "arm": "control",
+      "passed": true,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "correct",
+      "error_category": "correct",
+      "currency_check": {
+        "passed": true,
+        "mismatches": [],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "not_needed_correct_sums",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 7,
+      "expected_rows": 7,
+      "first_execution_event": 11,
+      "first_execution_step": 4,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 3
+      },
+      "pre_execution_tool_calls": 7,
+      "forced_final_event": 16,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 0,
+      "llm_calls": 7,
+      "tool_calls": 10,
+      "input_tokens": 71092,
+      "output_tokens": 6575,
+      "latency_ms": 113178.54,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-reproduction-v1/records/test-legacy_sales-03--baseline--repeat-8.json",
+        "sha256": "f908352e3358c1ebecc744a81c3485b219008382bbb92ff55f333b3fedd8017d"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-test-legacy_sales-03-r8",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 9,
+      "arm": "control",
+      "passed": false,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "money_sum_defect",
+      "error_category": "money_sum_defect",
+      "currency_check": {
+        "passed": false,
+        "mismatches": [
+          {
+            "order_id": "00002",
+            "column": "paid_cents",
+            "actual": 12306,
+            "expected": 6153
+          },
+          {
+            "order_id": "00002",
+            "column": "refunded_cents",
+            "actual": 3690,
+            "expected": 1845
+          },
+          {
+            "order_id": "00003",
+            "column": "paid_cents",
+            "actual": 37874,
+            "expected": 18937
+          },
+          {
+            "order_id": "00003",
+            "column": "refunded_cents",
+            "actual": 5680,
+            "expected": 2840
+          },
+          {
+            "order_id": "00004",
+            "column": "refunded_cents",
+            "actual": 5854,
+            "expected": 2927
+          },
+          {
+            "order_id": "00005",
+            "column": "paid_cents",
+            "actual": 3560,
+            "expected": 1780
+          },
+          {
+            "order_id": "00006",
+            "column": "paid_cents",
+            "actual": 23610,
+            "expected": 11805
+          },
+          {
+            "order_id": "00006",
+            "column": "refunded_cents",
+            "actual": 3540,
+            "expected": 1770
+          }
+        ],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "checked",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent",
+        "removed_event_ids": {
+          "payments": [
+            "FOREIGN-PX00002",
+            "FOREIGN-PX00003",
+            "FOREIGN-PX00007",
+            "FOREIGN-PX00005",
+            "FOREIGN-PX00001",
+            "FOREIGN-PX00004",
+            "FOREIGN-PX00006"
+          ],
+          "refunds": [
+            "FOREIGN-RX00005",
+            "FOREIGN-RX00001",
+            "FOREIGN-RX00003",
+            "FOREIGN-RX00006",
+            "FOREIGN-RX00002",
+            "FOREIGN-RX00004",
+            "FOREIGN-RX00007"
+          ]
+        },
+        "before_rows": [
+          {
+            "order_id": "00001",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 23658,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "completed"
+          },
+          {
+            "order_id": "00002",
+            "customer_id": "C002",
+            "currency": "USD",
+            "order_amount_cents": 18459,
+            "paid_cents": 12306,
+            "refunded_cents": 3690,
+            "net_cents": 8616,
+            "status": "completed"
+          },
+          {
+            "order_id": "00003",
+            "customer_id": "C001",
+            "currency": "EUR",
+            "order_amount_cents": 28404,
+            "paid_cents": 37874,
+            "refunded_cents": 5680,
+            "net_cents": 32194,
+            "status": "completed"
+          },
+          {
+            "order_id": "00004",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 29275,
+            "paid_cents": 0,
+            "refunded_cents": 5854,
+            "net_cents": -5854,
+            "status": "completed"
+          },
+          {
+            "order_id": "00005",
+            "customer_id": "C003",
+            "currency": "USD",
+            "order_amount_cents": 5340,
+            "paid_cents": 3560,
+            "refunded_cents": 0,
+            "net_cents": 3560,
+            "status": "completed"
+          },
+          {
+            "order_id": "00006",
+            "customer_id": "C001",
+            "currency": "EUR",
+            "order_amount_cents": 17708,
+            "paid_cents": 23610,
+            "refunded_cents": 3540,
+            "net_cents": 20070,
+            "status": "completed"
+          },
+          {
+            "order_id": "00007",
+            "customer_id": "C002",
+            "currency": "RUB",
+            "order_amount_cents": 19496,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "cancelled"
+          }
+        ],
+        "after_rows": [
+          {
+            "order_id": "00001",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 23658,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "completed"
+          },
+          {
+            "order_id": "00002",
+            "customer_id": "C002",
+            "currency": "USD",
+            "order_amount_cents": 18459,
+            "paid_cents": 12306,
+            "refunded_cents": 3690,
+            "net_cents": 8616,
+            "status": "completed"
+          },
+          {
+            "order_id": "00003",
+            "customer_id": "C001",
+            "currency": "EUR",
+            "order_amount_cents": 28404,
+            "paid_cents": 37874,
+            "refunded_cents": 5680,
+            "net_cents": 32194,
+            "status": "completed"
+          },
+          {
+            "order_id": "00004",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 29275,
+            "paid_cents": 0,
+            "refunded_cents": 5854,
+            "net_cents": -5854,
+            "status": "completed"
+          },
+          {
+            "order_id": "00005",
+            "customer_id": "C003",
+            "currency": "USD",
+            "order_amount_cents": 5340,
+            "paid_cents": 3560,
+            "refunded_cents": 0,
+            "net_cents": 3560,
+            "status": "completed"
+          },
+          {
+            "order_id": "00006",
+            "customer_id": "C001",
+            "currency": "EUR",
+            "order_amount_cents": 17708,
+            "paid_cents": 23610,
+            "refunded_cents": 3540,
+            "net_cents": 20070,
+            "status": "completed"
+          },
+          {
+            "order_id": "00007",
+            "customer_id": "C002",
+            "currency": "RUB",
+            "order_amount_cents": 19496,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "cancelled"
+          }
+        ],
+        "before_sum_mismatches": 8,
+        "after_sum_mismatches": 8,
+        "output_changed": false,
+        "foreign_event_influence": false,
+        "basis": "Same saved SQL rerun; remove ALL versions of latest settled valid foreign-currency event identifiers. Correct output must be invariant. Confirmation requires stable original rerun, complete order coverage and fewer wrong sums after removal.",
+        "limits": "Foreign-row removal must not change a correct result. output_changed proves an invariance violation even if remaining errors keep the wrong-cell count unchanged. confirmed uses the stricter count-reduction criterion. An unconfirmed result does not prove currency handling is correct. Neither criterion uniquely identifies an absent currency predicate versus a faulty join/dedup."
+      },
+      "correct_rows": 2,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 3
+      },
+      "pre_execution_tool_calls": 7,
+      "forced_final_event": 16,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 7,
+      "tool_calls": 9,
+      "input_tokens": 65585,
+      "output_tokens": 5538,
+      "latency_ms": 113129.69,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-reproduction-v1/records/test-marketplace_events-00--baseline--repeat-9.json",
+        "sha256": "642c24aebb3731c83133cfe41270ec75a00ad7fedd51b3ba3fc918fed201b9fe"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-test-marketplace_events-00-r9",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 9,
+      "arm": "control",
+      "passed": false,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "money_sum_defect",
+      "error_category": "money_sum_defect",
+      "currency_check": {
+        "passed": false,
+        "mismatches": [
+          {
+            "order_id": "00004",
+            "column": "refunded_cents",
+            "actual": 322,
+            "expected": 161
+          },
+          {
+            "order_id": "00005",
+            "column": "paid_cents",
+            "actual": 16548,
+            "expected": 8274
+          },
+          {
+            "order_id": "00006",
+            "column": "paid_cents",
+            "actual": 30778,
+            "expected": 15389
+          },
+          {
+            "order_id": "00006",
+            "column": "refunded_cents",
+            "actual": 4616,
+            "expected": 2308
+          },
+          {
+            "order_id": "00002",
+            "column": "paid_cents",
+            "actual": 5722,
+            "expected": 2861
+          },
+          {
+            "order_id": "00002",
+            "column": "refunded_cents",
+            "actual": 1716,
+            "expected": 858
+          },
+          {
+            "order_id": "00003",
+            "column": "paid_cents",
+            "actual": 32962,
+            "expected": 16481
+          },
+          {
+            "order_id": "00003",
+            "column": "refunded_cents",
+            "actual": 4944,
+            "expected": 2472
+          }
+        ],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "checked",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent",
+        "removed_event_ids": {
+          "payments": [
+            "FOREIGN-PX00003",
+            "FOREIGN-PX00005",
+            "FOREIGN-PX00006",
+            "FOREIGN-PX00007",
+            "FOREIGN-PX00002",
+            "FOREIGN-PX00004",
+            "FOREIGN-PX00001"
+          ],
+          "refunds": [
+            "FOREIGN-RX00004",
+            "FOREIGN-RX00005",
+            "FOREIGN-RX00001",
+            "FOREIGN-RX00007",
+            "FOREIGN-RX00006",
+            "FOREIGN-RX00002",
+            "FOREIGN-RX00003"
+          ]
+        },
+        "before_rows": [
+          {
+            "order_id": "00004",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 1610,
+            "paid_cents": 0,
+            "refunded_cents": 322,
+            "net_cents": -322,
+            "status": "completed"
+          },
+          {
+            "order_id": "00005",
+            "customer_id": "C001",
+            "currency": "USD",
+            "order_amount_cents": 24824,
+            "paid_cents": 16548,
+            "refunded_cents": 0,
+            "net_cents": 16548,
+            "status": "completed"
+          },
+          {
+            "order_id": "00006",
+            "customer_id": "C001",
+            "currency": "EUR",
+            "order_amount_cents": 23082,
+            "paid_cents": 30778,
+            "refunded_cents": 4616,
+            "net_cents": 26162,
+            "status": "completed"
+          },
+          {
+            "order_id": "00002",
+            "customer_id": "C003",
+            "currency": "USD",
+            "order_amount_cents": 8584,
+            "paid_cents": 5722,
+            "refunded_cents": 1716,
+            "net_cents": 4006,
+            "status": "completed"
+          },
+          {
+            "order_id": "00007",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 6581,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "cancelled"
+          },
+          {
+            "order_id": "00003",
+            "customer_id": "C002",
+            "currency": "EUR",
+            "order_amount_cents": 24722,
+            "paid_cents": 32962,
+            "refunded_cents": 4944,
+            "net_cents": 28018,
+            "status": "completed"
+          },
+          {
+            "order_id": "00001",
+            "customer_id": "C003",
+            "currency": "RUB",
+            "order_amount_cents": 2771,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "completed"
+          }
+        ],
+        "after_rows": [
+          {
+            "order_id": "00004",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 1610,
+            "paid_cents": 0,
+            "refunded_cents": 322,
+            "net_cents": -322,
+            "status": "completed"
+          },
+          {
+            "order_id": "00005",
+            "customer_id": "C001",
+            "currency": "USD",
+            "order_amount_cents": 24824,
+            "paid_cents": 16548,
+            "refunded_cents": 0,
+            "net_cents": 16548,
+            "status": "completed"
+          },
+          {
+            "order_id": "00006",
+            "customer_id": "C001",
+            "currency": "EUR",
+            "order_amount_cents": 23082,
+            "paid_cents": 30778,
+            "refunded_cents": 4616,
+            "net_cents": 26162,
+            "status": "completed"
+          },
+          {
+            "order_id": "00002",
+            "customer_id": "C003",
+            "currency": "USD",
+            "order_amount_cents": 8584,
+            "paid_cents": 5722,
+            "refunded_cents": 1716,
+            "net_cents": 4006,
+            "status": "completed"
+          },
+          {
+            "order_id": "00007",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 6581,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "cancelled"
+          },
+          {
+            "order_id": "00003",
+            "customer_id": "C002",
+            "currency": "EUR",
+            "order_amount_cents": 24722,
+            "paid_cents": 32962,
+            "refunded_cents": 4944,
+            "net_cents": 28018,
+            "status": "completed"
+          },
+          {
+            "order_id": "00001",
+            "customer_id": "C003",
+            "currency": "RUB",
+            "order_amount_cents": 2771,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "completed"
+          }
+        ],
+        "before_sum_mismatches": 8,
+        "after_sum_mismatches": 8,
+        "output_changed": false,
+        "foreign_event_influence": false,
+        "basis": "Same saved SQL rerun; remove ALL versions of latest settled valid foreign-currency event identifiers. Correct output must be invariant. Confirmation requires stable original rerun, complete order coverage and fewer wrong sums after removal.",
+        "limits": "Foreign-row removal must not change a correct result. output_changed proves an invariance violation even if remaining errors keep the wrong-cell count unchanged. confirmed uses the stricter count-reduction criterion. An unconfirmed result does not prove currency handling is correct. Neither criterion uniquely identifies an absent currency predicate versus a faulty join/dedup."
+      },
+      "correct_rows": 2,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 3
+      },
+      "pre_execution_tool_calls": 7,
+      "forced_final_event": 16,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 7,
+      "tool_calls": 9,
+      "input_tokens": 68928,
+      "output_tokens": 5729,
+      "latency_ms": 132017.27,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-reproduction-v1/records/test-legacy_sales-03--baseline--repeat-9.json",
+        "sha256": "88ab0c3df5d67f308628555f64ed84f96b26324de294e206d8941616db19600b"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-test-legacy_sales-03-r9",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 10,
+      "arm": "control",
+      "passed": true,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "correct",
+      "error_category": "correct",
+      "currency_check": {
+        "passed": true,
+        "mismatches": [],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "not_needed_correct_sums",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 7,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 3
+      },
+      "pre_execution_tool_calls": 7,
+      "forced_final_event": null,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 6,
+      "tool_calls": 8,
+      "input_tokens": 48751,
+      "output_tokens": 4631,
+      "latency_ms": 96109.33,
+      "budget_exhausted": false,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-reproduction-v1/records/test-marketplace_events-00--baseline--repeat-10.json",
+        "sha256": "7a8dc8952313995ef35b9c49ec90b72b904f53505565a56d4495a4a9ccc5e037"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-test-marketplace_events-00-r10",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 10,
+      "arm": "control",
+      "passed": true,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "correct",
+      "error_category": "correct",
+      "currency_check": {
+        "passed": true,
+        "mismatches": [],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "not_needed_correct_sums",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 7,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 3
+      },
+      "pre_execution_tool_calls": 7,
+      "forced_final_event": 16,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 7,
+      "tool_calls": 9,
+      "input_tokens": 68626,
+      "output_tokens": 5721,
+      "latency_ms": 91767.31,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-reproduction-v1/records/test-legacy_sales-03--baseline--repeat-10.json",
+        "sha256": "652cea11fb702c3aafec6215e9e7a2fe8e383b51f35f74b12d980504551dbd4f"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-test-legacy_sales-03-r10",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 1,
+      "arm": "currency-policy",
+      "passed": false,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "money_sum_defect",
+      "error_category": "money_sum_defect",
+      "currency_check": {
+        "passed": false,
+        "mismatches": [
+          {
+            "order_id": "00002",
+            "column": "paid_cents",
+            "actual": 12306,
+            "expected": 6153
+          },
+          {
+            "order_id": "00002",
+            "column": "refunded_cents",
+            "actual": 3690,
+            "expected": 1845
+          },
+          {
+            "order_id": "00003",
+            "column": "paid_cents",
+            "actual": 37874,
+            "expected": 18937
+          },
+          {
+            "order_id": "00003",
+            "column": "refunded_cents",
+            "actual": 5680,
+            "expected": 2840
+          },
+          {
+            "order_id": "00004",
+            "column": "refunded_cents",
+            "actual": 5854,
+            "expected": 2927
+          },
+          {
+            "order_id": "00005",
+            "column": "paid_cents",
+            "actual": 3560,
+            "expected": 1780
+          },
+          {
+            "order_id": "00006",
+            "column": "paid_cents",
+            "actual": 23610,
+            "expected": 11805
+          },
+          {
+            "order_id": "00006",
+            "column": "refunded_cents",
+            "actual": 3540,
+            "expected": 1770
+          }
+        ],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "checked",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent",
+        "removed_event_ids": {
+          "payments": [
+            "FOREIGN-PX00002",
+            "FOREIGN-PX00003",
+            "FOREIGN-PX00007",
+            "FOREIGN-PX00005",
+            "FOREIGN-PX00001",
+            "FOREIGN-PX00004",
+            "FOREIGN-PX00006"
+          ],
+          "refunds": [
+            "FOREIGN-RX00005",
+            "FOREIGN-RX00001",
+            "FOREIGN-RX00003",
+            "FOREIGN-RX00006",
+            "FOREIGN-RX00002",
+            "FOREIGN-RX00004",
+            "FOREIGN-RX00007"
+          ]
+        },
+        "before_rows": [
+          {
+            "order_id": "00001",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 23658,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "completed"
+          },
+          {
+            "order_id": "00002",
+            "customer_id": "C002",
+            "currency": "USD",
+            "order_amount_cents": 18459,
+            "paid_cents": 12306,
+            "refunded_cents": 3690,
+            "net_cents": 8616,
+            "status": "completed"
+          },
+          {
+            "order_id": "00003",
+            "customer_id": "C001",
+            "currency": "EUR",
+            "order_amount_cents": 28404,
+            "paid_cents": 37874,
+            "refunded_cents": 5680,
+            "net_cents": 32194,
+            "status": "completed"
+          },
+          {
+            "order_id": "00004",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 29275,
+            "paid_cents": 0,
+            "refunded_cents": 5854,
+            "net_cents": -5854,
+            "status": "completed"
+          },
+          {
+            "order_id": "00005",
+            "customer_id": "C003",
+            "currency": "USD",
+            "order_amount_cents": 5340,
+            "paid_cents": 3560,
+            "refunded_cents": 0,
+            "net_cents": 3560,
+            "status": "completed"
+          },
+          {
+            "order_id": "00006",
+            "customer_id": "C001",
+            "currency": "EUR",
+            "order_amount_cents": 17708,
+            "paid_cents": 23610,
+            "refunded_cents": 3540,
+            "net_cents": 20070,
+            "status": "completed"
+          },
+          {
+            "order_id": "00007",
+            "customer_id": "C002",
+            "currency": "RUB",
+            "order_amount_cents": 19496,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "cancelled"
+          }
+        ],
+        "after_rows": [
+          {
+            "order_id": "00001",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 23658,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "completed"
+          },
+          {
+            "order_id": "00002",
+            "customer_id": "C002",
+            "currency": "USD",
+            "order_amount_cents": 18459,
+            "paid_cents": 12306,
+            "refunded_cents": 3690,
+            "net_cents": 8616,
+            "status": "completed"
+          },
+          {
+            "order_id": "00003",
+            "customer_id": "C001",
+            "currency": "EUR",
+            "order_amount_cents": 28404,
+            "paid_cents": 37874,
+            "refunded_cents": 5680,
+            "net_cents": 32194,
+            "status": "completed"
+          },
+          {
+            "order_id": "00004",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 29275,
+            "paid_cents": 0,
+            "refunded_cents": 5854,
+            "net_cents": -5854,
+            "status": "completed"
+          },
+          {
+            "order_id": "00005",
+            "customer_id": "C003",
+            "currency": "USD",
+            "order_amount_cents": 5340,
+            "paid_cents": 3560,
+            "refunded_cents": 0,
+            "net_cents": 3560,
+            "status": "completed"
+          },
+          {
+            "order_id": "00006",
+            "customer_id": "C001",
+            "currency": "EUR",
+            "order_amount_cents": 17708,
+            "paid_cents": 23610,
+            "refunded_cents": 3540,
+            "net_cents": 20070,
+            "status": "completed"
+          },
+          {
+            "order_id": "00007",
+            "customer_id": "C002",
+            "currency": "RUB",
+            "order_amount_cents": 19496,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "cancelled"
+          }
+        ],
+        "before_sum_mismatches": 8,
+        "after_sum_mismatches": 8,
+        "output_changed": false,
+        "foreign_event_influence": false,
+        "basis": "Same saved SQL rerun; remove ALL versions of latest settled valid foreign-currency event identifiers. Correct output must be invariant. Confirmation requires stable original rerun, complete order coverage and fewer wrong sums after removal.",
+        "limits": "Foreign-row removal must not change a correct result. output_changed proves an invariance violation even if remaining errors keep the wrong-cell count unchanged. confirmed uses the stricter count-reduction criterion. An unconfirmed result does not prove currency handling is correct. Neither criterion uniquely identifies an absent currency predicate versus a faulty join/dedup."
+      },
+      "correct_rows": 2,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 3
+      },
+      "pre_execution_tool_calls": 7,
+      "forced_final_event": 16,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 7,
+      "tool_calls": 9,
+      "input_tokens": 66115,
+      "output_tokens": 5275,
+      "latency_ms": 80933.16,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-currency-policy-v1/records/test-marketplace_events-00--currency-policy--repeat-1.json",
+        "sha256": "4977130a7209d9ad07641347f6029ceb18509889c220abcf619172f3de5ba0e8"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-policy-test-marketplace_events-00-r1",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 1,
+      "arm": "currency-policy",
+      "passed": true,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "correct",
+      "error_category": "correct",
+      "currency_check": {
+        "passed": true,
+        "mismatches": [],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "not_needed_correct_sums",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 7,
+      "expected_rows": 7,
+      "first_execution_event": 16,
+      "first_execution_step": 6,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 6
+      },
+      "pre_execution_tool_calls": 10,
+      "forced_final_event": 17,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 0,
+      "llm_calls": 7,
+      "tool_calls": 11,
+      "input_tokens": 69115,
+      "output_tokens": 4037,
+      "latency_ms": 59687.23,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-currency-policy-v1/records/test-legacy_sales-03--currency-policy--repeat-1.json",
+        "sha256": "dcef92e8e3540e48fb6aa3773d36ed4140562e5feaa5c4358792ce141ddfacff"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-policy-test-legacy_sales-03-r1",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 2,
+      "arm": "currency-policy",
+      "passed": false,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "money_sum_defect",
+      "error_category": "money_sum_defect",
+      "currency_check": {
+        "passed": false,
+        "mismatches": [
+          {
+            "order_id": "00002",
+            "column": "paid_cents",
+            "actual": 12306,
+            "expected": 6153
+          },
+          {
+            "order_id": "00002",
+            "column": "refunded_cents",
+            "actual": 3690,
+            "expected": 1845
+          },
+          {
+            "order_id": "00003",
+            "column": "paid_cents",
+            "actual": 37874,
+            "expected": 18937
+          },
+          {
+            "order_id": "00003",
+            "column": "refunded_cents",
+            "actual": 5680,
+            "expected": 2840
+          },
+          {
+            "order_id": "00004",
+            "column": "refunded_cents",
+            "actual": 5854,
+            "expected": 2927
+          },
+          {
+            "order_id": "00005",
+            "column": "paid_cents",
+            "actual": 3560,
+            "expected": 1780
+          },
+          {
+            "order_id": "00006",
+            "column": "paid_cents",
+            "actual": 23610,
+            "expected": 11805
+          },
+          {
+            "order_id": "00006",
+            "column": "refunded_cents",
+            "actual": 3540,
+            "expected": 1770
+          }
+        ],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "checked",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent",
+        "removed_event_ids": {
+          "payments": [
+            "FOREIGN-PX00002",
+            "FOREIGN-PX00003",
+            "FOREIGN-PX00007",
+            "FOREIGN-PX00005",
+            "FOREIGN-PX00001",
+            "FOREIGN-PX00004",
+            "FOREIGN-PX00006"
+          ],
+          "refunds": [
+            "FOREIGN-RX00005",
+            "FOREIGN-RX00001",
+            "FOREIGN-RX00003",
+            "FOREIGN-RX00006",
+            "FOREIGN-RX00002",
+            "FOREIGN-RX00004",
+            "FOREIGN-RX00007"
+          ]
+        },
+        "before_rows": [
+          {
+            "order_id": "00001",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 23658,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "completed"
+          },
+          {
+            "order_id": "00002",
+            "customer_id": "C002",
+            "currency": "USD",
+            "order_amount_cents": 18459,
+            "paid_cents": 12306,
+            "refunded_cents": 3690,
+            "net_cents": 8616,
+            "status": "completed"
+          },
+          {
+            "order_id": "00003",
+            "customer_id": "C001",
+            "currency": "EUR",
+            "order_amount_cents": 28404,
+            "paid_cents": 37874,
+            "refunded_cents": 5680,
+            "net_cents": 32194,
+            "status": "completed"
+          },
+          {
+            "order_id": "00004",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 29275,
+            "paid_cents": 0,
+            "refunded_cents": 5854,
+            "net_cents": -5854,
+            "status": "completed"
+          },
+          {
+            "order_id": "00005",
+            "customer_id": "C003",
+            "currency": "USD",
+            "order_amount_cents": 5340,
+            "paid_cents": 3560,
+            "refunded_cents": 0,
+            "net_cents": 3560,
+            "status": "completed"
+          },
+          {
+            "order_id": "00006",
+            "customer_id": "C001",
+            "currency": "EUR",
+            "order_amount_cents": 17708,
+            "paid_cents": 23610,
+            "refunded_cents": 3540,
+            "net_cents": 20070,
+            "status": "completed"
+          },
+          {
+            "order_id": "00007",
+            "customer_id": "C002",
+            "currency": "RUB",
+            "order_amount_cents": 19496,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "cancelled"
+          }
+        ],
+        "after_rows": [
+          {
+            "order_id": "00001",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 23658,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "completed"
+          },
+          {
+            "order_id": "00002",
+            "customer_id": "C002",
+            "currency": "USD",
+            "order_amount_cents": 18459,
+            "paid_cents": 12306,
+            "refunded_cents": 3690,
+            "net_cents": 8616,
+            "status": "completed"
+          },
+          {
+            "order_id": "00003",
+            "customer_id": "C001",
+            "currency": "EUR",
+            "order_amount_cents": 28404,
+            "paid_cents": 37874,
+            "refunded_cents": 5680,
+            "net_cents": 32194,
+            "status": "completed"
+          },
+          {
+            "order_id": "00004",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 29275,
+            "paid_cents": 0,
+            "refunded_cents": 5854,
+            "net_cents": -5854,
+            "status": "completed"
+          },
+          {
+            "order_id": "00005",
+            "customer_id": "C003",
+            "currency": "USD",
+            "order_amount_cents": 5340,
+            "paid_cents": 3560,
+            "refunded_cents": 0,
+            "net_cents": 3560,
+            "status": "completed"
+          },
+          {
+            "order_id": "00006",
+            "customer_id": "C001",
+            "currency": "EUR",
+            "order_amount_cents": 17708,
+            "paid_cents": 23610,
+            "refunded_cents": 3540,
+            "net_cents": 20070,
+            "status": "completed"
+          },
+          {
+            "order_id": "00007",
+            "customer_id": "C002",
+            "currency": "RUB",
+            "order_amount_cents": 19496,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "cancelled"
+          }
+        ],
+        "before_sum_mismatches": 8,
+        "after_sum_mismatches": 8,
+        "output_changed": false,
+        "foreign_event_influence": false,
+        "basis": "Same saved SQL rerun; remove ALL versions of latest settled valid foreign-currency event identifiers. Correct output must be invariant. Confirmation requires stable original rerun, complete order coverage and fewer wrong sums after removal.",
+        "limits": "Foreign-row removal must not change a correct result. output_changed proves an invariance violation even if remaining errors keep the wrong-cell count unchanged. confirmed uses the stricter count-reduction criterion. An unconfirmed result does not prove currency handling is correct. Neither criterion uniquely identifies an absent currency predicate versus a faulty join/dedup."
+      },
+      "correct_rows": 2,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 3
+      },
+      "pre_execution_tool_calls": 7,
+      "forced_final_event": 16,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 7,
+      "tool_calls": 9,
+      "input_tokens": 66010,
+      "output_tokens": 5172,
+      "latency_ms": 89622.78,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-currency-policy-v1/records/test-marketplace_events-00--currency-policy--repeat-2.json",
+        "sha256": "65c9629306f655fc06c87a7c31fa96d9cd8305ead922335867f02ce2f94ad229"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-policy-test-marketplace_events-00-r2",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 2,
+      "arm": "currency-policy",
+      "passed": true,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "correct",
+      "error_category": "correct",
+      "currency_check": {
+        "passed": true,
+        "mismatches": [],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "not_needed_correct_sums",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 7,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 3
+      },
+      "pre_execution_tool_calls": 7,
+      "forced_final_event": 16,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 7,
+      "tool_calls": 9,
+      "input_tokens": 69304,
+      "output_tokens": 5667,
+      "latency_ms": 99370.29,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-currency-policy-v1/records/test-legacy_sales-03--currency-policy--repeat-2.json",
+        "sha256": "2fa7764f84c5142fd4e68ae1c26bbb40c6c84dd557e33e7a2722d0bc360cef26"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-policy-test-legacy_sales-03-r2",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 3,
+      "arm": "currency-policy",
+      "passed": true,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "correct",
+      "error_category": "correct",
+      "currency_check": {
+        "passed": true,
+        "mismatches": [],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "not_needed_correct_sums",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 7,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 3
+      },
+      "pre_execution_tool_calls": 7,
+      "forced_final_event": 16,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 7,
+      "tool_calls": 9,
+      "input_tokens": 66014,
+      "output_tokens": 5216,
+      "latency_ms": 92163.15,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-currency-policy-v1/records/test-marketplace_events-00--currency-policy--repeat-3.json",
+        "sha256": "736017bfe3a9aaff70990fbed11f0768caafc15b258b3d7db50618ac048b4ef4"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-policy-test-marketplace_events-00-r3",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 3,
+      "arm": "currency-policy",
+      "passed": false,
+      "pipeline_executed": false,
+      "public_passed": false,
+      "error": "no_pipeline_executed",
+      "category": "no_artifact",
+      "error_category": "no_artifact",
+      "currency_check": {
+        "passed": false,
+        "status": "not_executed",
+        "coverage_complete": false,
+        "mismatches": []
+      },
+      "currency_diagnostic": {
+        "status": "not_executed",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 0,
+      "expected_rows": 7,
+      "first_execution_event": null,
+      "first_execution_step": null,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 6
+      },
+      "pre_execution_tool_calls": 10,
+      "forced_final_event": 16,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 0,
+      "llm_calls": 7,
+      "tool_calls": 10,
+      "input_tokens": 63206,
+      "output_tokens": 2630,
+      "latency_ms": 47232.42,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-currency-policy-v1/records/test-legacy_sales-03--currency-policy--repeat-3.json",
+        "sha256": "dea19ccb410f5d822f844ad342a73b71e99f2652ed09c8bc9d9e36c8e859ec91"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-policy-test-legacy_sales-03-r3",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 4,
+      "arm": "currency-policy",
+      "passed": false,
+      "pipeline_executed": false,
+      "public_passed": false,
+      "error": "no_pipeline_executed",
+      "category": "no_artifact",
+      "error_category": "no_artifact",
+      "currency_check": {
+        "passed": false,
+        "status": "not_executed",
+        "coverage_complete": false,
+        "mismatches": []
+      },
+      "currency_diagnostic": {
+        "status": "not_executed",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 0,
+      "expected_rows": 7,
+      "first_execution_event": null,
+      "first_execution_step": null,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 6
+      },
+      "pre_execution_tool_calls": 10,
+      "forced_final_event": 16,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 0,
+      "llm_calls": 7,
+      "tool_calls": 10,
+      "input_tokens": 67822,
+      "output_tokens": 3730,
+      "latency_ms": 60199.41,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-currency-policy-v1/records/test-marketplace_events-00--currency-policy--repeat-4.json",
+        "sha256": "d04b53de7b236f6527d58a9da7cb7ce7cf48e5e55c58fcfd849310b061aa5f94"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-policy-test-marketplace_events-00-r4",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 4,
+      "arm": "currency-policy",
+      "passed": false,
+      "pipeline_executed": false,
+      "public_passed": false,
+      "error": "no_pipeline_executed",
+      "category": "no_artifact",
+      "error_category": "no_artifact",
+      "currency_check": {
+        "passed": false,
+        "status": "not_executed",
+        "coverage_complete": false,
+        "mismatches": []
+      },
+      "currency_diagnostic": {
+        "status": "not_executed",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 0,
+      "expected_rows": 7,
+      "first_execution_event": null,
+      "first_execution_step": null,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 6
+      },
+      "pre_execution_tool_calls": 10,
+      "forced_final_event": 16,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 0,
+      "llm_calls": 7,
+      "tool_calls": 10,
+      "input_tokens": 65726,
+      "output_tokens": 2206,
+      "latency_ms": 36813.78,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-currency-policy-v1/records/test-legacy_sales-03--currency-policy--repeat-4.json",
+        "sha256": "9b034c505408ce62c8131aaffc84b5b414d506dfc7c39c1fd184f598c96067ca"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-policy-test-legacy_sales-03-r4",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 5,
+      "arm": "currency-policy",
+      "passed": true,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "correct",
+      "error_category": "correct",
+      "currency_check": {
+        "passed": true,
+        "mismatches": [],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "not_needed_correct_sums",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 7,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 3
+      },
+      "pre_execution_tool_calls": 7,
+      "forced_final_event": null,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 6,
+      "tool_calls": 8,
+      "input_tokens": 49350,
+      "output_tokens": 4649,
+      "latency_ms": 65499.74,
+      "budget_exhausted": false,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-currency-policy-v1/records/test-marketplace_events-00--currency-policy--repeat-5.json",
+        "sha256": "76f5bb73267f6cd0f3f62c1111514c0022e4470d1b2ba378a04fa9f678e63afa"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-policy-test-marketplace_events-00-r5",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 5,
+      "arm": "currency-policy",
+      "passed": false,
+      "pipeline_executed": false,
+      "public_passed": false,
+      "error": "no_pipeline_executed",
+      "category": "no_artifact",
+      "error_category": "no_artifact",
+      "currency_check": {
+        "passed": false,
+        "status": "not_executed",
+        "coverage_complete": false,
+        "mismatches": []
+      },
+      "currency_diagnostic": {
+        "status": "not_executed",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 0,
+      "expected_rows": 7,
+      "first_execution_event": null,
+      "first_execution_step": null,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 5
+      },
+      "pre_execution_tool_calls": 9,
+      "forced_final_event": 16,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 7,
+      "tool_calls": 9,
+      "input_tokens": 68571,
+      "output_tokens": 5450,
+      "latency_ms": 76755.99,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-currency-policy-v1/records/test-legacy_sales-03--currency-policy--repeat-5.json",
+        "sha256": "9c6948f3108dd90f7025b8b3151cda20ef90a3a3f56ddb1a89cc39174ea68b54"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-policy-test-legacy_sales-03-r5",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 6,
+      "arm": "currency-policy",
+      "passed": false,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "money_sum_defect",
+      "error_category": "money_sum_defect",
+      "currency_check": {
+        "passed": false,
+        "mismatches": [
+          {
+            "order_id": "00002",
+            "column": "paid_cents",
+            "actual": 12306,
+            "expected": 6153
+          },
+          {
+            "order_id": "00002",
+            "column": "refunded_cents",
+            "actual": 3690,
+            "expected": 1845
+          },
+          {
+            "order_id": "00005",
+            "column": "paid_cents",
+            "actual": 3560,
+            "expected": 1780
+          },
+          {
+            "order_id": "00004",
+            "column": "refunded_cents",
+            "actual": 5854,
+            "expected": 2927
+          },
+          {
+            "order_id": "00006",
+            "column": "paid_cents",
+            "actual": 23610,
+            "expected": 11805
+          },
+          {
+            "order_id": "00006",
+            "column": "refunded_cents",
+            "actual": 3540,
+            "expected": 1770
+          },
+          {
+            "order_id": "00003",
+            "column": "paid_cents",
+            "actual": 37874,
+            "expected": 18937
+          },
+          {
+            "order_id": "00003",
+            "column": "refunded_cents",
+            "actual": 5680,
+            "expected": 2840
+          }
+        ],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "checked",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent",
+        "removed_event_ids": {
+          "payments": [
+            "FOREIGN-PX00002",
+            "FOREIGN-PX00003",
+            "FOREIGN-PX00007",
+            "FOREIGN-PX00005",
+            "FOREIGN-PX00001",
+            "FOREIGN-PX00004",
+            "FOREIGN-PX00006"
+          ],
+          "refunds": [
+            "FOREIGN-RX00005",
+            "FOREIGN-RX00001",
+            "FOREIGN-RX00003",
+            "FOREIGN-RX00006",
+            "FOREIGN-RX00002",
+            "FOREIGN-RX00004",
+            "FOREIGN-RX00007"
+          ]
+        },
+        "before_rows": [
+          {
+            "order_id": "00002",
+            "customer_id": "C002",
+            "currency": "USD",
+            "order_amount_cents": 18459,
+            "paid_cents": 12306,
+            "refunded_cents": 3690,
+            "net_cents": 8616,
+            "status": "completed"
+          },
+          {
+            "order_id": "00001",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 23658,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "completed"
+          },
+          {
+            "order_id": "00005",
+            "customer_id": "C003",
+            "currency": "USD",
+            "order_amount_cents": 5340,
+            "paid_cents": 3560,
+            "refunded_cents": 0,
+            "net_cents": 3560,
+            "status": "completed"
+          },
+          {
+            "order_id": "00004",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 29275,
+            "paid_cents": 0,
+            "refunded_cents": 5854,
+            "net_cents": -5854,
+            "status": "completed"
+          },
+          {
+            "order_id": "00007",
+            "customer_id": "C002",
+            "currency": "RUB",
+            "order_amount_cents": 19496,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "cancelled"
+          },
+          {
+            "order_id": "00006",
+            "customer_id": "C001",
+            "currency": "EUR",
+            "order_amount_cents": 17708,
+            "paid_cents": 23610,
+            "refunded_cents": 3540,
+            "net_cents": 20070,
+            "status": "completed"
+          },
+          {
+            "order_id": "00003",
+            "customer_id": "C001",
+            "currency": "EUR",
+            "order_amount_cents": 28404,
+            "paid_cents": 37874,
+            "refunded_cents": 5680,
+            "net_cents": 32194,
+            "status": "completed"
+          }
+        ],
+        "after_rows": [
+          {
+            "order_id": "00002",
+            "customer_id": "C002",
+            "currency": "USD",
+            "order_amount_cents": 18459,
+            "paid_cents": 12306,
+            "refunded_cents": 3690,
+            "net_cents": 8616,
+            "status": "completed"
+          },
+          {
+            "order_id": "00001",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 23658,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "completed"
+          },
+          {
+            "order_id": "00005",
+            "customer_id": "C003",
+            "currency": "USD",
+            "order_amount_cents": 5340,
+            "paid_cents": 3560,
+            "refunded_cents": 0,
+            "net_cents": 3560,
+            "status": "completed"
+          },
+          {
+            "order_id": "00004",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 29275,
+            "paid_cents": 0,
+            "refunded_cents": 5854,
+            "net_cents": -5854,
+            "status": "completed"
+          },
+          {
+            "order_id": "00007",
+            "customer_id": "C002",
+            "currency": "RUB",
+            "order_amount_cents": 19496,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "cancelled"
+          },
+          {
+            "order_id": "00006",
+            "customer_id": "C001",
+            "currency": "EUR",
+            "order_amount_cents": 17708,
+            "paid_cents": 23610,
+            "refunded_cents": 3540,
+            "net_cents": 20070,
+            "status": "completed"
+          },
+          {
+            "order_id": "00003",
+            "customer_id": "C001",
+            "currency": "EUR",
+            "order_amount_cents": 28404,
+            "paid_cents": 37874,
+            "refunded_cents": 5680,
+            "net_cents": 32194,
+            "status": "completed"
+          }
+        ],
+        "before_sum_mismatches": 8,
+        "after_sum_mismatches": 8,
+        "output_changed": false,
+        "foreign_event_influence": false,
+        "basis": "Same saved SQL rerun; remove ALL versions of latest settled valid foreign-currency event identifiers. Correct output must be invariant. Confirmation requires stable original rerun, complete order coverage and fewer wrong sums after removal.",
+        "limits": "Foreign-row removal must not change a correct result. output_changed proves an invariance violation even if remaining errors keep the wrong-cell count unchanged. confirmed uses the stricter count-reduction criterion. An unconfirmed result does not prove currency handling is correct. Neither criterion uniquely identifies an absent currency predicate versus a faulty join/dedup."
+      },
+      "correct_rows": 2,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 3
+      },
+      "pre_execution_tool_calls": 7,
+      "forced_final_event": 16,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 7,
+      "tool_calls": 9,
+      "input_tokens": 66289,
+      "output_tokens": 5373,
+      "latency_ms": 93893.26,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-currency-policy-v1/records/test-marketplace_events-00--currency-policy--repeat-6.json",
+        "sha256": "b929f7f149f308062d95672aae6f75f47a8159dec1c9c7500a7ce5b2e328434c"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-policy-test-marketplace_events-00-r6",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 6,
+      "arm": "currency-policy",
+      "passed": false,
+      "pipeline_executed": false,
+      "public_passed": false,
+      "error": "no_pipeline_executed",
+      "category": "no_artifact",
+      "error_category": "no_artifact",
+      "currency_check": {
+        "passed": false,
+        "status": "not_executed",
+        "coverage_complete": false,
+        "mismatches": []
+      },
+      "currency_diagnostic": {
+        "status": "not_executed",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 0,
+      "expected_rows": 7,
+      "first_execution_event": null,
+      "first_execution_step": null,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 6
+      },
+      "pre_execution_tool_calls": 10,
+      "forced_final_event": 16,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 0,
+      "llm_calls": 7,
+      "tool_calls": 10,
+      "input_tokens": 61383,
+      "output_tokens": 2281,
+      "latency_ms": 45599.72,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-currency-policy-v1/records/test-legacy_sales-03--currency-policy--repeat-6.json",
+        "sha256": "03e3e647319e1ecf9d87c48065b4ff11a82f8546cb6215f54bba036c2c6647f4"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-policy-test-legacy_sales-03-r6",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 7,
+      "arm": "currency-policy",
+      "passed": true,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "correct",
+      "error_category": "correct",
+      "currency_check": {
+        "passed": true,
+        "mismatches": [],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "not_needed_correct_sums",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 7,
+      "expected_rows": 7,
+      "first_execution_event": 14,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 5
+      },
+      "pre_execution_tool_calls": 9,
+      "forced_final_event": 17,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 0,
+      "llm_calls": 7,
+      "tool_calls": 11,
+      "input_tokens": 73898,
+      "output_tokens": 4116,
+      "latency_ms": 71962.02,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-currency-policy-v1/records/test-marketplace_events-00--currency-policy--repeat-7.json",
+        "sha256": "345ed553381da6d62425440f6a64cfefb7dc7295c1cdb020e5bcc669e4e94e93"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-policy-test-marketplace_events-00-r7",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 7,
+      "arm": "currency-policy",
+      "passed": false,
+      "pipeline_executed": true,
+      "public_passed": false,
+      "error": null,
+      "category": "other_artifact_defect",
+      "error_category": "other_artifact_defect",
+      "currency_check": {
+        "passed": false,
+        "mismatches": [
+          {
+            "order_id": "00002",
+            "column": "paid_cents",
+            "actual": 5722,
+            "expected": 2861
+          },
+          {
+            "order_id": "00002",
+            "column": "refunded_cents",
+            "actual": 1716,
+            "expected": 858
+          },
+          {
+            "order_id": "00002",
+            "column": "paid_cents",
+            "actual": 5722,
+            "expected": 2861
+          },
+          {
+            "order_id": "00002",
+            "column": "refunded_cents",
+            "actual": 1716,
+            "expected": 858
+          }
+        ],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": false
+      },
+      "currency_diagnostic": {
+        "status": "coverage_incomplete",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 6,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 3
+      },
+      "pre_execution_tool_calls": 7,
+      "forced_final_event": 17,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 7,
+      "tool_calls": 10,
+      "input_tokens": 68542,
+      "output_tokens": 5213,
+      "latency_ms": 92325.97,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-currency-policy-v1/records/test-legacy_sales-03--currency-policy--repeat-7.json",
+        "sha256": "e25e4595223dc9627172b4d60fea229c2d2c9f1926fec7abd2b7917687f9473e"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-policy-test-legacy_sales-03-r7",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 8,
+      "arm": "currency-policy",
+      "passed": false,
+      "pipeline_executed": true,
+      "public_passed": false,
+      "error": null,
+      "category": "other_artifact_defect",
+      "error_category": "other_artifact_defect",
+      "currency_check": {
+        "passed": false,
+        "mismatches": [
+          {
+            "order_id": "00002",
+            "column": "paid_cents",
+            "actual": 13083,
+            "expected": 6153
+          },
+          {
+            "order_id": "00002",
+            "column": "refunded_cents",
+            "actual": 4467,
+            "expected": 1845
+          },
+          {
+            "order_id": "00001",
+            "column": "paid_cents",
+            "actual": 777,
+            "expected": 0
+          },
+          {
+            "order_id": "00001",
+            "column": "refunded_cents",
+            "actual": 777,
+            "expected": 0
+          },
+          {
+            "order_id": "00002",
+            "column": "paid_cents",
+            "actual": 13083,
+            "expected": 6153
+          },
+          {
+            "order_id": "00002",
+            "column": "refunded_cents",
+            "actual": 4467,
+            "expected": 1845
+          },
+          {
+            "order_id": "00005",
+            "column": "paid_cents",
+            "actual": 4337,
+            "expected": 1780
+          },
+          {
+            "order_id": "00005",
+            "column": "refunded_cents",
+            "actual": 777,
+            "expected": 0
+          },
+          {
+            "order_id": "00004",
+            "column": "paid_cents",
+            "actual": 777,
+            "expected": 0
+          },
+          {
+            "order_id": "00004",
+            "column": "refunded_cents",
+            "actual": 6631,
+            "expected": 2927
+          },
+          {
+            "order_id": "00007",
+            "column": "paid_cents",
+            "actual": 777,
+            "expected": 0
+          },
+          {
+            "order_id": "00007",
+            "column": "refunded_cents",
+            "actual": 777,
+            "expected": 0
+          },
+          {
+            "order_id": "00006",
+            "column": "paid_cents",
+            "actual": 24387,
+            "expected": 11805
+          },
+          {
+            "order_id": "00006",
+            "column": "refunded_cents",
+            "actual": 4317,
+            "expected": 1770
+          },
+          {
+            "order_id": "00003",
+            "column": "paid_cents",
+            "actual": 38651,
+            "expected": 18937
+          },
+          {
+            "order_id": "00003",
+            "column": "refunded_cents",
+            "actual": 6457,
+            "expected": 2840
+          }
+        ],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": false
+      },
+      "currency_diagnostic": {
+        "status": "coverage_incomplete",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 0,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 3
+      },
+      "pre_execution_tool_calls": 7,
+      "forced_final_event": 17,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 7,
+      "tool_calls": 10,
+      "input_tokens": 66963,
+      "output_tokens": 5011,
+      "latency_ms": 85399.51,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-currency-policy-v1/records/test-marketplace_events-00--currency-policy--repeat-8.json",
+        "sha256": "6515346829c5b6dbd530cad9029a7f3fecf78d95853588d7cc13abb3a2c58aac"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-policy-test-marketplace_events-00-r8",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 8,
+      "arm": "currency-policy",
+      "passed": false,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "money_sum_defect",
+      "error_category": "money_sum_defect",
+      "currency_check": {
+        "passed": false,
+        "mismatches": [
+          {
+            "order_id": "00002",
+            "column": "paid_cents",
+            "actual": 5722,
+            "expected": 2861
+          },
+          {
+            "order_id": "00002",
+            "column": "refunded_cents",
+            "actual": 1716,
+            "expected": 858
+          },
+          {
+            "order_id": "00003",
+            "column": "paid_cents",
+            "actual": 32962,
+            "expected": 16481
+          },
+          {
+            "order_id": "00003",
+            "column": "refunded_cents",
+            "actual": 4944,
+            "expected": 2472
+          },
+          {
+            "order_id": "00004",
+            "column": "refunded_cents",
+            "actual": 322,
+            "expected": 161
+          },
+          {
+            "order_id": "00005",
+            "column": "paid_cents",
+            "actual": 16548,
+            "expected": 8274
+          },
+          {
+            "order_id": "00006",
+            "column": "paid_cents",
+            "actual": 30778,
+            "expected": 15389
+          },
+          {
+            "order_id": "00006",
+            "column": "refunded_cents",
+            "actual": 4616,
+            "expected": 2308
+          }
+        ],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "checked",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent",
+        "removed_event_ids": {
+          "payments": [
+            "FOREIGN-PX00003",
+            "FOREIGN-PX00005",
+            "FOREIGN-PX00006",
+            "FOREIGN-PX00007",
+            "FOREIGN-PX00002",
+            "FOREIGN-PX00004",
+            "FOREIGN-PX00001"
+          ],
+          "refunds": [
+            "FOREIGN-RX00004",
+            "FOREIGN-RX00005",
+            "FOREIGN-RX00001",
+            "FOREIGN-RX00007",
+            "FOREIGN-RX00006",
+            "FOREIGN-RX00002",
+            "FOREIGN-RX00003"
+          ]
+        },
+        "before_rows": [
+          {
+            "order_id": "00001",
+            "customer_id": "C003",
+            "currency": "RUB",
+            "order_amount_cents": 2771,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "completed"
+          },
+          {
+            "order_id": "00002",
+            "customer_id": "C003",
+            "currency": "USD",
+            "order_amount_cents": 8584,
+            "paid_cents": 5722,
+            "refunded_cents": 1716,
+            "net_cents": 4006,
+            "status": "completed"
+          },
+          {
+            "order_id": "00003",
+            "customer_id": "C002",
+            "currency": "EUR",
+            "order_amount_cents": 24722,
+            "paid_cents": 32962,
+            "refunded_cents": 4944,
+            "net_cents": 28018,
+            "status": "completed"
+          },
+          {
+            "order_id": "00004",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 1610,
+            "paid_cents": 0,
+            "refunded_cents": 322,
+            "net_cents": -322,
+            "status": "completed"
+          },
+          {
+            "order_id": "00005",
+            "customer_id": "C001",
+            "currency": "USD",
+            "order_amount_cents": 24824,
+            "paid_cents": 16548,
+            "refunded_cents": 0,
+            "net_cents": 16548,
+            "status": "completed"
+          },
+          {
+            "order_id": "00006",
+            "customer_id": "C001",
+            "currency": "EUR",
+            "order_amount_cents": 23082,
+            "paid_cents": 30778,
+            "refunded_cents": 4616,
+            "net_cents": 26162,
+            "status": "completed"
+          },
+          {
+            "order_id": "00007",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 6581,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "cancelled"
+          }
+        ],
+        "after_rows": [
+          {
+            "order_id": "00001",
+            "customer_id": "C003",
+            "currency": "RUB",
+            "order_amount_cents": 2771,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "completed"
+          },
+          {
+            "order_id": "00002",
+            "customer_id": "C003",
+            "currency": "USD",
+            "order_amount_cents": 8584,
+            "paid_cents": 5722,
+            "refunded_cents": 1716,
+            "net_cents": 4006,
+            "status": "completed"
+          },
+          {
+            "order_id": "00003",
+            "customer_id": "C002",
+            "currency": "EUR",
+            "order_amount_cents": 24722,
+            "paid_cents": 32962,
+            "refunded_cents": 4944,
+            "net_cents": 28018,
+            "status": "completed"
+          },
+          {
+            "order_id": "00004",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 1610,
+            "paid_cents": 0,
+            "refunded_cents": 322,
+            "net_cents": -322,
+            "status": "completed"
+          },
+          {
+            "order_id": "00005",
+            "customer_id": "C001",
+            "currency": "USD",
+            "order_amount_cents": 24824,
+            "paid_cents": 16548,
+            "refunded_cents": 0,
+            "net_cents": 16548,
+            "status": "completed"
+          },
+          {
+            "order_id": "00006",
+            "customer_id": "C001",
+            "currency": "EUR",
+            "order_amount_cents": 23082,
+            "paid_cents": 30778,
+            "refunded_cents": 4616,
+            "net_cents": 26162,
+            "status": "completed"
+          },
+          {
+            "order_id": "00007",
+            "customer_id": "C004",
+            "currency": "RUB",
+            "order_amount_cents": 6581,
+            "paid_cents": 0,
+            "refunded_cents": 0,
+            "net_cents": 0,
+            "status": "cancelled"
+          }
+        ],
+        "before_sum_mismatches": 8,
+        "after_sum_mismatches": 8,
+        "output_changed": false,
+        "foreign_event_influence": false,
+        "basis": "Same saved SQL rerun; remove ALL versions of latest settled valid foreign-currency event identifiers. Correct output must be invariant. Confirmation requires stable original rerun, complete order coverage and fewer wrong sums after removal.",
+        "limits": "Foreign-row removal must not change a correct result. output_changed proves an invariance violation even if remaining errors keep the wrong-cell count unchanged. confirmed uses the stricter count-reduction criterion. An unconfirmed result does not prove currency handling is correct. Neither criterion uniquely identifies an absent currency predicate versus a faulty join/dedup."
+      },
+      "correct_rows": 2,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 3
+      },
+      "pre_execution_tool_calls": 7,
+      "forced_final_event": 16,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 7,
+      "tool_calls": 9,
+      "input_tokens": 69887,
+      "output_tokens": 6242,
+      "latency_ms": 133318.73,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-currency-policy-v1/records/test-legacy_sales-03--currency-policy--repeat-8.json",
+        "sha256": "291dac6a27bb879e771cbc552146eac3fa69dd22daeea481d6c6d13f1a5b5d9d"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-policy-test-legacy_sales-03-r8",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 9,
+      "arm": "currency-policy",
+      "passed": false,
+      "pipeline_executed": false,
+      "public_passed": false,
+      "error": "no_pipeline_executed",
+      "category": "no_artifact",
+      "error_category": "no_artifact",
+      "currency_check": {
+        "passed": false,
+        "status": "not_executed",
+        "coverage_complete": false,
+        "mismatches": []
+      },
+      "currency_diagnostic": {
+        "status": "not_executed",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 0,
+      "expected_rows": 7,
+      "first_execution_event": null,
+      "first_execution_step": null,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 6
+      },
+      "pre_execution_tool_calls": 10,
+      "forced_final_event": 16,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 0,
+      "llm_calls": 7,
+      "tool_calls": 10,
+      "input_tokens": 63234,
+      "output_tokens": 3035,
+      "latency_ms": 74039.68,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-currency-policy-v1/records/test-marketplace_events-00--currency-policy--repeat-9.json",
+        "sha256": "f0868df3f17c087802656016d9b774a8dd6ab05d2a5fad1c3e235039f241b2c2"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-policy-test-marketplace_events-00-r9",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 9,
+      "arm": "currency-policy",
+      "passed": false,
+      "pipeline_executed": false,
+      "public_passed": false,
+      "error": "no_pipeline_executed",
+      "category": "no_artifact",
+      "error_category": "no_artifact",
+      "currency_check": {
+        "passed": false,
+        "status": "not_executed",
+        "coverage_complete": false,
+        "mismatches": []
+      },
+      "currency_diagnostic": {
+        "status": "not_executed",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 0,
+      "expected_rows": 7,
+      "first_execution_event": null,
+      "first_execution_step": null,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 6
+      },
+      "pre_execution_tool_calls": 10,
+      "forced_final_event": 16,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 0,
+      "llm_calls": 7,
+      "tool_calls": 10,
+      "input_tokens": 63128,
+      "output_tokens": 1982,
+      "latency_ms": 49136.85,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-currency-policy-v1/records/test-legacy_sales-03--currency-policy--repeat-9.json",
+        "sha256": "1a5b4730eaf9e67f64f56900b94a5f1486de00739f216dfe99d8381b20bad770"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-policy-test-legacy_sales-03-r9",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 10,
+      "arm": "currency-policy",
+      "passed": true,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "correct",
+      "error_category": "correct",
+      "currency_check": {
+        "passed": true,
+        "mismatches": [],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "not_needed_correct_sums",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 7,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 3
+      },
+      "pre_execution_tool_calls": 7,
+      "forced_final_event": null,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 1,
+      "llm_calls": 6,
+      "tool_calls": 8,
+      "input_tokens": 49419,
+      "output_tokens": 4656,
+      "latency_ms": 81296.42,
+      "budget_exhausted": false,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-currency-policy-v1/records/test-marketplace_events-00--currency-policy--repeat-10.json",
+        "sha256": "73f2e20945c9bae1c90cd0357994b41d18a69371e8a1746d5c4cd71c62ca8dac"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-policy-test-marketplace_events-00-r10",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 10,
+      "arm": "currency-policy",
+      "passed": true,
+      "pipeline_executed": true,
+      "public_passed": true,
+      "error": null,
+      "category": "correct",
+      "error_category": "correct",
+      "currency_check": {
+        "passed": true,
+        "mismatches": [],
+        "scope": "Checks paid/refunded sums only; separate checks cover row coverage, types and other business rules.",
+        "status": "checked",
+        "coverage_complete": true
+      },
+      "currency_diagnostic": {
+        "status": "not_needed_correct_sums",
+        "confirmed": false,
+        "kind": "Offline source counterfactual; never fed to the agent"
+      },
+      "correct_rows": 7,
+      "expected_rows": 7,
+      "first_execution_event": 13,
+      "first_execution_step": 5,
+      "pre_execution_tool_counts": {
+        "list_sources": 1,
+        "inspect_source": 3,
+        "query": 4
+      },
+      "pre_execution_tool_calls": 8,
+      "forced_final_event": 16,
+      "agent_turns": 6,
+      "empty_turns": 0,
+      "truncated_turns": 0,
+      "llm_calls": 7,
+      "tool_calls": 10,
+      "input_tokens": 65796,
+      "output_tokens": 4646,
+      "latency_ms": 75547.13,
+      "budget_exhausted": true,
+      "source_record": {
+        "path": "workshop-v2/evidence/manual-baseline-currency-policy-v1/records/test-legacy_sales-03--currency-policy--repeat-10.json",
+        "sha256": "cfe88ed7dffa93073acdc582969bc15dde78b1d8091ad99e1b2158190e3ba0df"
+      },
+      "trajectory_viewer": "trajectory.html?case=reproduction-policy-test-legacy_sales-03-r10",
+      "returned_models": [
+        "DeepSeek-V4-Flash-0731"
+      ]
+    }
+  ],
+  "paired": [
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 1,
+      "control_passed": false,
+      "candidate_passed": false
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 2,
+      "control_passed": true,
+      "candidate_passed": false
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 3,
+      "control_passed": true,
+      "candidate_passed": true
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 4,
+      "control_passed": true,
+      "candidate_passed": false
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 5,
+      "control_passed": true,
+      "candidate_passed": true
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 6,
+      "control_passed": true,
+      "candidate_passed": false
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 7,
+      "control_passed": true,
+      "candidate_passed": true
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 8,
+      "control_passed": true,
+      "candidate_passed": false
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 9,
+      "control_passed": false,
+      "candidate_passed": false
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 10,
+      "control_passed": true,
+      "candidate_passed": true
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 1,
+      "control_passed": true,
+      "candidate_passed": true
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 2,
+      "control_passed": true,
+      "candidate_passed": true
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 3,
+      "control_passed": true,
+      "candidate_passed": false
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 4,
+      "control_passed": false,
+      "candidate_passed": false
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 5,
+      "control_passed": true,
+      "candidate_passed": false
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 6,
+      "control_passed": false,
+      "candidate_passed": false
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 7,
+      "control_passed": true,
+      "candidate_passed": false
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 8,
+      "control_passed": true,
+      "candidate_passed": false
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 9,
+      "control_passed": false,
+      "candidate_passed": false
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 10,
+      "control_passed": true,
+      "candidate_passed": true
+    }
+  ],
+  "category_labels": {
+    "correct": "Все строки верны",
+    "currency_defect": "Подтверждено влияние событий в чужой валюте",
+    "money_sum_defect": "Ошибка денежных сумм; причина не установлена",
+    "other_artifact_defect": "Другая ошибка таблицы",
+    "no_artifact": "Pipeline не исполнен",
+    "transport": "Ошибка API / исполнения эксперимента"
+  },
+  "classification_note": "currency_defect requires counterfactual proof that foreign-event removal changes the saved SQL output and reduces wrong sums. A sum mismatch alone is money_sum_defect. No execution is no_artifact.",
+  "illustrative_diagnosis": {
+    "kind": "Instructor posthoc SELECT diagnosis, not a rerun of the model or an improvement in its recorded score.",
+    "source_record": {
+      "path": "workshop-v2/evidence/manual-baseline-reproduction-v1/records/test-marketplace_events-00--baseline--repeat-1.json",
+      "sha256": "e9dab50ac67131039ec2d2e6329ba30083c8f50dcbbeda4855fc03455e80fe8e"
+    },
+    "task_id": "test-marketplace_events-00",
+    "repeat": 1,
+    "arm": "control",
+    "original_correct_rows": 2,
+    "expected_rows": 7,
+    "pipeline_sql": "WITH latest_orders AS (\n  SELECT\n    SAFE_ID(entity_ref) AS order_id,\n    TRIM(principal_ref) AS customer_id,\n    UPPER(TRIM(asset_code)) AS currency,\n    MONEY_CENTS(monetary_value, 'decimal_dot') AS order_amount_cents,\n    LOWER(TRIM(stage)) AS status,\n    CAST(change_seq AS INTEGER) AS seq\n  FROM orders\n  WHERE SAFE_ID(entity_ref) IS NOT NULL\n),\norder_max AS (\n  SELECT order_id, MAX(seq) AS max_seq FROM latest_orders GROUP BY order_id\n),\nfinal_orders AS (\n  SELECT DISTINCT lo.order_id, lo.customer_id, lo.currency, lo.order_amount_cents, lo.status\n  FROM latest_orders lo JOIN order_max om ON lo.order_id=om.order_id AND lo.seq=om.max_seq\n),\npay_dedup AS (\n  SELECT SAFE_ID(entity_ref) AS event_id, SAFE_ID(entity_ref_order) AS order_id,\n    CAST(change_seq AS INTEGER) AS seq,\n    MONEY_CENTS(monetary_value,'decimal_dot') AS amount_cents,\n    UPPER(TRIM(asset_code)) AS currency, LOWER(TRIM(stage)) AS stage\n  FROM payments WHERE SAFE_ID(entity_ref) IS NOT NULL\n),\npay_max AS (SELECT event_id, MAX(seq) AS max_seq FROM pay_dedup GROUP BY event_id),\npay_latest AS (\n  SELECT pd.order_id, pd.amount_cents, pd.currency, pd.stage\n  FROM pay_dedup pd JOIN pay_max pm ON pd.event_id=pm.event_id AND pd.seq=pm.max_seq\n),\npay_valid AS (\n  SELECT pl.order_id, pl.amount_cents\n  FROM pay_latest pl JOIN final_orders fo ON pl.order_id=fo.order_id\n  WHERE pl.stage='settled' AND pl.amount_cents IS NOT NULL AND pl.currency=fo.currency\n),\npay_agg AS (SELECT order_id, SUM(amount_cents) AS paid_cents FROM pay_valid GROUP BY order_id),\nref_dedup AS (\n  SELECT SAFE_ID(entity_ref) AS event_id, SAFE_ID(entity_ref_order) AS order_id,\n    CAST(change_seq AS INTEGER) AS seq,\n    MONEY_CENTS(monetary_value,'decimal_dot') AS amount_cents,\n    UPPER(TRIM(asset_code)) AS currency, LOWER(TRIM(stage)) AS stage\n  FROM refunds WHERE SAFE_ID(entity_ref) IS NOT NULL\n),\nref_max AS (SELECT event_id, MAX(seq) AS max_seq FROM ref_dedup GROUP BY event_id),\nref_latest AS (\n  SELECT rd.order_id, rd.amount_cents, rd.currency, rd.stage\n  FROM ref_dedup rd JOIN ref_max rm ON rd.event_id=rm.event_id AND rd.seq=rm.max_seq\n),\nref_valid AS (\n  SELECT rl.order_id, rl.amount_cents\n  FROM ref_latest rl JOIN final_orders fo ON rl.order_id=fo.order_id\n  WHERE rl.stage='settled' AND rl.amount_cents IS NOT NULL AND rl.currency=fo.currency\n),\nref_agg AS (SELECT order_id, SUM(amount_cents) AS refunded_cents FROM ref_valid GROUP BY order_id)\nSELECT\n  fo.order_id,\n  fo.customer_id,\n  fo.currency,\n  fo.order_amount_cents,\n  COALESCE(pa.paid_cents,0) AS paid_cents,\n  COALESCE(ra.refunded_cents,0) AS refunded_cents,\n  COALESCE(pa.paid_cents,0) - COALESCE(ra.refunded_cents,0) AS net_cents,\n  fo.status\nFROM final_orders fo\nLEFT JOIN pay_agg pa ON fo.order_id=pa.order_id\nLEFT JOIN ref_agg ra ON fo.order_id=ra.order_id",
+    "diagnostic_sql": "WITH latest_orders AS (\n  SELECT\n    SAFE_ID(entity_ref) AS order_id,\n    TRIM(principal_ref) AS customer_id,\n    UPPER(TRIM(asset_code)) AS currency,\n    MONEY_CENTS(monetary_value, 'decimal_dot') AS order_amount_cents,\n    LOWER(TRIM(stage)) AS status,\n    CAST(change_seq AS INTEGER) AS seq\n  FROM orders\n  WHERE SAFE_ID(entity_ref) IS NOT NULL\n),\norder_max AS (\n  SELECT order_id, MAX(seq) AS max_seq FROM latest_orders GROUP BY order_id\n),\nfinal_orders AS (\n  SELECT DISTINCT lo.order_id, lo.customer_id, lo.currency, lo.order_amount_cents, lo.status\n  FROM latest_orders lo JOIN order_max om ON lo.order_id=om.order_id AND lo.seq=om.max_seq\n),\npay_dedup AS (\n  SELECT SAFE_ID(entity_ref) AS event_id, SAFE_ID(entity_ref_order) AS order_id,\n    CAST(change_seq AS INTEGER) AS seq,\n    MONEY_CENTS(monetary_value,'decimal_dot') AS amount_cents,\n    UPPER(TRIM(asset_code)) AS currency, LOWER(TRIM(stage)) AS stage\n  FROM payments WHERE SAFE_ID(entity_ref) IS NOT NULL\n),\npay_max AS (SELECT event_id, MAX(seq) AS max_seq FROM pay_dedup GROUP BY event_id),\npay_latest AS (\n  SELECT DISTINCT pd.event_id, pd.order_id, pd.amount_cents, pd.currency, pd.stage\n  FROM pay_dedup pd JOIN pay_max pm ON pd.event_id=pm.event_id AND pd.seq=pm.max_seq\n),\npay_valid AS (\n  SELECT pl.order_id, pl.amount_cents\n  FROM pay_latest pl JOIN final_orders fo ON pl.order_id=fo.order_id\n  WHERE pl.stage='settled' AND pl.amount_cents IS NOT NULL AND pl.currency=fo.currency\n),\npay_agg AS (SELECT order_id, SUM(amount_cents) AS paid_cents FROM pay_valid GROUP BY order_id),\nref_dedup AS (\n  SELECT SAFE_ID(entity_ref) AS event_id, SAFE_ID(entity_ref_order) AS order_id,\n    CAST(change_seq AS INTEGER) AS seq,\n    MONEY_CENTS(monetary_value,'decimal_dot') AS amount_cents,\n    UPPER(TRIM(asset_code)) AS currency, LOWER(TRIM(stage)) AS stage\n  FROM refunds WHERE SAFE_ID(entity_ref) IS NOT NULL\n),\nref_max AS (SELECT event_id, MAX(seq) AS max_seq FROM ref_dedup GROUP BY event_id),\nref_latest AS (\n  SELECT DISTINCT rd.event_id, rd.order_id, rd.amount_cents, rd.currency, rd.stage\n  FROM ref_dedup rd JOIN ref_max rm ON rd.event_id=rm.event_id AND rd.seq=rm.max_seq\n),\nref_valid AS (\n  SELECT rl.order_id, rl.amount_cents\n  FROM ref_latest rl JOIN final_orders fo ON rl.order_id=fo.order_id\n  WHERE rl.stage='settled' AND rl.amount_cents IS NOT NULL AND rl.currency=fo.currency\n),\nref_agg AS (SELECT order_id, SUM(amount_cents) AS refunded_cents FROM ref_valid GROUP BY order_id)\nSELECT\n  fo.order_id,\n  fo.customer_id,\n  fo.currency,\n  fo.order_amount_cents,\n  COALESCE(pa.paid_cents,0) AS paid_cents,\n  COALESCE(ra.refunded_cents,0) AS refunded_cents,\n  COALESCE(pa.paid_cents,0) - COALESCE(ra.refunded_cents,0) AS net_cents,\n  fo.status\nFROM final_orders fo\nLEFT JOIN pay_agg pa ON fo.order_id=pa.order_id\nLEFT JOIN ref_agg ra ON fo.order_id=ra.order_id",
+    "diagnostic_rows": [
+      {
+        "order_id": "00002",
+        "customer_id": "C002",
+        "currency": "USD",
+        "order_amount_cents": 18459,
+        "paid_cents": 6153,
+        "refunded_cents": 1845,
+        "net_cents": 4308,
+        "status": "completed"
+      },
+      {
+        "order_id": "00001",
+        "customer_id": "C004",
+        "currency": "RUB",
+        "order_amount_cents": 23658,
+        "paid_cents": 0,
+        "refunded_cents": 0,
+        "net_cents": 0,
+        "status": "completed"
+      },
+      {
+        "order_id": "00005",
+        "customer_id": "C003",
+        "currency": "USD",
+        "order_amount_cents": 5340,
+        "paid_cents": 1780,
+        "refunded_cents": 0,
+        "net_cents": 1780,
+        "status": "completed"
+      },
+      {
+        "order_id": "00004",
+        "customer_id": "C004",
+        "currency": "RUB",
+        "order_amount_cents": 29275,
+        "paid_cents": 0,
+        "refunded_cents": 2927,
+        "net_cents": -2927,
+        "status": "completed"
+      },
+      {
+        "order_id": "00007",
+        "customer_id": "C002",
+        "currency": "RUB",
+        "order_amount_cents": 19496,
+        "paid_cents": 0,
+        "refunded_cents": 0,
+        "net_cents": 0,
+        "status": "cancelled"
+      },
+      {
+        "order_id": "00006",
+        "customer_id": "C001",
+        "currency": "EUR",
+        "order_amount_cents": 17708,
+        "paid_cents": 11805,
+        "refunded_cents": 1770,
+        "net_cents": 10035,
+        "status": "completed"
+      },
+      {
+        "order_id": "00003",
+        "customer_id": "C001",
+        "currency": "EUR",
+        "order_amount_cents": 28404,
+        "paid_cents": 18937,
+        "refunded_cents": 2840,
+        "net_cents": 16097,
+        "status": "completed"
+      }
+    ],
+    "diagnostic_exact_match": true,
+    "pipeline_executions": 0,
+    "explanation": "Currency equality is already present. MAX(revision) join retains repeated copies of latest payments/refunds. DISTINCT on event_id plus payload removes copies without merging different legitimate events with equal amounts.",
+    "trajectory_viewer": "trajectory.html?case=reproduction-test-marketplace_events-00-r1"
+  },
+  "protocol_sources": [
+    {
+      "path": "workshop-v2/evidence/manual-baseline-reproduction-v1/protocol.json",
+      "sha256": "6559ea07014fb88678c5c3d619544ff70101776b47bc26982309b95a2ce7f726"
+    },
+    {
+      "path": "workshop-v2/evidence/manual-baseline-currency-policy-v1/protocol.json",
+      "sha256": "4fe11d2237ee09b7db7d2aac5e47cba2495702973dfccb3b4c54e2b3017a36bf"
+    }
+  ],
+  "limits": [
+    "Known cases selected after seeing failures; frequencies describe them, not arbitrary tasks.",
+    "Prompt only changed; stochastic model/service variation remains.",
+    "Elapsed latency under concurrent load is not an isolated comparison.",
+    "Curated12 study uses different workflow/budgets; no causal cross-study comparison."
+  ]
+}

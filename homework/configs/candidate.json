@@ -1,0 +1,15 @@
+{
+  "name": "selected_substantive_meta_harness",
+  "prompt_patch": "IMPORTANT EXECUTION PRIORITY: You must call execute_pipeline at least once before the final step. Do not spend more than 2 tool calls on inspection/exploration before your first pipeline execution. Build a complete pipeline from the business contract and source schemas immediately, execute it, then use remaining steps to inspect and refine. If you encounter an apparent data ambiguity, do not block execution: make a reasonable assumption consistent with the contract, document it, and execute. A partial or imperfect executed pipeline is always better than no pipeline.",
+  "max_steps": 8,
+  "workflow": "react",
+  "review": "none",
+  "tools": [
+    "list_sources",
+    "inspect_source",
+    "query",
+    "execute_pipeline"
+  ],
+  "max_tokens": 3000,
+  "temperature": 0.0
+}

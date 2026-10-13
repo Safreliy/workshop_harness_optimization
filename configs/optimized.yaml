@@ -1,0 +1,21 @@
+name: trained_harness
+prompt_profile: baseline
+prompt_patch: Before running any sample queries, first inspect the schema and form
+  a clear plan for the query and any index trials. Avoid repeated sampling; each sample
+  should test a specific hypothesis.
+routing: task_kind
+workflow: react
+context_strategy: raw
+context_partition: shared
+review_mode: none
+tool_description_profile: diagnostic
+enabled_tools:
+- list_tables
+- describe_table
+- explain_query
+- run_readonly_query
+- trial_index_plan
+tool_description_overrides: {}
+max_steps: 8
+max_context_chars: 60000
+temperature: 0.0

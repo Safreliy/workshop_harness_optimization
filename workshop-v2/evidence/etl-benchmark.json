@@ -1,0 +1,2420 @@
+{
+  "id": "etl-fixed-v4-24x3",
+  "dataset": "benchmarks/etl_holdout_v2",
+  "manifest_sha256": "2270b5878805c82bbfd28ffd3fa58103c24dcade6c7d1b4c85e2e0f7783be5a9",
+  "protocol_sha256": "0ede15dc5380b1db28150ed5d3cea1796293384099b6845aba0ee8b7249e55a0",
+  "model": "DeepSeek-V4-Flash-0731",
+  "unique_tasks": 24,
+  "schema_families": 6,
+  "repeats_per_task": 3,
+  "executions_per_config": 72,
+  "total_executions": 288,
+  "metric": "Fully correct executions / 72, using the independent grade.passed flag.",
+  "status": "Originally frozen holdout; now disclosed, use as a regression benchmark, not a new blind test.",
+  "tasks": {
+    "test-billing_bridge-00": {
+      "task_sha256": "950fc88fd350fef29f8e5fb2666a6edcaca790085b29e7ba593edac99084134c",
+      "private_sha256": "e40ecab31a85d6b536b54e9c1da6ea8ebd752aa43608b76b08044c2ae986350e",
+      "family": "billing_bridge"
+    },
+    "test-billing_bridge-01": {
+      "task_sha256": "d4ff6e8a4e17f05a1a696d3650f59e6d8da9d8f016831c11a8a8df10938984a3",
+      "private_sha256": "8ccf7fabc7617b5c760d88c8a7d4a9accc4ec661a9384ac66fb1f0afb0006131",
+      "family": "billing_bridge"
+    },
+    "test-billing_bridge-02": {
+      "task_sha256": "0e4e85da6c0d48b7ade1c1a81487c0f4f9f61d53a42211c613dd42091360e1b6",
+      "private_sha256": "e1a3ea701dad74d34776544fcf04507950126824894c609f5edff1143dd1fcef",
+      "family": "billing_bridge"
+    },
+    "test-billing_bridge-03": {
+      "task_sha256": "46414e1ca7647268ad38a3b2d4997f3aa9048389fd43d38fb694e38c193839b1",
+      "private_sha256": "68f7d77f3a3f65fdd69b4627ef2275bd12c485998e89fe07a0bb96ccc1a3cdae",
+      "family": "billing_bridge"
+    },
+    "test-regional_journal-00": {
+      "task_sha256": "4074e4dbb22a2c4a36ec47bd993e6892b62644fcffe0715501093a01511798e7",
+      "private_sha256": "bf20f6e6f633e1120638ac93e2f7418934b5e579e0947563b90d20fae367608a",
+      "family": "regional_journal"
+    },
+    "test-regional_journal-01": {
+      "task_sha256": "17e063834dc48e6aa090c2c157075a20b8e59fb005aaa4a6e6a120ca3f0a9cda",
+      "private_sha256": "22042bfc146cbde950b45a8208c745d38775d7027c5809f5b470dbd457ae8682",
+      "family": "regional_journal"
+    },
+    "test-regional_journal-02": {
+      "task_sha256": "bbaf676b7a06caff726356b3e2f7457a8e6f99eb612b64d93ff5a947158cc979",
+      "private_sha256": "1e5e74ea7ec4cea9ec2196c7bc95066d262a16dab5992a0671631b1c39cd03b6",
+      "family": "regional_journal"
+    },
+    "test-regional_journal-03": {
+      "task_sha256": "8fd5a507ba5b143a7a3c4176f0c0fa61754ab8790b0bbb8f7d27b5d6e3c80699",
+      "private_sha256": "0e905e49203b5fd9d26ff66f743858d732512fab6015f21d4425f98f2270c9ed",
+      "family": "regional_journal"
+    },
+    "test-erp_settlements-00": {
+      "task_sha256": "45d6d4f65bfd1528c21203e99abfb4290f04c029c6bb4c453b6b217bd01927dc",
+      "private_sha256": "7f7ed886d241a96592c49c32825aaa127abd992cc168f4e73e5f5d2e0a8151ae",
+      "family": "erp_settlements"
+    },
+    "test-erp_settlements-01": {
+      "task_sha256": "d8f7cb18521fe4b3eb63dcf4167a4613bba8edab6cbe851bd573e1b3d76e98e7",
+      "private_sha256": "97ca70ec8f15ed1b6dd45fd9fcf084ec521e8f10a94ec6dcadfc3feab676bc04",
+      "family": "erp_settlements"
+    },
+    "test-erp_settlements-02": {
+      "task_sha256": "99c8a9985ae9354d1be3fb4a0625baa095d8e5a2bfe62aa8d2886b87157674b3",
+      "private_sha256": "47dbe95061f54451e40ab0b15eda5edf801c6dfe11a0db815596b9d708d455d9",
+      "family": "erp_settlements"
+    },
+    "test-erp_settlements-03": {
+      "task_sha256": "b68a6d3aebd1f40ab09bea14b9f47bb0ebe250806dc0b2a4ec4a1cfac55fdd72",
+      "private_sha256": "1b132708c99537751e99cc9988779f1eb3664ddfb6e5cb8b6a5d18d658dd5fe1",
+      "family": "erp_settlements"
+    },
+    "test-partner_reconciliation-00": {
+      "task_sha256": "50cd0e99347c4e77262459dfee61c6bfb16967826cd3bb3fa2fad35c19745834",
+      "private_sha256": "96005be034c2a62de783a16878cce0f5c2902b27f3435166b874fbfb1b499482",
+      "family": "partner_reconciliation"
+    },
+    "test-partner_reconciliation-01": {
+      "task_sha256": "dbb5316ff1557cb55e67c3eb30ac9646325695cac1793f9606048d69b068527c",
+      "private_sha256": "827effd6a96b1ec8407eef8fb74f5af46921468293997f0b9604c642b2dcd5a2",
+      "family": "partner_reconciliation"
+    },
+    "test-partner_reconciliation-02": {
+      "task_sha256": "58387dfcd3c830b3f11f75a620806ff0243feab324e0bea08ca5ee3942978023",
+      "private_sha256": "8eda4f890613f16992c3fe4bb3959d969903e69b2f233b7e3ed9f1e0da3275bb",
+      "family": "partner_reconciliation"
+    },
+    "test-partner_reconciliation-03": {
+      "task_sha256": "c746f813d9cb3b7892caf3dfecdb3eafa483179563024c6687c0690e15275806",
+      "private_sha256": "59ec961f132ff5005760d1b2bb402567d40041bb5da4282f35fee8c54aab5a92",
+      "family": "partner_reconciliation"
+    },
+    "test-archive_exports-00": {
+      "task_sha256": "0ff1c8da5cc6fe075ba308817c53adff1d80e070aef3c5ac2c02843addb1ab4e",
+      "private_sha256": "fb06b289606659a9c9f4d48223bec56c6f6205075d2d0a8ff1ea37d553a79560",
+      "family": "archive_exports"
+    },
+    "test-archive_exports-01": {
+      "task_sha256": "e2e0f9716a96092bc38e3d3ead7ed41fe1f5ced52ae88f5118b7e5bdddc73800",
+      "private_sha256": "9c6d895302961d2d6845e6b89d4f3182bd10bc6ca8fd486abbfa7b4e95da3cbb",
+      "family": "archive_exports"
+    },
+    "test-archive_exports-02": {
+      "task_sha256": "435bbf95b7a1e2b1031a65c210d3e8d236f97a97a18bb280be5fdb951508684e",
+      "private_sha256": "6d9f915700a83e233646bfeade92bc3cc4a37d1f7135732257f7ef129a973e27",
+      "family": "archive_exports"
+    },
+    "test-archive_exports-03": {
+      "task_sha256": "51fa07b37a54bdd0d0dea3ea3d1d988921b0c3a2dc688385f03b32bed922e026",
+      "private_sha256": "488d0319a78524b6633d38814cd44059e01a02a81a78a22a56638e6fc38a163a",
+      "family": "archive_exports"
+    },
+    "test-receivables_feed-00": {
+      "task_sha256": "31169e94346815d41836db91192cbd0193c85364dda2731bf118e583516c13aa",
+      "private_sha256": "85706592df9c64e32654270d369d30efab122e85f7ce2433ae39fb3d5a02b5df",
+      "family": "receivables_feed"
+    },
+    "test-receivables_feed-01": {
+      "task_sha256": "91a2ba904c87c8c12dc07b7437b251d54ae852b762ed16494620c0408644258a",
+      "private_sha256": "a32616a96c109eeccdd70bc480037686426fa55cf3847ceb0c0eccbf8199b6e1",
+      "family": "receivables_feed"
+    },
+    "test-receivables_feed-02": {
+      "task_sha256": "fb4ba427f1c67bd31070ee84b53d2b453514bfceda6ff36c28406b40e23e5a25",
+      "private_sha256": "0a2c43bda25fd7abaa5563c2e119f502a5e4dee7504cd5160548945a4f5ce1d6",
+      "family": "receivables_feed"
+    },
+    "test-receivables_feed-03": {
+      "task_sha256": "375de924a2edeff4acbcf580122754d092be7b9720091302b735c3433ff3f42a",
+      "private_sha256": "f18473de47a4426d16b1c19b95d693a72e4667492c9ccc943250bfbdf38602b5",
+      "family": "receivables_feed"
+    }
+  },
+  "configs": [
+    {
+      "id": "final-baseline",
+      "config": {
+        "name": "baseline",
+        "prompt_patch": "",
+        "max_steps": 6,
+        "workflow": "react",
+        "review": "none",
+        "tools": [
+          "list_sources",
+          "inspect_source",
+          "query",
+          "execute_pipeline"
+        ],
+        "max_tokens": 3000,
+        "temperature": 0.0
+      },
+      "passed": 0,
+      "executions": 72,
+      "metrics": {
+        "executions": 72,
+        "passed": 0,
+        "pass_rate": 0.0,
+        "mean_row_score": 0.0,
+        "mean_llm_calls": 7.0,
+        "mean_input_tokens": 91957.81944444444,
+        "mean_output_tokens": 1438.2916666666667,
+        "mean_latency_ms": 32513.40152777778,
+        "errors": 72,
+        "timeouts": 0,
+        "budget_exhausted": 72,
+        "empty_turns": 0,
+        "truncated_turns": 0,
+        "public_check_observations": 72,
+        "no_saved_pipeline": 72,
+        "wrong_table_despite_all_public_checks_pass": 0,
+        "hierarchical_bootstrap_95ci": {
+          "pass_rate": [
+            0.0,
+            0.0
+          ],
+          "mean_row_score": [
+            0.0,
+            0.0
+          ],
+          "mean_llm_calls": [
+            7.0,
+            7.0
+          ],
+          "mean_input_tokens": [
+            75890.85763888889,
+            109646.09479166666
+          ],
+          "mean_output_tokens": [
+            1309.067013888889,
+            1575.4458333333332
+          ],
+          "mean_latency_ms": [
+            29710.348711805556,
+            36067.701100694445
+          ]
+        }
+      },
+      "records": [
+        {
+          "task_id": "test-archive_exports-00",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-1/records/test-archive_exports-00.json",
+          "sha256": "f87c61edf12e60026e387738e998daeeee5e9955730085010e0bbd84fb6c047c"
+        },
+        {
+          "task_id": "test-archive_exports-01",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-1/records/test-archive_exports-01.json",
+          "sha256": "6669b0d53452650fa1826123a100352d151964fb9f73a16751f6040eb5d6fff0"
+        },
+        {
+          "task_id": "test-archive_exports-02",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-1/records/test-archive_exports-02.json",
+          "sha256": "32b464d631bc923683340545747edbb2a996ae34540328461cb36b88b9f9fdb5"
+        },
+        {
+          "task_id": "test-archive_exports-03",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-1/records/test-archive_exports-03.json",
+          "sha256": "671ec865758e2cba913b30a1d608ee8b4826b0151d095dd1cb9b01326d7bda7a"
+        },
+        {
+          "task_id": "test-billing_bridge-00",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-1/records/test-billing_bridge-00.json",
+          "sha256": "e050a0ba314fb2d4c1467699cd8b1fc2cc2b5822d70d6609a0b402540a1b2235"
+        },
+        {
+          "task_id": "test-billing_bridge-01",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-1/records/test-billing_bridge-01.json",
+          "sha256": "5080aa485739b7edbbe877e6c12a35193ed4ef5cba9fa6ebfffd40bd38e81190"
+        },
+        {
+          "task_id": "test-billing_bridge-02",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-1/records/test-billing_bridge-02.json",
+          "sha256": "f1ac8099563ea9caeff84c231e88d24d77d1f8ba0a6b3c48e075b3342b4b0265"
+        },
+        {
+          "task_id": "test-billing_bridge-03",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-1/records/test-billing_bridge-03.json",
+          "sha256": "e9d8ada14908f1f2cd15686f00a7a37456431401805583df4d009f5a96c8ec3b"
+        },
+        {
+          "task_id": "test-erp_settlements-00",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-1/records/test-erp_settlements-00.json",
+          "sha256": "4439eb5682057a3a009f62a50fcece18d2d42890636bb7b74cd9e1ed96ca65a9"
+        },
+        {
+          "task_id": "test-erp_settlements-01",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-1/records/test-erp_settlements-01.json",
+          "sha256": "1118b21cd14bc29cf4c9bafafd8968d1cbccf5ddae4a3101817df29c1cafbdb9"
+        },
+        {
+          "task_id": "test-erp_settlements-02",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-1/records/test-erp_settlements-02.json",
+          "sha256": "79910d294a0a4a48c70d51bfc67f43b725ef203a7f18f0715b5dbee529175585"
+        },
+        {
+          "task_id": "test-erp_settlements-03",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-1/records/test-erp_settlements-03.json",
+          "sha256": "1a1d6150b941b16d84e49e4880ae8d16b8e23d1276aebe3d653b7ef42e41b53d"
+        },
+        {
+          "task_id": "test-partner_reconciliation-00",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-1/records/test-partner_reconciliation-00.json",
+          "sha256": "b67cef53ce8e18049014255c9098fc3ab4bce1d213e432b8f3deff08027a21c4"
+        },
+        {
+          "task_id": "test-partner_reconciliation-01",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-1/records/test-partner_reconciliation-01.json",
+          "sha256": "5c9220cb87d6ad2364461ad116bc99c771873017d14ddea06343e2a927edb7ac"
+        },
+        {
+          "task_id": "test-partner_reconciliation-02",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-1/records/test-partner_reconciliation-02.json",
+          "sha256": "f8e679c9249ebd0f3f964eb1a2f6583cab7c57cdc53e60d9965ddbdcba6850b4"
+        },
+        {
+          "task_id": "test-partner_reconciliation-03",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-1/records/test-partner_reconciliation-03.json",
+          "sha256": "baf9d1d06a4f0d4b60401e3d6d06686066d08bb016efa68150c0bbfb254f4e2c"
+        },
+        {
+          "task_id": "test-receivables_feed-00",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-1/records/test-receivables_feed-00.json",
+          "sha256": "efff895854e0d01f1a5c11bb4d6ff64ac220477ce2d6d94c9afa0e67486b5a1d"
+        },
+        {
+          "task_id": "test-receivables_feed-01",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-1/records/test-receivables_feed-01.json",
+          "sha256": "78479bdd255f2cd74016157b5040b6c9caac90f5016fae7255c6e710fcd21fdf"
+        },
+        {
+          "task_id": "test-receivables_feed-02",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-1/records/test-receivables_feed-02.json",
+          "sha256": "6c5e315688295f77d077f71a13fbdb77782c54dfdbe32663bf23be802d18ec1b"
+        },
+        {
+          "task_id": "test-receivables_feed-03",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-1/records/test-receivables_feed-03.json",
+          "sha256": "074a9ff95af861c5712a1784c59312029b76032e7e0c3c11873a1cada92b4fc2"
+        },
+        {
+          "task_id": "test-regional_journal-00",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-1/records/test-regional_journal-00.json",
+          "sha256": "1937b984cdc08f6256e183a3c01174790cccbec7630211924a9acd41b51bfa44"
+        },
+        {
+          "task_id": "test-regional_journal-01",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-1/records/test-regional_journal-01.json",
+          "sha256": "5ced0bbfb54f741ca625d2e3c0f6763e5eacd75eb71ea47ac5e7d2284dc72382"
+        },
+        {
+          "task_id": "test-regional_journal-02",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-1/records/test-regional_journal-02.json",
+          "sha256": "2a03c9f19e0d52d30bf37d3beef880e9393e58f25047ca2afa5668a94c69ea1e"
+        },
+        {
+          "task_id": "test-regional_journal-03",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-1/records/test-regional_journal-03.json",
+          "sha256": "c76aa07c9dccc5c8b742405fe9a8dd35bbe77e295c1e51e92ce577eacf9b41ca"
+        },
+        {
+          "task_id": "test-archive_exports-00",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-2/records/test-archive_exports-00.json",
+          "sha256": "a0edd36669a134534b6be1e66c1301a586dd46f444207722e172449a1041dc9f"
+        },
+        {
+          "task_id": "test-archive_exports-01",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-2/records/test-archive_exports-01.json",
+          "sha256": "969746a2a77c63106b22685b701cfb1a88326d21500b229e66c1bc7e451b2cc7"
+        },
+        {
+          "task_id": "test-archive_exports-02",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-2/records/test-archive_exports-02.json",
+          "sha256": "53332c5b8751378560bea6aed9f27eea5b7b5278f86330abab19d23242879266"
+        },
+        {
+          "task_id": "test-archive_exports-03",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-2/records/test-archive_exports-03.json",
+          "sha256": "c58df2ec282d4b35a87cda5cfac1350f4606f7ab9fde7d406e5f9f61a4a75002"
+        },
+        {
+          "task_id": "test-billing_bridge-00",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-2/records/test-billing_bridge-00.json",
+          "sha256": "f008de38fb6fcb56bbc403c81dc932cc9b70ea28bc2517053a4d99073734e17b"
+        },
+        {
+          "task_id": "test-billing_bridge-01",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-2/records/test-billing_bridge-01.json",
+          "sha256": "3de33d53b6ee6a8b739d14652a11fa1c1db6476f7c79c3d7c7654458c0f3e81b"
+        },
+        {
+          "task_id": "test-billing_bridge-02",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-2/records/test-billing_bridge-02.json",
+          "sha256": "64527620093b05454174887f04924daec4cbd8a9e3ea403e5267e9ecabc505ee"
+        },
+        {
+          "task_id": "test-billing_bridge-03",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-2/records/test-billing_bridge-03.json",
+          "sha256": "d6cb6859f03bb910d6e979143620fa863a2dd8e861c0760cbeb52fecee1f93d8"
+        },
+        {
+          "task_id": "test-erp_settlements-00",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-2/records/test-erp_settlements-00.json",
+          "sha256": "3314d33f453ff92b9c315bb6639fa2b0782622142a877795bddd4a86c689510d"
+        },
+        {
+          "task_id": "test-erp_settlements-01",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-2/records/test-erp_settlements-01.json",
+          "sha256": "8d57cebdd8e52a61df78033f37e423c62377a672ca8bcbbef06ff8aff9f90831"
+        },
+        {
+          "task_id": "test-erp_settlements-02",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-2/records/test-erp_settlements-02.json",
+          "sha256": "56c9bb936a90dffe3a1061aca8ec380d6c716f57426a40edfefaa6f0433be075"
+        },
+        {
+          "task_id": "test-erp_settlements-03",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-2/records/test-erp_settlements-03.json",
+          "sha256": "6cabf4d97dd35416f86e68f7cdb89e4446e581ad0b683bbeda0b8e99eb3edfbc"
+        },
+        {
+          "task_id": "test-partner_reconciliation-00",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-2/records/test-partner_reconciliation-00.json",
+          "sha256": "51e87b6a11dee76367efd53f6b0c72c3a4feef8048cf2f7a1793ae0700958b22"
+        },
+        {
+          "task_id": "test-partner_reconciliation-01",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-2/records/test-partner_reconciliation-01.json",
+          "sha256": "06aed108a74b9f03449deddec5f16bfc0fed8b790c3c8738e4b630720d76ac6f"
+        },
+        {
+          "task_id": "test-partner_reconciliation-02",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-2/records/test-partner_reconciliation-02.json",
+          "sha256": "7259b21d08a48b1fe65c707e8939ee8823ee45f5236dbc3a261497a12d49a565"
+        },
+        {
+          "task_id": "test-partner_reconciliation-03",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-2/records/test-partner_reconciliation-03.json",
+          "sha256": "2b9394a38532e4facccc4e89ec356664e6b224c03aaee6dce855908eb575e361"
+        },
+        {
+          "task_id": "test-receivables_feed-00",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-2/records/test-receivables_feed-00.json",
+          "sha256": "a7f56ec7f32669c989918fd1b5231b62146975c3cfa212fea7eed5aa1c46138c"
+        },
+        {
+          "task_id": "test-receivables_feed-01",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-2/records/test-receivables_feed-01.json",
+          "sha256": "7efe261f1247e4b843c717a1cadd62e7ad1de08bffffcb697db608252108fa14"
+        },
+        {
+          "task_id": "test-receivables_feed-02",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-2/records/test-receivables_feed-02.json",
+          "sha256": "f59fc66352e300949dfaf1876c6ad067e671171423fff2da94541c8a62e585af"
+        },
+        {
+          "task_id": "test-receivables_feed-03",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-2/records/test-receivables_feed-03.json",
+          "sha256": "911b1218b7427c11524a9e9b7755e81b85b7e18571e281457ae9dc7dfc874a33"
+        },
+        {
+          "task_id": "test-regional_journal-00",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-2/records/test-regional_journal-00.json",
+          "sha256": "de263a444fa150c2d6db21de31b747d37c36939bb4968047a5878cdc03881a69"
+        },
+        {
+          "task_id": "test-regional_journal-01",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-2/records/test-regional_journal-01.json",
+          "sha256": "290621e9c3f5b85329b0890a84f9ad219ac4d4073c869d1a9272b49b27267b99"
+        },
+        {
+          "task_id": "test-regional_journal-02",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-2/records/test-regional_journal-02.json",
+          "sha256": "2e491e48714f9349c982f64a6feec1bd569b1e5bd60602fff74102909b056403"
+        },
+        {
+          "task_id": "test-regional_journal-03",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-2/records/test-regional_journal-03.json",
+          "sha256": "119dd0e97014cdff8d78dc77b37b638299b5062e3630cd37c7683e5b48b98beb"
+        },
+        {
+          "task_id": "test-archive_exports-00",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-3/records/test-archive_exports-00.json",
+          "sha256": "ad7ad4980ec70133900b2e324a8c79d2792938e129c25555f2908ffa15ec1c30"
+        },
+        {
+          "task_id": "test-archive_exports-01",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-3/records/test-archive_exports-01.json",
+          "sha256": "40b7b1c5609be34d311d40b200cc0f51283ccf4b05f95e9ab1a0980b66f35053"
+        },
+        {
+          "task_id": "test-archive_exports-02",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-3/records/test-archive_exports-02.json",
+          "sha256": "9d3f34b9c4cd7c43a05e993fc917d4023305c94fa51ca4ca622045af9d11a447"
+        },
+        {
+          "task_id": "test-archive_exports-03",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-3/records/test-archive_exports-03.json",
+          "sha256": "42f4a73eacf064cbd20b3c04c768a6836d61a3d61a8876959d646f837c367113"
+        },
+        {
+          "task_id": "test-billing_bridge-00",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-3/records/test-billing_bridge-00.json",
+          "sha256": "028838f4b2d52da37dfe726a5f9c08a75775753f85af50f97bc2fd95914ac1a0"
+        },
+        {
+          "task_id": "test-billing_bridge-01",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-3/records/test-billing_bridge-01.json",
+          "sha256": "e5dfa0746a206afe943b2b5aa77c84f76562dbadc73815797b5c7de011f955a5"
+        },
+        {
+          "task_id": "test-billing_bridge-02",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-3/records/test-billing_bridge-02.json",
+          "sha256": "9032013ba84b1fe893fa28c1694fb27194d19e6168fdffe6bc821984f06b815c"
+        },
+        {
+          "task_id": "test-billing_bridge-03",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-3/records/test-billing_bridge-03.json",
+          "sha256": "185d96c9eabb4b844c78751271bab5705bf989762cc9f75e9e0eaa9f99184a4e"
+        },
+        {
+          "task_id": "test-erp_settlements-00",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-3/records/test-erp_settlements-00.json",
+          "sha256": "d004aa25ab88496e6472ac750b6a0d8d2a093162524d5a2ca5199ff8f2fc86df"
+        },
+        {
+          "task_id": "test-erp_settlements-01",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-3/records/test-erp_settlements-01.json",
+          "sha256": "e8ac2b15b87ead2741dbc70e710f6ac8d7483ca7b1d9ed1fbefa88056179a5d6"
+        },
+        {
+          "task_id": "test-erp_settlements-02",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-3/records/test-erp_settlements-02.json",
+          "sha256": "88c44b60b0216da78c684cffb001d859cdb45cd4ceb3c7bf8d3d8a92d2786d1b"
+        },
+        {
+          "task_id": "test-erp_settlements-03",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-3/records/test-erp_settlements-03.json",
+          "sha256": "66f50d71358208efd1385f514bb858788d4234aaac117522ea920c30ff2315bb"
+        },
+        {
+          "task_id": "test-partner_reconciliation-00",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-3/records/test-partner_reconciliation-00.json",
+          "sha256": "3e96824e271f2e5dc76f9ce637b96303cd580f9c9df0fc802786f72df0d4f8e3"
+        },
+        {
+          "task_id": "test-partner_reconciliation-01",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-3/records/test-partner_reconciliation-01.json",
+          "sha256": "6791391c28435033f38b232080abd394c19da009bf5dcd4fe9833d1b71e6a07a"
+        },
+        {
+          "task_id": "test-partner_reconciliation-02",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-3/records/test-partner_reconciliation-02.json",
+          "sha256": "3e123443d0bc0138c508c4ad83dcd230f8bdf10ac2958449d00735d9bd34c5c0"
+        },
+        {
+          "task_id": "test-partner_reconciliation-03",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-3/records/test-partner_reconciliation-03.json",
+          "sha256": "4bc955990b3077d756ba7f460e14ae6cd68db3147319ebe3b8cfcdd5c2cc058d"
+        },
+        {
+          "task_id": "test-receivables_feed-00",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-3/records/test-receivables_feed-00.json",
+          "sha256": "1f162e51b09841fe4ef0b18c6449558c320fc8eb69fc14096d1d4c41b9cef551"
+        },
+        {
+          "task_id": "test-receivables_feed-01",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-3/records/test-receivables_feed-01.json",
+          "sha256": "3bbc45df275797553753ce1c810433fb8aa30fc8a847eaa00f430c9ed4b9d016"
+        },
+        {
+          "task_id": "test-receivables_feed-02",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-3/records/test-receivables_feed-02.json",
+          "sha256": "a3af5cf6d9b5b91bd121f3018d9047dc28c2fcf942047bd591bcec51b1fcba73"
+        },
+        {
+          "task_id": "test-receivables_feed-03",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-3/records/test-receivables_feed-03.json",
+          "sha256": "eae506744761d2ee220021ee9faeee3e37095ad2f69ef549506ba8b4eb2d5acb"
+        },
+        {
+          "task_id": "test-regional_journal-00",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-3/records/test-regional_journal-00.json",
+          "sha256": "f3da6115d54d3c5a03e5e500a8b8480ecacb5c547489df08933b6355c9014777"
+        },
+        {
+          "task_id": "test-regional_journal-01",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-3/records/test-regional_journal-01.json",
+          "sha256": "713794b080fbe666d69ce7d905860f9bb9441ae17e7dc9414b84633ed7a913d6"
+        },
+        {
+          "task_id": "test-regional_journal-02",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-3/records/test-regional_journal-02.json",
+          "sha256": "f62e3ed2d96cc14c8f8d8acefeed154cef07a2ac59cb3013112a8c5989abf0d1"
+        },
+        {
+          "task_id": "test-regional_journal-03",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-baseline/holdout/repeat-3/records/test-regional_journal-03.json",
+          "sha256": "122f653a3848c9eaf0aff66ee2084fac8ffb6837179096f22ed3a2d2128b295b"
+        }
+      ]
+    },
+    {
+      "id": "final-budget-matched",
+      "config": {
+        "name": "budget_matched_baseline",
+        "prompt_patch": "",
+        "max_steps": 8,
+        "workflow": "react",
+        "review": "none",
+        "tools": [
+          "list_sources",
+          "inspect_source",
+          "query",
+          "execute_pipeline"
+        ],
+        "max_tokens": 3000,
+        "temperature": 0.0
+      },
+      "passed": 1,
+      "executions": 72,
+      "metrics": {
+        "executions": 72,
+        "passed": 1,
+        "pass_rate": 0.013888888888888888,
+        "mean_row_score": 0.013888888888888888,
+        "mean_llm_calls": 9.0,
+        "mean_input_tokens": 166703.95833333334,
+        "mean_output_tokens": 2379.902777777778,
+        "mean_latency_ms": 50378.310694444444,
+        "errors": 71,
+        "timeouts": 0,
+        "budget_exhausted": 72,
+        "empty_turns": 0,
+        "truncated_turns": 4,
+        "public_check_observations": 72,
+        "no_saved_pipeline": 71,
+        "wrong_table_despite_all_public_checks_pass": 0,
+        "hierarchical_bootstrap_95ci": {
+          "pass_rate": [
+            0.0,
+            0.05555555555555555
+          ],
+          "mean_row_score": [
+            0.0,
+            0.05555555555555555
+          ],
+          "mean_llm_calls": [
+            9.0,
+            9.0
+          ],
+          "mean_input_tokens": [
+            134446.60520833332,
+            199996.14722222218
+          ],
+          "mean_output_tokens": [
+            2102.949652777778,
+            2659.5194444444446
+          ],
+          "mean_latency_ms": [
+            46760.15636458333,
+            54106.116131944436
+          ]
+        }
+      },
+      "records": [
+        {
+          "task_id": "test-archive_exports-00",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-1/records/test-archive_exports-00.json",
+          "sha256": "294e237fb59263b25f96419e8e456f4c58438a7e85e96045ff73e7ae14dd74b2"
+        },
+        {
+          "task_id": "test-archive_exports-01",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-1/records/test-archive_exports-01.json",
+          "sha256": "588f2f3f7385f5d4b736645dda4c87e4fa233991f7d96d1ee99a600ab5537fea"
+        },
+        {
+          "task_id": "test-archive_exports-02",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-1/records/test-archive_exports-02.json",
+          "sha256": "6851e91852cc96c5d5d80f73479dec2625a76e9ba2e584ac3735ba6dbbfe9318"
+        },
+        {
+          "task_id": "test-archive_exports-03",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-1/records/test-archive_exports-03.json",
+          "sha256": "91b0a8bef2497640f9d2273699c687a45fbab0e74e5481f2c17e587c7690eba5"
+        },
+        {
+          "task_id": "test-billing_bridge-00",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-1/records/test-billing_bridge-00.json",
+          "sha256": "c73ab06b986809ebbcfa5ded38e3e316bf631aaa44cae6ee55e6dcb050159e76"
+        },
+        {
+          "task_id": "test-billing_bridge-01",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-1/records/test-billing_bridge-01.json",
+          "sha256": "eb4bc8f8fa42960cf68ea7ad5880f3e7ada569026d5df5fdb3b5e3ed7ad6b10a"
+        },
+        {
+          "task_id": "test-billing_bridge-02",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-1/records/test-billing_bridge-02.json",
+          "sha256": "9a72346407f2fda24b29923bce7c51df26e6fa48a957d28a3695c07af0882387"
+        },
+        {
+          "task_id": "test-billing_bridge-03",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-1/records/test-billing_bridge-03.json",
+          "sha256": "743ebaa83aea33238985108577ef574e25885302688990b6fa7b7fe649204971"
+        },
+        {
+          "task_id": "test-erp_settlements-00",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-1/records/test-erp_settlements-00.json",
+          "sha256": "7cecda91bfc25624f7de121ad01bebe66b697b2ef75568659859d4a8057234b0"
+        },
+        {
+          "task_id": "test-erp_settlements-01",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-1/records/test-erp_settlements-01.json",
+          "sha256": "33fc8fe4da57bb74c8134774fd3dc1ec64c6e04084cdeb82b2d1acfea5029d8f"
+        },
+        {
+          "task_id": "test-erp_settlements-02",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-1/records/test-erp_settlements-02.json",
+          "sha256": "7d6c9fbac0c194fa126da2178441cdc5af9e303084ed8574db251dee1d4cbbf2"
+        },
+        {
+          "task_id": "test-erp_settlements-03",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-1/records/test-erp_settlements-03.json",
+          "sha256": "84ade8fabea8fb6d66cfc6b29dc8d279fa17cfe2d3807f0a61f926427fcc3261"
+        },
+        {
+          "task_id": "test-partner_reconciliation-00",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-1/records/test-partner_reconciliation-00.json",
+          "sha256": "7a77342faa8984ef044bc46254fe3afa03d8dbc947bfde6175817aa74fd5e26c"
+        },
+        {
+          "task_id": "test-partner_reconciliation-01",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-1/records/test-partner_reconciliation-01.json",
+          "sha256": "899bc623945277dff3f16dcddd6627daf8d075e517dba8983355781894ea2233"
+        },
+        {
+          "task_id": "test-partner_reconciliation-02",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-1/records/test-partner_reconciliation-02.json",
+          "sha256": "f96a04cf556e829e0ec4e8004c6e0c9798fa74897e651b3b62889af903f88b9b"
+        },
+        {
+          "task_id": "test-partner_reconciliation-03",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-1/records/test-partner_reconciliation-03.json",
+          "sha256": "3ddd3589abfd0394a9b7b735470353e0fd95fbc71baee6644a5b139942f1b7d9"
+        },
+        {
+          "task_id": "test-receivables_feed-00",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-1/records/test-receivables_feed-00.json",
+          "sha256": "1dd0a9a5d201859458199f8436ce1d435799f00899abbac80a81944cc0afdbe5"
+        },
+        {
+          "task_id": "test-receivables_feed-01",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-1/records/test-receivables_feed-01.json",
+          "sha256": "84ed0de3bdc72c06ae98589264962d74242dfb2210603fe8d1e28bf543b65682"
+        },
+        {
+          "task_id": "test-receivables_feed-02",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-1/records/test-receivables_feed-02.json",
+          "sha256": "8a4b031cd64b0847cf57976fbea835ab0a28af096a5eb51b2930fe0518375fce"
+        },
+        {
+          "task_id": "test-receivables_feed-03",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-1/records/test-receivables_feed-03.json",
+          "sha256": "3eada554d8fa9f1583877d1e006afcd06ba5d5301488771f86008f711850bd19"
+        },
+        {
+          "task_id": "test-regional_journal-00",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-1/records/test-regional_journal-00.json",
+          "sha256": "adefc1489277234a6d55966850e358bd38d8c3f6d57f3cf00c673a147e9a7320"
+        },
+        {
+          "task_id": "test-regional_journal-01",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-1/records/test-regional_journal-01.json",
+          "sha256": "1ac84472a52d3f90db0413fb8603d4471e04785d221ca230314a7fcfbd871f24"
+        },
+        {
+          "task_id": "test-regional_journal-02",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-1/records/test-regional_journal-02.json",
+          "sha256": "b4136a805fcd4dc668b2c2cff9c650655f77d741346135005c977951eaec11cb"
+        },
+        {
+          "task_id": "test-regional_journal-03",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-1/records/test-regional_journal-03.json",
+          "sha256": "18a8081af32f9295d1ab1d7da6f1ef649df93fe4c92e6fae04f7b594f6172771"
+        },
+        {
+          "task_id": "test-archive_exports-00",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-2/records/test-archive_exports-00.json",
+          "sha256": "63d9ec9d2132f862d5c6fb3ed7d28071e316ff92949fc59950838dc851fbc185"
+        },
+        {
+          "task_id": "test-archive_exports-01",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-2/records/test-archive_exports-01.json",
+          "sha256": "67c22312374d97c5a5b71e464038e9544693f348fbe3f56e5728b0f0ac7169b9"
+        },
+        {
+          "task_id": "test-archive_exports-02",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-2/records/test-archive_exports-02.json",
+          "sha256": "6c1567d67b727164efbeb8e8db34887da0f35fdbf268d970b9a611c501c1bd4e"
+        },
+        {
+          "task_id": "test-archive_exports-03",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-2/records/test-archive_exports-03.json",
+          "sha256": "0a1bb90a86332681a8b59045f70b4697e90e9fcac985ca93c61dceb7cf0e61dc"
+        },
+        {
+          "task_id": "test-billing_bridge-00",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-2/records/test-billing_bridge-00.json",
+          "sha256": "3d14092faa873c162e52230c56948018df8df4c82b61aa1c56be983ac2101528"
+        },
+        {
+          "task_id": "test-billing_bridge-01",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-2/records/test-billing_bridge-01.json",
+          "sha256": "d7681655e7211e7ca236c19e27881a61b989b82b7d015e8b065f6d08a1dd44df"
+        },
+        {
+          "task_id": "test-billing_bridge-02",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-2/records/test-billing_bridge-02.json",
+          "sha256": "f756ba9b798ab2c2e34be4feae24dc2af5620cc7a58e63abd51ab18ddb5c1a2b"
+        },
+        {
+          "task_id": "test-billing_bridge-03",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-2/records/test-billing_bridge-03.json",
+          "sha256": "f44bafb0f974b45d37ebef9682e8d823900b876932ec31d5e1ab39e216716e4b"
+        },
+        {
+          "task_id": "test-erp_settlements-00",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-2/records/test-erp_settlements-00.json",
+          "sha256": "fdd888177d07dac9055a5c04d6d5a3c809667f2d6a9a0a0a33c0fa43587bae3f"
+        },
+        {
+          "task_id": "test-erp_settlements-01",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-2/records/test-erp_settlements-01.json",
+          "sha256": "ff0fcbd498886521fc053e0a37773fb11fac830a91cfd8803fd63561c8cdb98b"
+        },
+        {
+          "task_id": "test-erp_settlements-02",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-2/records/test-erp_settlements-02.json",
+          "sha256": "fc75659338cd269ac24c64ee902f6e408aaf3b0d38095bf2f0f0b808f218e004"
+        },
+        {
+          "task_id": "test-erp_settlements-03",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-2/records/test-erp_settlements-03.json",
+          "sha256": "e88ba68730174906b7611f35f80c47dd68b269c8e85dbe4999a72a5034afdcbe"
+        },
+        {
+          "task_id": "test-partner_reconciliation-00",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-2/records/test-partner_reconciliation-00.json",
+          "sha256": "8393f73d873d656d42892492732a90ffcd10ddcf4a47093a004f954750650296"
+        },
+        {
+          "task_id": "test-partner_reconciliation-01",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-2/records/test-partner_reconciliation-01.json",
+          "sha256": "fdf4ccad3ffbcdd408a983acd5c1eff712b7c2e5dba6fadd1b4c2ade8d8db305"
+        },
+        {
+          "task_id": "test-partner_reconciliation-02",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-2/records/test-partner_reconciliation-02.json",
+          "sha256": "b0734fc73b59cf09678dcef2f944957059ef4e8db349e1a49ce596fea076e75f"
+        },
+        {
+          "task_id": "test-partner_reconciliation-03",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-2/records/test-partner_reconciliation-03.json",
+          "sha256": "9cb053831b7c1746dd83d5c620fc5ba27dd33b20ed577448e413137bcefb55fd"
+        },
+        {
+          "task_id": "test-receivables_feed-00",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-2/records/test-receivables_feed-00.json",
+          "sha256": "67be54fdc18efe6cae7ce86b27927c4964596310d98aedc59d2f859d15919d81"
+        },
+        {
+          "task_id": "test-receivables_feed-01",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-2/records/test-receivables_feed-01.json",
+          "sha256": "5ca8f40c306bd426e11cb1df3c477b72e362339aabb5daaca23aa72cda92e2dc"
+        },
+        {
+          "task_id": "test-receivables_feed-02",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-2/records/test-receivables_feed-02.json",
+          "sha256": "e73616e350f42286e6625d6e731c67ebb65cd1f74085a222d1792028a2c3b40f"
+        },
+        {
+          "task_id": "test-receivables_feed-03",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-2/records/test-receivables_feed-03.json",
+          "sha256": "601e339e78e0ec9f0498e616055024fbfcfe7dabc9ace8e88385f277eedfa528"
+        },
+        {
+          "task_id": "test-regional_journal-00",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-2/records/test-regional_journal-00.json",
+          "sha256": "07cd356041ba8b64f6600cf897cdd42eb680a4d0e6075b45d00d3c5076b55c77"
+        },
+        {
+          "task_id": "test-regional_journal-01",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-2/records/test-regional_journal-01.json",
+          "sha256": "44f8a3b82a6f71fda1b31c5141e6cf28552a2c0a65ffb785d985122584fa191d"
+        },
+        {
+          "task_id": "test-regional_journal-02",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-2/records/test-regional_journal-02.json",
+          "sha256": "7f049c5773b95ab6a73319a21b241c3cab4ac2911fa19c4dc00b8d415b5859d3"
+        },
+        {
+          "task_id": "test-regional_journal-03",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-2/records/test-regional_journal-03.json",
+          "sha256": "3650fc6c4421b8a0cdb579704812ecc9fdbee2268b0e77e9fba44f9b689ab56c"
+        },
+        {
+          "task_id": "test-archive_exports-00",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-3/records/test-archive_exports-00.json",
+          "sha256": "f34aebe344ba622d34419514d6eefa7eddca5b99fbe8609487f67cdf3286cadd"
+        },
+        {
+          "task_id": "test-archive_exports-01",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-3/records/test-archive_exports-01.json",
+          "sha256": "5605cb286806b80a22f107e09bad17c4d1a0f676ed323b4421de12e633bb2895"
+        },
+        {
+          "task_id": "test-archive_exports-02",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-3/records/test-archive_exports-02.json",
+          "sha256": "5116614441adca0d7d1b810e96c89b828ea398818168e4e830c5b265e8388550"
+        },
+        {
+          "task_id": "test-archive_exports-03",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-3/records/test-archive_exports-03.json",
+          "sha256": "85724d88e1dd9a473029ce85467b63ff2cf995e54c7e03f8f3fc1706b52bcdf2"
+        },
+        {
+          "task_id": "test-billing_bridge-00",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-3/records/test-billing_bridge-00.json",
+          "sha256": "e5b75667a45040ca577775ba99ed10eb4f1cf4927b92ea82511f3bbe29cd285d"
+        },
+        {
+          "task_id": "test-billing_bridge-01",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-3/records/test-billing_bridge-01.json",
+          "sha256": "e168c79cf166cb3d653d5acd44efb53f44f0f908e4f15495239096581497abdf"
+        },
+        {
+          "task_id": "test-billing_bridge-02",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-3/records/test-billing_bridge-02.json",
+          "sha256": "225c1dbeb1916b35534f66db86dadc78516aa61bac104d4606a81259113fd66b"
+        },
+        {
+          "task_id": "test-billing_bridge-03",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-3/records/test-billing_bridge-03.json",
+          "sha256": "ef59444669356bff6d64116ffc8c44dba9cce9f1ff5f2ff26fd9fb1b34fae66b"
+        },
+        {
+          "task_id": "test-erp_settlements-00",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-3/records/test-erp_settlements-00.json",
+          "sha256": "dcf8f2d628629eb911074e2fbf76434b87a0782cf9b1689158e281a22b9ab3fb"
+        },
+        {
+          "task_id": "test-erp_settlements-01",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-3/records/test-erp_settlements-01.json",
+          "sha256": "2c0a11800ad47e15b7073ff949a55bc4e086b69234379e05c079d5ec0067ab7f"
+        },
+        {
+          "task_id": "test-erp_settlements-02",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-3/records/test-erp_settlements-02.json",
+          "sha256": "0e4414146fb1efdebe6dfed9f2c8c77bcae9e92de2623c4ebe796c6e8a33bc28"
+        },
+        {
+          "task_id": "test-erp_settlements-03",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-3/records/test-erp_settlements-03.json",
+          "sha256": "2ea08c12e1ea4d3a67c93bb9151c3a3aff16376a4e29355aa2b9d0976a85e63c"
+        },
+        {
+          "task_id": "test-partner_reconciliation-00",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-3/records/test-partner_reconciliation-00.json",
+          "sha256": "358ece3cea8f71f5578db1496385b00bbbcf60f202eade8e9d5c0ebe4083bee0"
+        },
+        {
+          "task_id": "test-partner_reconciliation-01",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-3/records/test-partner_reconciliation-01.json",
+          "sha256": "9b871f7b3b31bf99ffe02aa66bc1bfd2569fd3fb5afd4ac15482dc5c4f02cd6b"
+        },
+        {
+          "task_id": "test-partner_reconciliation-02",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-3/records/test-partner_reconciliation-02.json",
+          "sha256": "579641df988f8575c5928c87fd2530844455882ae77541c247ad55b66b61122e"
+        },
+        {
+          "task_id": "test-partner_reconciliation-03",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-3/records/test-partner_reconciliation-03.json",
+          "sha256": "30eb676913368a015edad4d9cd6317db634112e360e6b1e5b73d3c0995021416"
+        },
+        {
+          "task_id": "test-receivables_feed-00",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-3/records/test-receivables_feed-00.json",
+          "sha256": "a2fa084045c22b05760645636dfd0ca1242c5bfbef18643d15a2824e9ff01b89"
+        },
+        {
+          "task_id": "test-receivables_feed-01",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-3/records/test-receivables_feed-01.json",
+          "sha256": "89098ee37e085af24e4b7421f9298ed916b23fc2e8cd4a23c18ff65e92681b70"
+        },
+        {
+          "task_id": "test-receivables_feed-02",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-3/records/test-receivables_feed-02.json",
+          "sha256": "d42a480c09321d44b8d6e4e088112f1c87ee7c50961851b2996e1ee0481d0222"
+        },
+        {
+          "task_id": "test-receivables_feed-03",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-3/records/test-receivables_feed-03.json",
+          "sha256": "57f44d253cb7ae2f0999a24369cd2420bb6c4e8323fe02900e0884c01499cd1b"
+        },
+        {
+          "task_id": "test-regional_journal-00",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-3/records/test-regional_journal-00.json",
+          "sha256": "d5cdfc385b9822473ffe0e00d292842c851bb25f6ce52ba8e61188ece8fbc623"
+        },
+        {
+          "task_id": "test-regional_journal-01",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-3/records/test-regional_journal-01.json",
+          "sha256": "8ad180a4a8e0279076e560ab9e452cd2f5f24d2ead31d55d2707d2a3b7594d02"
+        },
+        {
+          "task_id": "test-regional_journal-02",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-3/records/test-regional_journal-02.json",
+          "sha256": "493bf2c72007a1bedce06ab6fd5d876620aa28f2fbc832cd23e3ea74c7f0ee90"
+        },
+        {
+          "task_id": "test-regional_journal-03",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-budget-matched/holdout/repeat-3/records/test-regional_journal-03.json",
+          "sha256": "01d467ea2c4049f2c35f3de204ddecc5b2ff3407e52687cc28fdbb45cc179369"
+        }
+      ]
+    },
+    {
+      "id": "final-selected",
+      "config": {
+        "name": "selected_substantive_meta_harness",
+        "prompt_patch": "IMPORTANT EXECUTION PRIORITY: You must call execute_pipeline at least once before the final step. Do not spend more than 2 tool calls on inspection/exploration before your first pipeline execution. Build a complete pipeline from the business contract and source schemas immediately, execute it, then use remaining steps to inspect and refine. If you encounter an apparent data ambiguity, do not block execution: make a reasonable assumption consistent with the contract, document it, and execute. A partial or imperfect executed pipeline is always better than no pipeline.",
+        "max_steps": 8,
+        "workflow": "react",
+        "review": "none",
+        "tools": [
+          "list_sources",
+          "inspect_source",
+          "query",
+          "execute_pipeline"
+        ],
+        "max_tokens": 3000,
+        "temperature": 0.0
+      },
+      "passed": 55,
+      "executions": 72,
+      "metrics": {
+        "executions": 72,
+        "passed": 55,
+        "pass_rate": 0.7638888888888888,
+        "mean_row_score": 0.8178819444444445,
+        "mean_llm_calls": 7.916666666666667,
+        "mean_input_tokens": 57509.13888888889,
+        "mean_output_tokens": 4061.0138888888887,
+        "mean_latency_ms": 71545.64569444445,
+        "errors": 0,
+        "timeouts": 0,
+        "budget_exhausted": 38,
+        "empty_turns": 0,
+        "truncated_turns": 3,
+        "public_check_observations": 72,
+        "no_saved_pipeline": 0,
+        "wrong_table_despite_all_public_checks_pass": 17,
+        "hierarchical_bootstrap_95ci": {
+          "pass_rate": [
+            0.6527777777777778,
+            0.875
+          ],
+          "mean_row_score": [
+            0.7267361111111111,
+            0.904285300925926
+          ],
+          "mean_llm_calls": [
+            7.416666666666667,
+            8.375
+          ],
+          "mean_input_tokens": [
+            51259.14340277778,
+            63379.873611111114
+          ],
+          "mean_output_tokens": [
+            3605.6444444444446,
+            4547.303125
+          ],
+          "mean_latency_ms": [
+            64124.20049305555,
+            79063.67672569444
+          ]
+        }
+      },
+      "records": [
+        {
+          "task_id": "test-archive_exports-00",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-1/records/test-archive_exports-00.json",
+          "sha256": "284847af337a03d1945e5ea27a981e661398ea71b14dcdfcebfd361b57510612"
+        },
+        {
+          "task_id": "test-archive_exports-01",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-1/records/test-archive_exports-01.json",
+          "sha256": "98cac0517d57bd8a13c579d114051d127f6925c6720fd0fcf997545a9f7cbe68"
+        },
+        {
+          "task_id": "test-archive_exports-02",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-1/records/test-archive_exports-02.json",
+          "sha256": "f139c74e45b3dfa83a5ce0a678f157ef490593fcd8342eb05ab4119c4b63bb2a"
+        },
+        {
+          "task_id": "test-archive_exports-03",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-1/records/test-archive_exports-03.json",
+          "sha256": "7a6ea8c7376c2efe1c5f312efc3d31afd3d7a288c7a1d40b3117d10cee931f5b"
+        },
+        {
+          "task_id": "test-billing_bridge-00",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-1/records/test-billing_bridge-00.json",
+          "sha256": "fbb36f7641ff7a8f23ed7d5ba30f69673242d459485a549e8bea0c14ab2a0c55"
+        },
+        {
+          "task_id": "test-billing_bridge-01",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-1/records/test-billing_bridge-01.json",
+          "sha256": "59f1c5ed71a71e3acd805d50cbc0853b8dab0766105d75e8038b6a54606cb3a8"
+        },
+        {
+          "task_id": "test-billing_bridge-02",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-1/records/test-billing_bridge-02.json",
+          "sha256": "75092c1d852a2b28aa02651b365c42680546756964ab4c206fda7def12e25ea5"
+        },
+        {
+          "task_id": "test-billing_bridge-03",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-1/records/test-billing_bridge-03.json",
+          "sha256": "1e1c596d6c67902222d88fe1f5a6e89e992e5f99bd3d01de266de52e50ed4420"
+        },
+        {
+          "task_id": "test-erp_settlements-00",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-1/records/test-erp_settlements-00.json",
+          "sha256": "29ec8cd6f79d57744f0d5b0b3998db40217160b825a0d7a06f47427dcc79639c"
+        },
+        {
+          "task_id": "test-erp_settlements-01",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-1/records/test-erp_settlements-01.json",
+          "sha256": "f64eae0aa62520941c3254598ba9417d9b806741c039930120751851c0cf0adb"
+        },
+        {
+          "task_id": "test-erp_settlements-02",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-1/records/test-erp_settlements-02.json",
+          "sha256": "5fae679e6a0f92f21644ce35935c899e5b66efa493adf691b0d0279e2993d82a"
+        },
+        {
+          "task_id": "test-erp_settlements-03",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-1/records/test-erp_settlements-03.json",
+          "sha256": "65deb7facd8d4fef60b69411705e63bd78c9de25ba69ac14dc1574f1f2c6e73f"
+        },
+        {
+          "task_id": "test-partner_reconciliation-00",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-1/records/test-partner_reconciliation-00.json",
+          "sha256": "1cd9afde0127664ea8472ed4e5493c7cfdedaf00d8910fec6902559a4269c533"
+        },
+        {
+          "task_id": "test-partner_reconciliation-01",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-1/records/test-partner_reconciliation-01.json",
+          "sha256": "b3c69089639cc95321d9eaa6e8f086ba090ecb716ce27d26635e4689e4fd249c"
+        },
+        {
+          "task_id": "test-partner_reconciliation-02",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-1/records/test-partner_reconciliation-02.json",
+          "sha256": "6d035e58af04e492b88c429292d1ac33160049f88d40deee2ad34a1574dabd96"
+        },
+        {
+          "task_id": "test-partner_reconciliation-03",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-1/records/test-partner_reconciliation-03.json",
+          "sha256": "f7e773db9ba6e8f02e78f875b406fdf82b1e568bbf4b029edeec0d66d6e60d8f"
+        },
+        {
+          "task_id": "test-receivables_feed-00",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-1/records/test-receivables_feed-00.json",
+          "sha256": "2c6ac051177927823479c350758c676b90923c1e061a7ff2783f0cbee3b9152a"
+        },
+        {
+          "task_id": "test-receivables_feed-01",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-1/records/test-receivables_feed-01.json",
+          "sha256": "9a9758e565540c32f20553aa3b4d246585358453ee8853f6fc208d0b225dbf24"
+        },
+        {
+          "task_id": "test-receivables_feed-02",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-1/records/test-receivables_feed-02.json",
+          "sha256": "08e4d60038d8799b819b00809f6fbb99eff5affa93c8fdc321a713c95b19c4c6"
+        },
+        {
+          "task_id": "test-receivables_feed-03",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-1/records/test-receivables_feed-03.json",
+          "sha256": "8204c1fcef6065efedd00fa59333b80713c9bdfb4a03f9eb8cd6366def184b09"
+        },
+        {
+          "task_id": "test-regional_journal-00",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-1/records/test-regional_journal-00.json",
+          "sha256": "0b94d45d704b09d8c721e933000ff352357e200d44ec9ed63d0ec77ee7cdef38"
+        },
+        {
+          "task_id": "test-regional_journal-01",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-1/records/test-regional_journal-01.json",
+          "sha256": "6d17d991b1f9cc0f6ebb8d64125d05919466b5936fdfa56902587a48e0cd67a0"
+        },
+        {
+          "task_id": "test-regional_journal-02",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-1/records/test-regional_journal-02.json",
+          "sha256": "926f3ca8702b5f46466df00336f096ce072cafc889b424da136959075aade669"
+        },
+        {
+          "task_id": "test-regional_journal-03",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-1/records/test-regional_journal-03.json",
+          "sha256": "abda1eb4aba1ee02613897d27ddf519ec2137e49a837785d0a85ca380890513e"
+        },
+        {
+          "task_id": "test-archive_exports-00",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-2/records/test-archive_exports-00.json",
+          "sha256": "1a85855467f4e58c75e6d050e0b0afd072626f6d8f476f7c6ed60a433d3765df"
+        },
+        {
+          "task_id": "test-archive_exports-01",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-2/records/test-archive_exports-01.json",
+          "sha256": "bdae688c08308d28fa367f2e0a50d1f053a0d4825ccaddaf133b6cc2154a9d9e"
+        },
+        {
+          "task_id": "test-archive_exports-02",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-2/records/test-archive_exports-02.json",
+          "sha256": "c2bbcb5c8f5c53be281ca047cc6214349b99fa35954b9fb7d6292072626ec2e8"
+        },
+        {
+          "task_id": "test-archive_exports-03",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-2/records/test-archive_exports-03.json",
+          "sha256": "4d293f7455a63168f6c53c986610fe13631a2753a90f3a4f8a3463baa0bd026b"
+        },
+        {
+          "task_id": "test-billing_bridge-00",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-2/records/test-billing_bridge-00.json",
+          "sha256": "f99efddfd80ed221f9744610dda24c2604926fe62ebf5f6780f4353df416fab2"
+        },
+        {
+          "task_id": "test-billing_bridge-01",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-2/records/test-billing_bridge-01.json",
+          "sha256": "4e270d95ef7a0552360ba45fa5dd0569b6a1b720f1a646c6254fdae0c299fa3a"
+        },
+        {
+          "task_id": "test-billing_bridge-02",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-2/records/test-billing_bridge-02.json",
+          "sha256": "add4e4b13ede611313bfb53fb684e5a31dcadcf36c5316d173bff11aa024117e"
+        },
+        {
+          "task_id": "test-billing_bridge-03",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-2/records/test-billing_bridge-03.json",
+          "sha256": "b8b11d0430fe07308899795129f067a8965ac860b9a11484dfb46f70dc910e9b"
+        },
+        {
+          "task_id": "test-erp_settlements-00",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-2/records/test-erp_settlements-00.json",
+          "sha256": "0553727a40295486dc1c151d062c82519d936e63a996b8235f42451d3b156dba"
+        },
+        {
+          "task_id": "test-erp_settlements-01",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-2/records/test-erp_settlements-01.json",
+          "sha256": "3c202ba76f5dfe33551243e7fb2f73b1bf848ae4832c11fb9b75110a24f969a4"
+        },
+        {
+          "task_id": "test-erp_settlements-02",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-2/records/test-erp_settlements-02.json",
+          "sha256": "c16bb8b0a4d128e7f1eacdb3043ff620f9e63a25bb8998eb922626cf27c78492"
+        },
+        {
+          "task_id": "test-erp_settlements-03",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-2/records/test-erp_settlements-03.json",
+          "sha256": "ce1cb0fbbfcbd88bf36117c2d5f1100313fe2eb60115d2e367c6b671a2305289"
+        },
+        {
+          "task_id": "test-partner_reconciliation-00",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-2/records/test-partner_reconciliation-00.json",
+          "sha256": "7738294c4c5f0c2eb6c7c6731a23154d4e7c46d201bf75de06f40c6cd5d5c11b"
+        },
+        {
+          "task_id": "test-partner_reconciliation-01",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-2/records/test-partner_reconciliation-01.json",
+          "sha256": "78076ad439d32167a25807c2209d2c995f2d6febd1667ba54953ee9b802272c1"
+        },
+        {
+          "task_id": "test-partner_reconciliation-02",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-2/records/test-partner_reconciliation-02.json",
+          "sha256": "82805a5e1b4de632843a87ff55aaf7fcac1b5025422a9959e918c3e6b86c26da"
+        },
+        {
+          "task_id": "test-partner_reconciliation-03",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-2/records/test-partner_reconciliation-03.json",
+          "sha256": "ff10c2f7653b8000c1e7291f985b8b8038e3971d94f4bb310a31eb19d6f1db98"
+        },
+        {
+          "task_id": "test-receivables_feed-00",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-2/records/test-receivables_feed-00.json",
+          "sha256": "9133cb67f94b375cb75cbc9637cf3d4458ee4ebe78760a42f41b2897f797e85f"
+        },
+        {
+          "task_id": "test-receivables_feed-01",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-2/records/test-receivables_feed-01.json",
+          "sha256": "71098eb3f8741d408b9573ab6d6440356ea2a5ae99cc6e80f2d165a9b32b147d"
+        },
+        {
+          "task_id": "test-receivables_feed-02",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-2/records/test-receivables_feed-02.json",
+          "sha256": "9eb42bbe38ddf49b4d25a00336ee7c0b533d0b583a02f897f14590b9939e0eea"
+        },
+        {
+          "task_id": "test-receivables_feed-03",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-2/records/test-receivables_feed-03.json",
+          "sha256": "b3026f4ad0aa676e8a9e39401f08100b58f61dcc3f87a610135e598e0920b6f3"
+        },
+        {
+          "task_id": "test-regional_journal-00",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-2/records/test-regional_journal-00.json",
+          "sha256": "8c3409fa51a118889e10d9f2651754d5c1f6c6c8f8020802a461ff2ce99560bf"
+        },
+        {
+          "task_id": "test-regional_journal-01",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-2/records/test-regional_journal-01.json",
+          "sha256": "226d1d706e1fb4ca3fcf6da965405c5f9be172e48fb3e4b7c3d52479918429ae"
+        },
+        {
+          "task_id": "test-regional_journal-02",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-2/records/test-regional_journal-02.json",
+          "sha256": "65b3e6410910fdb46e8319e4c6d0a4426bdc7a8694de05fbd0b01bcea9f3860d"
+        },
+        {
+          "task_id": "test-regional_journal-03",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-2/records/test-regional_journal-03.json",
+          "sha256": "9b946f3e8b123146fc82993c7453b1ec9fcda38e9b04e71cb95470c9b38a4f92"
+        },
+        {
+          "task_id": "test-archive_exports-00",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-3/records/test-archive_exports-00.json",
+          "sha256": "56585710363a0ddd7975057498f5e4c201afae398857322edf38cf0e686414e5"
+        },
+        {
+          "task_id": "test-archive_exports-01",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-3/records/test-archive_exports-01.json",
+          "sha256": "989452e59ae6a61de75e2f6c15e14d6ba8137495e36005f2398a0885b1419073"
+        },
+        {
+          "task_id": "test-archive_exports-02",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-3/records/test-archive_exports-02.json",
+          "sha256": "e0e02758117ab93f64cf76bae5cab6a5018bdbc55de4b7b961d64c5e935f0acf"
+        },
+        {
+          "task_id": "test-archive_exports-03",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-3/records/test-archive_exports-03.json",
+          "sha256": "28a27bf71575ade8e10be7e7468e9d59d080e09688166b5b83f8c8a1fa8f1368"
+        },
+        {
+          "task_id": "test-billing_bridge-00",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-3/records/test-billing_bridge-00.json",
+          "sha256": "6cea3b8510f22370b9c7f03625e95ca9e4e338c351f93542224707a16ba1b7bd"
+        },
+        {
+          "task_id": "test-billing_bridge-01",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-3/records/test-billing_bridge-01.json",
+          "sha256": "7e4a828f8350c0008accb171dcb4185644149937d6277d8b761617a7e28e4313"
+        },
+        {
+          "task_id": "test-billing_bridge-02",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-3/records/test-billing_bridge-02.json",
+          "sha256": "1ba2294b273446d0f85b4b445d1ef06c2372775ac99d7a643c84d2e5988efb21"
+        },
+        {
+          "task_id": "test-billing_bridge-03",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-3/records/test-billing_bridge-03.json",
+          "sha256": "756b336627eb2c1561d2ee190e42f75ed4001ca5715bdefb749599bff42b5f83"
+        },
+        {
+          "task_id": "test-erp_settlements-00",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-3/records/test-erp_settlements-00.json",
+          "sha256": "651f5583a7341b844a7db32bfd16569a7c951c8a5e4912ae44ce3c327376c899"
+        },
+        {
+          "task_id": "test-erp_settlements-01",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-3/records/test-erp_settlements-01.json",
+          "sha256": "b956046761bd5652fee4f51fe7385c7475fa8adbb16133238c4bb7d695331d11"
+        },
+        {
+          "task_id": "test-erp_settlements-02",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-3/records/test-erp_settlements-02.json",
+          "sha256": "6702ef45b7af6c23331fa16ad70f1a78d209c33145ba1ddf0f2b2ed922cef3b7"
+        },
+        {
+          "task_id": "test-erp_settlements-03",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-3/records/test-erp_settlements-03.json",
+          "sha256": "0b5f6cace2d4a8eeb27310f4bcb3b1d2fc2f4886f9e207eecb3ba62c42bf125b"
+        },
+        {
+          "task_id": "test-partner_reconciliation-00",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-3/records/test-partner_reconciliation-00.json",
+          "sha256": "28644f1be9decd24931c227fa96bf972cf6517c74dc1c9c984654e9e4ebd05b2"
+        },
+        {
+          "task_id": "test-partner_reconciliation-01",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-3/records/test-partner_reconciliation-01.json",
+          "sha256": "f0e841baf01104ff3ebdb3b97abc5f23d40af1a6feb35976cdc60b195a6f4fd2"
+        },
+        {
+          "task_id": "test-partner_reconciliation-02",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-3/records/test-partner_reconciliation-02.json",
+          "sha256": "63c01fa1fd045aa4186072c37cdf2cd0768d49b70b65911ddf6c18879dd5195d"
+        },
+        {
+          "task_id": "test-partner_reconciliation-03",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-3/records/test-partner_reconciliation-03.json",
+          "sha256": "0401f6c0818a502e627f83468cfed63568ea9a9c1de203ff33bc53b8e98a4d5e"
+        },
+        {
+          "task_id": "test-receivables_feed-00",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-3/records/test-receivables_feed-00.json",
+          "sha256": "41563d5515e769e12b373011dc61592f1ef3fd6a433b6208cd0bbfe8919230bc"
+        },
+        {
+          "task_id": "test-receivables_feed-01",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-3/records/test-receivables_feed-01.json",
+          "sha256": "c6c8cee695745186e95e5b38c45d3f457725e894fa69c380cefc30c47eedaf77"
+        },
+        {
+          "task_id": "test-receivables_feed-02",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-3/records/test-receivables_feed-02.json",
+          "sha256": "6805fdbf5d51ffdbfdd7a75648bc829313bd2f007fc22e9a47e6dacff3308fa3"
+        },
+        {
+          "task_id": "test-receivables_feed-03",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-3/records/test-receivables_feed-03.json",
+          "sha256": "26f5e498de296c3b5ccfe239f9a07728a131b1694bca5cfeb12c1eae815b03c5"
+        },
+        {
+          "task_id": "test-regional_journal-00",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-3/records/test-regional_journal-00.json",
+          "sha256": "7eb2e31e97b50e7fe40430f05d10994be3c3b166dad0bf4441d099e9612f6f19"
+        },
+        {
+          "task_id": "test-regional_journal-01",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-3/records/test-regional_journal-01.json",
+          "sha256": "cac500d7e1aa2d9b42c5389b1068c98f493fa95b7a672640dd354ece4b875dc2"
+        },
+        {
+          "task_id": "test-regional_journal-02",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-3/records/test-regional_journal-02.json",
+          "sha256": "0f0664e3cd737ca5f8fadcb60526a65833c2299e1dcd9910417ececb689a0700"
+        },
+        {
+          "task_id": "test-regional_journal-03",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-selected/holdout/repeat-3/records/test-regional_journal-03.json",
+          "sha256": "6ebd66068c20361402fba4944558823a678c70c0da9044663bd60877002e494d"
+        }
+      ]
+    },
+    {
+      "id": "final-curated",
+      "config": {
+        "name": "curated_improved",
+        "prompt_patch": "Translate each business rule into an explicit transformation and check. State the target grain before joining. Aggregate one-to-many inputs before joins. Preserve textual identifiers and exact monetary units. Handle invalid source records explicitly according to the contract; do not silently discard them. Verify duplicate handling and rerun stability. Treat public checks as incomplete evidence: review business semantics as well.",
+        "max_steps": 10,
+        "workflow": "profile_first",
+        "review": "public_checks",
+        "tools": [
+          "list_sources",
+          "inspect_source",
+          "profile_source",
+          "query",
+          "execute_pipeline",
+          "validate_output"
+        ],
+        "max_tokens": 8000,
+        "temperature": 0.0
+      },
+      "passed": 45,
+      "executions": 72,
+      "metrics": {
+        "executions": 72,
+        "passed": 45,
+        "pass_rate": 0.625,
+        "mean_row_score": 0.6293595679012346,
+        "mean_llm_calls": 11.98611111111111,
+        "mean_input_tokens": 196528.58333333334,
+        "mean_output_tokens": 6960.027777777777,
+        "mean_latency_ms": 123780.07652777777,
+        "errors": 23,
+        "timeouts": 0,
+        "budget_exhausted": 71,
+        "empty_turns": 0,
+        "truncated_turns": 0,
+        "public_check_observations": 72,
+        "no_saved_pipeline": 23,
+        "wrong_table_despite_all_public_checks_pass": 3,
+        "hierarchical_bootstrap_95ci": {
+          "pass_rate": [
+            0.4444444444444444,
+            0.7777777777777777
+          ],
+          "mean_row_score": [
+            0.4506172839506173,
+            0.7777777777777777
+          ],
+          "mean_llm_calls": [
+            11.944444444444445,
+            12.0
+          ],
+          "mean_input_tokens": [
+            182562.35104166667,
+            212981.56979166664
+          ],
+          "mean_output_tokens": [
+            6502.679513888889,
+            7425.9645833333325
+          ],
+          "mean_latency_ms": [
+            116058.28612152778,
+            132196.0203923611
+          ]
+        }
+      },
+      "records": [
+        {
+          "task_id": "test-archive_exports-00",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-1/records/test-archive_exports-00.json",
+          "sha256": "4987b3593eee9b860c8661aaf038089a8263725ae73317bdd5cd5c710a946897"
+        },
+        {
+          "task_id": "test-archive_exports-01",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-1/records/test-archive_exports-01.json",
+          "sha256": "ed197a33c062f2255fea69cbfa1c93fc77185b0e13f8b26645d410db3242fac1"
+        },
+        {
+          "task_id": "test-archive_exports-02",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-1/records/test-archive_exports-02.json",
+          "sha256": "13b905d45da2a215266994a469c7074c3347e293ee64c8c451ac7cf6c0131f38"
+        },
+        {
+          "task_id": "test-archive_exports-03",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-1/records/test-archive_exports-03.json",
+          "sha256": "219ae5fc64a3e128e50642d30f231bc40eca6ace282cc6dc5389614b9d1f03a7"
+        },
+        {
+          "task_id": "test-billing_bridge-00",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-1/records/test-billing_bridge-00.json",
+          "sha256": "bd52fe71b41723fc4142a31448b8e2d573778540571a29d823992a71848edd9b"
+        },
+        {
+          "task_id": "test-billing_bridge-01",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-1/records/test-billing_bridge-01.json",
+          "sha256": "6f9af93faa6239f13015eee651b6f2fcd88071dc77ada4b53fa947a385261640"
+        },
+        {
+          "task_id": "test-billing_bridge-02",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-1/records/test-billing_bridge-02.json",
+          "sha256": "07cf9c952b9e3946688135ec97c03bf4b509c21596b44266c25389db7e2ef609"
+        },
+        {
+          "task_id": "test-billing_bridge-03",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-1/records/test-billing_bridge-03.json",
+          "sha256": "e3bc25d24306d8df01121f351975f5cc13b0b1be3aa53e24c4e7ee469f167324"
+        },
+        {
+          "task_id": "test-erp_settlements-00",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-1/records/test-erp_settlements-00.json",
+          "sha256": "2ca826298f768e879173a5ce8321089bde543e5e7fd7623f218fa3839eac48b6"
+        },
+        {
+          "task_id": "test-erp_settlements-01",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-1/records/test-erp_settlements-01.json",
+          "sha256": "67abd97ab1abf2996ae152d0c198df6f5deb20b3267efd70cdea8d2de54d8ebd"
+        },
+        {
+          "task_id": "test-erp_settlements-02",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-1/records/test-erp_settlements-02.json",
+          "sha256": "d2ab8880c28186bc5e361efe1200172384c617b44583ceabb686eb48d4725b91"
+        },
+        {
+          "task_id": "test-erp_settlements-03",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-1/records/test-erp_settlements-03.json",
+          "sha256": "e54744cac7284a14078367e5e5a15dcc92064425807ab990b01915d1fc9a6fc8"
+        },
+        {
+          "task_id": "test-partner_reconciliation-00",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-1/records/test-partner_reconciliation-00.json",
+          "sha256": "871626f04490eb15283a24b3ba30041bc8aa34dcfdf022e55289e22b5e9bef36"
+        },
+        {
+          "task_id": "test-partner_reconciliation-01",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-1/records/test-partner_reconciliation-01.json",
+          "sha256": "d0acb21075ff8e55a53603a90c7010cd102e539b1b318f8038ac556da2fd1c2c"
+        },
+        {
+          "task_id": "test-partner_reconciliation-02",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-1/records/test-partner_reconciliation-02.json",
+          "sha256": "cccb7a94a232634c4bfb284b8a976049878943f8ee9d1ea4f95bf8d265946434"
+        },
+        {
+          "task_id": "test-partner_reconciliation-03",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-1/records/test-partner_reconciliation-03.json",
+          "sha256": "6d48b960ca7cf89cc458615fbb3ef6bbb13627c7b2d307186a8dffab001ddf40"
+        },
+        {
+          "task_id": "test-receivables_feed-00",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-1/records/test-receivables_feed-00.json",
+          "sha256": "37f2539f6b4bed383450e0e675b50b4696a85548bec8de4709aeece3ce50db59"
+        },
+        {
+          "task_id": "test-receivables_feed-01",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-1/records/test-receivables_feed-01.json",
+          "sha256": "de40f2ed36d5dede06ab3e5b3f1a5b13b3b31f404d35512aa25426818d9b4ceb"
+        },
+        {
+          "task_id": "test-receivables_feed-02",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-1/records/test-receivables_feed-02.json",
+          "sha256": "6bedcb48b30f9d21344fb36e58edcca3587f08c9ac60a8f88c5e1b7de1997690"
+        },
+        {
+          "task_id": "test-receivables_feed-03",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-1/records/test-receivables_feed-03.json",
+          "sha256": "3a8f69590a32c3b89edb38c48c06452369dd5d77fa0e638b8aed2ea9300b717c"
+        },
+        {
+          "task_id": "test-regional_journal-00",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-1/records/test-regional_journal-00.json",
+          "sha256": "03797bac8e22204a87e9538e4e2895685833ad1c71da3cbee97604082b4babc9"
+        },
+        {
+          "task_id": "test-regional_journal-01",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-1/records/test-regional_journal-01.json",
+          "sha256": "7c3df7bd09425a7f25319200d94cc472723087bb0b146ef72916f2e8580d288a"
+        },
+        {
+          "task_id": "test-regional_journal-02",
+          "repeat": 1,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-1/records/test-regional_journal-02.json",
+          "sha256": "c0538a94188a7f928eb0f3f27169742e34f060b70326a643d1e0822660cd3767"
+        },
+        {
+          "task_id": "test-regional_journal-03",
+          "repeat": 1,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-1/records/test-regional_journal-03.json",
+          "sha256": "4e20598d5e9b9af657058d5c2fae0359aa51970fb975cc52391c85cfd75bdbec"
+        },
+        {
+          "task_id": "test-archive_exports-00",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-2/records/test-archive_exports-00.json",
+          "sha256": "f4e479de2f8dc99e945d170540493f1fad0fa054f50ce34419bc5018fc1a4c9c"
+        },
+        {
+          "task_id": "test-archive_exports-01",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-2/records/test-archive_exports-01.json",
+          "sha256": "ed47d6c85aec8c9c09c07178256e0ba95583bb1cb8788888e97664c043c666a8"
+        },
+        {
+          "task_id": "test-archive_exports-02",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-2/records/test-archive_exports-02.json",
+          "sha256": "84f9fb0dd1d2d93c39632f453e37133f1847612db574d0bb29f40b626265d574"
+        },
+        {
+          "task_id": "test-archive_exports-03",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-2/records/test-archive_exports-03.json",
+          "sha256": "501686e4d972234008e2d657d963d70e4defe439e848ac5639650e807cf8b678"
+        },
+        {
+          "task_id": "test-billing_bridge-00",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-2/records/test-billing_bridge-00.json",
+          "sha256": "a1465e1be4e4553187fb501418764cb04adb20fccdd664e3839c1126e267e561"
+        },
+        {
+          "task_id": "test-billing_bridge-01",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-2/records/test-billing_bridge-01.json",
+          "sha256": "e8d073a9b0244beb81eb4c5fe134c8a0ba6b58f0eeedd1587009c54a67302852"
+        },
+        {
+          "task_id": "test-billing_bridge-02",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-2/records/test-billing_bridge-02.json",
+          "sha256": "d026ebe3df980eae355a0eb84921a39e87b3383c34a5500e959d3842448ed705"
+        },
+        {
+          "task_id": "test-billing_bridge-03",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-2/records/test-billing_bridge-03.json",
+          "sha256": "cd4c88055e941bc89bb137143664c96e89d293d76c0fe2469a7e32bf1ecd20d7"
+        },
+        {
+          "task_id": "test-erp_settlements-00",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-2/records/test-erp_settlements-00.json",
+          "sha256": "1eea230e54f4b900e8aafcda559f3c5667359916dde2d5c2a3be22a964cf0538"
+        },
+        {
+          "task_id": "test-erp_settlements-01",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-2/records/test-erp_settlements-01.json",
+          "sha256": "88bf65f3333165630c2c97f26f3e80f405531e44f51ce6d8429bcb768b1ffea5"
+        },
+        {
+          "task_id": "test-erp_settlements-02",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-2/records/test-erp_settlements-02.json",
+          "sha256": "92d25d027ca61ea7dd025dfda39eaad33cdfea7ca11878869f3ad5ce2257c0d7"
+        },
+        {
+          "task_id": "test-erp_settlements-03",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-2/records/test-erp_settlements-03.json",
+          "sha256": "29ee9e27472e0dd4185aeeb77c3fc93e3cb9f5f5d1a18357b5d41f7fe0351778"
+        },
+        {
+          "task_id": "test-partner_reconciliation-00",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-2/records/test-partner_reconciliation-00.json",
+          "sha256": "b47a0b64f7a1d073818178f9aebd7d97e7db95b92142e57843c08869832873dd"
+        },
+        {
+          "task_id": "test-partner_reconciliation-01",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-2/records/test-partner_reconciliation-01.json",
+          "sha256": "2abb4de94135388a217c4967d2d48adf8984d88d7b94f299efb26f9167ce456e"
+        },
+        {
+          "task_id": "test-partner_reconciliation-02",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-2/records/test-partner_reconciliation-02.json",
+          "sha256": "88cfc7c825555b4a5682b50b4e02a2cefcd45af13ff67613d31eca948b3849cd"
+        },
+        {
+          "task_id": "test-partner_reconciliation-03",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-2/records/test-partner_reconciliation-03.json",
+          "sha256": "168156e83e997d4eb9f5bd100536eaa78cbdc993cd680f033a97f08e1d7f13b6"
+        },
+        {
+          "task_id": "test-receivables_feed-00",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-2/records/test-receivables_feed-00.json",
+          "sha256": "76eb4f5390abe466f0de451985dc63d1483bd56bc4086066ba0b94dfab61c717"
+        },
+        {
+          "task_id": "test-receivables_feed-01",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-2/records/test-receivables_feed-01.json",
+          "sha256": "e8e8545728fbfcf0d0d1639746d681bb82a897b3403bf6127767cdb3bc464c20"
+        },
+        {
+          "task_id": "test-receivables_feed-02",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-2/records/test-receivables_feed-02.json",
+          "sha256": "c5e13405bb6b3315eb0ca546943d2f47f9beb5654659049e05d33854ada3b556"
+        },
+        {
+          "task_id": "test-receivables_feed-03",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-2/records/test-receivables_feed-03.json",
+          "sha256": "a54b7e583c359fb6c4641f2bb8471f4e3c667546466168a1097801388da5cb8f"
+        },
+        {
+          "task_id": "test-regional_journal-00",
+          "repeat": 2,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-2/records/test-regional_journal-00.json",
+          "sha256": "e70afdfb7d9b02f3dbfb8958b280fa37bc7d3a86a2fae8ff234dfcb05abc801f"
+        },
+        {
+          "task_id": "test-regional_journal-01",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-2/records/test-regional_journal-01.json",
+          "sha256": "ce98bba2e0718399d216dd179eb04ce8cbb2ed8a370c10d60edfd374dac57132"
+        },
+        {
+          "task_id": "test-regional_journal-02",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-2/records/test-regional_journal-02.json",
+          "sha256": "ae7473eec20b45401c166531923e0fce80f5309035ecc310ee3f5ca88d47b850"
+        },
+        {
+          "task_id": "test-regional_journal-03",
+          "repeat": 2,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-2/records/test-regional_journal-03.json",
+          "sha256": "c4a0cc1125906d0793db6aa9cc01f6c3db2fa3c08c3f14432a6f1848e4c3f522"
+        },
+        {
+          "task_id": "test-archive_exports-00",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-3/records/test-archive_exports-00.json",
+          "sha256": "1c882c4f1d0c84541fb5e7fc91ca831e6e387f08414ad4a0d80c1870db3b8433"
+        },
+        {
+          "task_id": "test-archive_exports-01",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-3/records/test-archive_exports-01.json",
+          "sha256": "906c68d4591e77d94406d374b326aaf229adc8345296eab9904af481676f737b"
+        },
+        {
+          "task_id": "test-archive_exports-02",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-3/records/test-archive_exports-02.json",
+          "sha256": "eae5637f3cbd6992a69ac18168f7b01d781e143d62b7a50fd3ae7b8a98859131"
+        },
+        {
+          "task_id": "test-archive_exports-03",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-3/records/test-archive_exports-03.json",
+          "sha256": "22e867b05533edfa056cdc8c27bc4bd32b281c751296e3e9342be0e7c9a4cd00"
+        },
+        {
+          "task_id": "test-billing_bridge-00",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-3/records/test-billing_bridge-00.json",
+          "sha256": "c6d1239c846edc49b727e1f53fe2f40eb291d261eefe224dca1294cdba6d7aeb"
+        },
+        {
+          "task_id": "test-billing_bridge-01",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-3/records/test-billing_bridge-01.json",
+          "sha256": "aa74ea687f432c9e1e22c0987f8e2fe92b53f2f1dd0067b0827a81fb34fbef1c"
+        },
+        {
+          "task_id": "test-billing_bridge-02",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-3/records/test-billing_bridge-02.json",
+          "sha256": "528e79e63ed6b16ce248dff8b1d25a4fe3e850d593a6a71628d10f2e50260117"
+        },
+        {
+          "task_id": "test-billing_bridge-03",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-3/records/test-billing_bridge-03.json",
+          "sha256": "ebaf9b8fa10225bca68777bddd400361ce4e15ed7bc7f16421f0e3b886acbd31"
+        },
+        {
+          "task_id": "test-erp_settlements-00",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-3/records/test-erp_settlements-00.json",
+          "sha256": "bda114449a3c1cbb1e14003788310b553e0d8b34a42858b26dae8d05cde86673"
+        },
+        {
+          "task_id": "test-erp_settlements-01",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-3/records/test-erp_settlements-01.json",
+          "sha256": "87a0e8b257ca3b9769e97f3c7f716d03bf56f2be497c819f49a2659b207e3a2b"
+        },
+        {
+          "task_id": "test-erp_settlements-02",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-3/records/test-erp_settlements-02.json",
+          "sha256": "41323c545b7f04b296a1382844e2531b780759e3e62696bb937570ae8557c661"
+        },
+        {
+          "task_id": "test-erp_settlements-03",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-3/records/test-erp_settlements-03.json",
+          "sha256": "fe87f503a99e848a9867c063542c3d80a3bcbcc07d1c91869e12ea7cb0a3eb94"
+        },
+        {
+          "task_id": "test-partner_reconciliation-00",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-3/records/test-partner_reconciliation-00.json",
+          "sha256": "7237387f355f44cad14064f57c934677047fcf47e618086061ee15e70b8c9386"
+        },
+        {
+          "task_id": "test-partner_reconciliation-01",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-3/records/test-partner_reconciliation-01.json",
+          "sha256": "4314a855333fd7c35f9f8e59595aa35b96e4fa968890f9e277191d06bf829e35"
+        },
+        {
+          "task_id": "test-partner_reconciliation-02",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-3/records/test-partner_reconciliation-02.json",
+          "sha256": "5ae3df3edbacd3e9f7e4189cc5f13282b7b2023d76140e1a97cb8c7328e811d4"
+        },
+        {
+          "task_id": "test-partner_reconciliation-03",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-3/records/test-partner_reconciliation-03.json",
+          "sha256": "58daf660668c836179e7805aa928739c32943836bd8b570d987270b9ee3017a6"
+        },
+        {
+          "task_id": "test-receivables_feed-00",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-3/records/test-receivables_feed-00.json",
+          "sha256": "a11d71ffd32dcf249e269d98a628bfefd5375a89207ec50fc96ba9c0726ea046"
+        },
+        {
+          "task_id": "test-receivables_feed-01",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-3/records/test-receivables_feed-01.json",
+          "sha256": "e7b721ef4b6806f14688aeea9aba5c3ebaa1580753e6df8154ab3f0c0188551c"
+        },
+        {
+          "task_id": "test-receivables_feed-02",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-3/records/test-receivables_feed-02.json",
+          "sha256": "75275272f548f79ae6daec58e4913cb4c8f9399d792d21754a8d0bbef7f19b2f"
+        },
+        {
+          "task_id": "test-receivables_feed-03",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-3/records/test-receivables_feed-03.json",
+          "sha256": "493de927036dd39ba2c007d4b20c452ec3ed325534b331e1db9446dc44f7fcf7"
+        },
+        {
+          "task_id": "test-regional_journal-00",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-3/records/test-regional_journal-00.json",
+          "sha256": "cbccdecdbd288bd32f70a070b962a0d2f85d7a059229482ee28f6c4ec51686db"
+        },
+        {
+          "task_id": "test-regional_journal-01",
+          "repeat": 3,
+          "passed": false,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-3/records/test-regional_journal-01.json",
+          "sha256": "59203cd484fc3808aaf918b116f7206500fb87e8e8eb13bb16343ad61b16e3de"
+        },
+        {
+          "task_id": "test-regional_journal-02",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-3/records/test-regional_journal-02.json",
+          "sha256": "ea90bc6ba8be7a107d2ef15accea717e5457b9195ab28a0a46fbbc188fca34ae"
+        },
+        {
+          "task_id": "test-regional_journal-03",
+          "repeat": 3,
+          "passed": true,
+          "source": "etl-workshop/results/full-search-v4/final-curated/holdout/repeat-3/records/test-regional_journal-03.json",
+          "sha256": "b312c6c0a3852a756d539cfeaeb2d5447cb863786bc060a7ca7b7fc18c00e054"
+        }
+      ]
+    }
+  ]
+}

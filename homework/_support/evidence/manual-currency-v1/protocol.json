@@ -1,0 +1,134 @@
+{
+  "experiment": "manual-currency-policy-v1",
+  "prepared_utc": "2026-10-12T21:26:43.590615+00:00",
+  "model": "DeepSeek-V4-Flash-0731",
+  "dataset": "benchmarks/etl",
+  "scope": "Disclosed-case regression A/B; NOT a closed test or representative benchmark.",
+  "base_source": "etl-workshop/results/full-test-v1/curated/repeat-2/records/test-marketplace_events-00.json",
+  "base_sha256": "5002d6323183d6dac5371b6381f1f725630b8764ec459cefe4d566a0b8463612",
+  "changed_fields": [
+    "prompt_patch"
+  ],
+  "patch": "CURRENCY CHECK: Before summing payments/refunds, normalize and compare each event currency with the currency of its latest order. Unknown/orphan and mismatched currencies must not contribute. A WHERE filtering only settled/non-null amounts does NOT enforce currency equality. When an aggregate differs from your manual expectation, query the exact contributing rows under that same WHERE before rerunning SUM or suspecting the SQL engine. Apply the currency condition for every order, not a literal USD.",
+  "configs": {
+    "control": {
+      "name": "curated_improved",
+      "prompt_patch": "Translate each business rule into an explicit transformation and check. State the target grain before joining. Aggregate one-to-many inputs before joins. Preserve textual identifiers and exact monetary units. Handle invalid source records explicitly according to the contract; do not silently discard them. Verify duplicate handling and rerun stability. Treat public checks as incomplete evidence: review business semantics as well.",
+      "max_steps": 10,
+      "workflow": "profile_first",
+      "review": "public_checks",
+      "tools": [
+        "list_sources",
+        "inspect_source",
+        "profile_source",
+        "query",
+        "execute_pipeline",
+        "validate_output"
+      ],
+      "max_tokens": 8000,
+      "temperature": 0.0
+    },
+    "currency-policy": {
+      "name": "curated_improved",
+      "prompt_patch": "Translate each business rule into an explicit transformation and check. State the target grain before joining. Aggregate one-to-many inputs before joins. Preserve textual identifiers and exact monetary units. Handle invalid source records explicitly according to the contract; do not silently discard them. Verify duplicate handling and rerun stability. Treat public checks as incomplete evidence: review business semantics as well. CURRENCY CHECK: Before summing payments/refunds, normalize and compare each event currency with the currency of its latest order. Unknown/orphan and mismatched currencies must not contribute. A WHERE filtering only settled/non-null amounts does NOT enforce currency equality. When an aggregate differs from your manual expectation, query the exact contributing rows under that same WHERE before rerunning SUM or suspecting the SQL engine. Apply the currency condition for every order, not a literal USD.",
+      "max_steps": 10,
+      "workflow": "profile_first",
+      "review": "public_checks",
+      "tools": [
+        "list_sources",
+        "inspect_source",
+        "profile_source",
+        "query",
+        "execute_pipeline",
+        "validate_output"
+      ],
+      "max_tokens": 8000,
+      "temperature": 0.0
+    }
+  },
+  "planned": [
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 1,
+      "arm": "control"
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 1,
+      "arm": "currency-policy"
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 1,
+      "arm": "control"
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 1,
+      "arm": "currency-policy"
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 2,
+      "arm": "currency-policy"
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 2,
+      "arm": "control"
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 2,
+      "arm": "currency-policy"
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 2,
+      "arm": "control"
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 3,
+      "arm": "control"
+    },
+    {
+      "task_id": "test-marketplace_events-00",
+      "repeat": 3,
+      "arm": "currency-policy"
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 3,
+      "arm": "control"
+    },
+    {
+      "task_id": "test-legacy_sales-03",
+      "repeat": 3,
+      "arm": "currency-policy"
+    }
+  ],
+  "task_fingerprints": {
+    "test-marketplace_events-00": "7511afa0bc3efc44a639d098cb00dca4343a97203436fceb428de407bb749ca0",
+    "test-legacy_sales-03": "b7b77339debf97c74d28a23e1446beaf0a85631073acf6dc5972dfdf6a209481"
+  },
+  "gold_sha256": {
+    "test-marketplace_events-00": "3f0c42434062cb567161d8cee634fdc332201b7306df04cd3d861ec64306176a",
+    "test-legacy_sales-03": "61d773c4f244126f266b7bd558163d23a002732c485ffb61a54a10b78c1cc236"
+  },
+  "code_sha256": {
+    "src/harness_lab/etl_agent.py": "55741f515e4c6d7e84ea106f219d4d2c50335e5328827d671e37686743e49217",
+    "src/harness_lab/etl_env.py": "23e371ef888d282bb800320627aa4f6e0cecc631467f9655f49e3e3ab0fb554c",
+    "src/harness_lab/model.py": "5cef21f1b300675d6d30b6bd66770fc9454dc95c3538d07bd8d9c778c9360cab"
+  },
+  "retain_all_failures": true,
+  "max_attempts_per_http_request": 1,
+  "workers": 2,
+  "limitations": [
+    "Known failure cases selected after seeing original results.",
+    "Three repeats per case; no population-stability estimate.",
+    "Temperature zero does not ensure deterministic serving.",
+    "Concurrent gateway latency not an isolated performance measure.",
+    "A prompt-only intervention cannot prove which part of its wording caused a change."
+  ]
+}
