@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+import importlib
 import importlib.util
 import json
 from pathlib import Path
@@ -10,16 +11,32 @@ import subprocess
 import sys
 
 _LOADED_RUNTIME = None
+_RUNTIME_FILES = (
+    "__init__.py", "etl_agent.py", "etl_env.py", "etl_data.py",
+    "etl_cli.py", "etl_optimizer.py", "model.py", "settings.py",
+)
 
 
 def prepare(homework, install=False):
     global _LOADED_RUNTIME
     root = Path(homework).resolve()
+    runtime = root / "runtime"
+    required = [runtime / "harness_lab" / name for name in _RUNTIME_FILES]
+    required += [root / "configs" / f"{name}.json" for name in ("control", "candidate")]
+    missing = [path.relative_to(root).as_posix() for path in required if not path.is_file()]
+    if missing:
+        raise RuntimeError(
+            "Папка homework распакована не полностью. Отсутствуют: "
+            + ", ".join(missing)
+            + ". Распакуйте архив homework.zip целиком, включая runtime и configs, "
+              "и откройте ноутбук из полученной папки homework."
+        )
     if install:
         subprocess.run([sys.executable, "-m", "pip", "install", "-r", str(root / "requirements.txt")], check=True)
-    runtime = root / "runtime"
     if str(runtime) not in sys.path:
         sys.path.insert(0, str(runtime))
+    # A previous attempt may have cached this path while it was still absent.
+    importlib.invalidate_caches()
     # Never silently run the repository's editable installation instead.
     spec = importlib.util.find_spec("harness_lab")
     if spec is None or not Path(spec.origin).resolve().is_relative_to(runtime):

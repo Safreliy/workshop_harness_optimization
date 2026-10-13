@@ -9,3 +9,4 @@ artifacts/**
 .npm-cache-sites/
 .site-build/
 interactive-deck/
+*.pem
