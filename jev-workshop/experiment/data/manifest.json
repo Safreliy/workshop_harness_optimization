@@ -1,0 +1,63 @@
+{
+  "version": 2,
+  "seed": 20261002,
+  "summary": {
+    "train": {
+      "rows": 720,
+      "scenario_families": 80,
+      "action_families": [
+        "00",
+        "01",
+        "03",
+        "04",
+        "05",
+        "06",
+        "07",
+        "09"
+      ],
+      "labels": {
+        "supported": 160,
+        "contradicted": 160,
+        "insufficient_evidence": 400
+      }
+    },
+    "dev": {
+      "rows": 90,
+      "scenario_families": 10,
+      "action_families": [
+        "08"
+      ],
+      "labels": {
+        "supported": 20,
+        "contradicted": 20,
+        "insufficient_evidence": 50
+      }
+    },
+    "calibration": {
+      "rows": 90,
+      "scenario_families": 10,
+      "action_families": [
+        "11"
+      ],
+      "labels": {
+        "supported": 20,
+        "contradicted": 20,
+        "insufficient_evidence": 50
+      }
+    },
+    "test": {
+      "rows": 180,
+      "scenario_families": 20,
+      "action_families": [
+        "02",
+        "10"
+      ],
+      "labels": {
+        "supported": 40,
+        "contradicted": 40,
+        "insufficient_evidence": 100
+      }
+    }
+  },
+  "note": "Third claims are logically independent of the recorded action result; evidence is an incomplete local trace."
+}

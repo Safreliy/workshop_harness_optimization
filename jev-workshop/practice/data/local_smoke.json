@@ -1,0 +1,342 @@
+{
+  "date": "2026-10-14",
+  "backend": "transformers-cpu",
+  "method": "one-token-logprob",
+  "model": "Qwen/Qwen3-0.6B",
+  "revision": "e6de91484c29aa9480d55605af694f39b081c455",
+  "python": "3.13.3",
+  "torch": "2.13.0+cpu",
+  "transformers": "5.15.0",
+  "threads": 4,
+  "load_seconds": 225.988,
+  "samples": 12,
+  "correct": 4,
+  "scope": "12 illustrative examples from existing synthetic test split; not a quality benchmark or calibration study",
+  "remote_gpu": "SSH port 22 unavailable; vLLM/SGLang server execution not verified",
+  "results": [
+    {
+      "prediction": "supported",
+      "probabilities": {
+        "supported": 0.8710706658574444,
+        "contradicted": 0.008675680058010834,
+        "insufficient_evidence": 0.12025365408454483
+      },
+      "label_mass": 0.9946533442551505,
+      "latency_ms": 10714.42,
+      "model": "Qwen/Qwen3-0.6B",
+      "backend": "transformers-cpu",
+      "method": "one-token-logprob",
+      "calibrated": false,
+      "prompt_tokens": 346,
+      "label_token_ids": [
+        32,
+        33,
+        34
+      ],
+      "id": "10-00-success-0",
+      "state": {
+        "request": "Анна просит проверить создание резервной копии по объекту резервная копия-75000 от 03.09.2026 и сообщить подтверждённый результат. Не делайте других изменений без согласия.",
+        "evidence": "Фрагмент локальной трассы; это не полный журнал всех действий. tool=get_operation; object=резервная копия-75000; date=03.09.2026; result=копия создана; контрольная сумма проверена. Дополнительно: object=резервная копия-85000; result=создание копии отклонено; хранилище недоступно.",
+        "claim": "Для объекта резервная копия-75000 от 03.09.2026 резервная копия создана."
+      },
+      "label": "supported"
+    },
+    {
+      "prediction": "supported",
+      "probabilities": {
+        "supported": 0.7544556156682343,
+        "contradicted": 0.02154380441354365,
+        "insufficient_evidence": 0.2240005799182221
+      },
+      "label_mass": 0.9927598293889772,
+      "latency_ms": 9500.69,
+      "model": "Qwen/Qwen3-0.6B",
+      "backend": "transformers-cpu",
+      "method": "one-token-logprob",
+      "calibrated": false,
+      "prompt_tokens": 350,
+      "label_token_ids": [
+        32,
+        33,
+        34
+      ],
+      "id": "10-00-success-1",
+      "state": {
+        "request": "Анна просит проверить создание резервной копии по объекту резервная копия-75000 от 03.09.2026 и сообщить подтверждённый результат. Не делайте других изменений без согласия.",
+        "evidence": "Фрагмент локальной трассы; это не полный журнал всех действий. tool=get_operation; object=резервная копия-75000; date=03.09.2026; result=копия создана; контрольная сумма проверена. Дополнительно: object=резервная копия-85000; result=создание копии отклонено; хранилище недоступно.",
+        "claim": "Для объекта резервная копия-75000 от 03.09.2026 резервное копирование завершилось отказом."
+      },
+      "label": "contradicted"
+    },
+    {
+      "prediction": "supported",
+      "probabilities": {
+        "supported": 0.732616919709804,
+        "contradicted": 0.018024294367989933,
+        "insufficient_evidence": 0.2493587859222061
+      },
+      "label_mass": 0.9917143262830157,
+      "latency_ms": 7511.92,
+      "model": "Qwen/Qwen3-0.6B",
+      "backend": "transformers-cpu",
+      "method": "one-token-logprob",
+      "calibrated": false,
+      "prompt_tokens": 352,
+      "label_token_ids": [
+        32,
+        33,
+        34
+      ],
+      "id": "10-00-success-2",
+      "state": {
+        "request": "Анна просит проверить создание резервной копии по объекту резервная копия-75000 от 03.09.2026 и сообщить подтверждённый результат. Не делайте других изменений без согласия.",
+        "evidence": "Фрагмент локальной трассы; это не полный журнал всех действий. tool=get_operation; object=резервная копия-75000; date=03.09.2026; result=копия создана; контрольная сумма проверена. Дополнительно: object=резервная копия-85000; result=создание копии отклонено; хранилище недоступно.",
+        "claim": "Для объекта резервная копия-75000 от 03.09.2026 оператор оставил внутренний комментарий по результату операции."
+      },
+      "label": "insufficient_evidence"
+    },
+    {
+      "prediction": "supported",
+      "probabilities": {
+        "supported": 0.8241705919830353,
+        "contradicted": 0.01141227694372836,
+        "insufficient_evidence": 0.16441713107323644
+      },
+      "label_mass": 0.9940072214246687,
+      "latency_ms": 5536.33,
+      "model": "Qwen/Qwen3-0.6B",
+      "backend": "transformers-cpu",
+      "method": "one-token-logprob",
+      "calibrated": false,
+      "prompt_tokens": 346,
+      "label_token_ids": [
+        32,
+        33,
+        34
+      ],
+      "id": "10-00-failure-0",
+      "state": {
+        "request": "Анна просит проверить создание резервной копии по объекту резервная копия-75000 от 03.09.2026 и сообщить подтверждённый результат. Не делайте других изменений без согласия.",
+        "evidence": "Фрагмент локальной трассы; это не полный журнал всех действий. tool=get_operation; object=резервная копия-75000; date=03.09.2026; result=создание копии отклонено; хранилище недоступно. Дополнительно: object=резервная копия-85000; result=копия создана; контрольная сумма проверена.",
+        "claim": "Для объекта резервная копия-75000 от 03.09.2026 резервная копия создана."
+      },
+      "label": "contradicted"
+    },
+    {
+      "prediction": "supported",
+      "probabilities": {
+        "supported": 0.7576461913214734,
+        "contradicted": 0.021496213159329515,
+        "insufficient_evidence": 0.22085759551919712
+      },
+      "label_mass": 0.9927171450316643,
+      "latency_ms": 4425.87,
+      "model": "Qwen/Qwen3-0.6B",
+      "backend": "transformers-cpu",
+      "method": "one-token-logprob",
+      "calibrated": false,
+      "prompt_tokens": 350,
+      "label_token_ids": [
+        32,
+        33,
+        34
+      ],
+      "id": "10-00-failure-1",
+      "state": {
+        "request": "Анна просит проверить создание резервной копии по объекту резервная копия-75000 от 03.09.2026 и сообщить подтверждённый результат. Не делайте других изменений без согласия.",
+        "evidence": "Фрагмент локальной трассы; это не полный журнал всех действий. tool=get_operation; object=резервная копия-75000; date=03.09.2026; result=создание копии отклонено; хранилище недоступно. Дополнительно: object=резервная копия-85000; result=копия создана; контрольная сумма проверена.",
+        "claim": "Для объекта резервная копия-75000 от 03.09.2026 резервное копирование завершилось отказом."
+      },
+      "label": "supported"
+    },
+    {
+      "prediction": "supported",
+      "probabilities": {
+        "supported": 0.6696484611872556,
+        "contradicted": 0.02252308665298582,
+        "insufficient_evidence": 0.30782845215975846
+      },
+      "label_mass": 0.9912623107662185,
+      "latency_ms": 5315.97,
+      "model": "Qwen/Qwen3-0.6B",
+      "backend": "transformers-cpu",
+      "method": "one-token-logprob",
+      "calibrated": false,
+      "prompt_tokens": 352,
+      "label_token_ids": [
+        32,
+        33,
+        34
+      ],
+      "id": "10-00-failure-2",
+      "state": {
+        "request": "Анна просит проверить создание резервной копии по объекту резервная копия-75000 от 03.09.2026 и сообщить подтверждённый результат. Не делайте других изменений без согласия.",
+        "evidence": "Фрагмент локальной трассы; это не полный журнал всех действий. tool=get_operation; object=резервная копия-75000; date=03.09.2026; result=создание копии отклонено; хранилище недоступно. Дополнительно: object=резервная копия-85000; result=копия создана; контрольная сумма проверена.",
+        "claim": "Для объекта резервная копия-75000 от 03.09.2026 оператор оставил внутренний комментарий по результату операции."
+      },
+      "label": "insufficient_evidence"
+    },
+    {
+      "prediction": "supported",
+      "probabilities": {
+        "supported": 0.8478075950203916,
+        "contradicted": 0.010652961582761515,
+        "insufficient_evidence": 0.1415394433968469
+      },
+      "label_mass": 0.9945389864503624,
+      "latency_ms": 5798.41,
+      "model": "Qwen/Qwen3-0.6B",
+      "backend": "transformers-cpu",
+      "method": "one-token-logprob",
+      "calibrated": false,
+      "prompt_tokens": 346,
+      "label_token_ids": [
+        32,
+        33,
+        34
+      ],
+      "id": "10-03-failure-0",
+      "state": {
+        "request": "Глеб просит проверить создание резервной копии по объекту резервная копия-75003 от 09.09.2026 и сообщить подтверждённый результат. Не делайте других изменений без согласия.",
+        "evidence": "Фрагмент локальной трассы; это не полный журнал всех действий. tool=get_operation; object=резервная копия-75003; date=09.09.2026; result=создание копии отклонено; хранилище недоступно. Дополнительно: object=резервная копия-85003; result=копия создана; контрольная сумма проверена.",
+        "claim": "Для объекта резервная копия-75003 от 09.09.2026 резервная копия создана."
+      },
+      "label": "contradicted"
+    },
+    {
+      "prediction": "supported",
+      "probabilities": {
+        "supported": 0.7893234257681009,
+        "contradicted": 0.019906077957953978,
+        "insufficient_evidence": 0.1907704962739452
+      },
+      "label_mass": 0.9934540439290556,
+      "latency_ms": 6450.26,
+      "model": "Qwen/Qwen3-0.6B",
+      "backend": "transformers-cpu",
+      "method": "one-token-logprob",
+      "calibrated": false,
+      "prompt_tokens": 350,
+      "label_token_ids": [
+        32,
+        33,
+        34
+      ],
+      "id": "10-03-failure-1",
+      "state": {
+        "request": "Глеб просит проверить создание резервной копии по объекту резервная копия-75003 от 09.09.2026 и сообщить подтверждённый результат. Не делайте других изменений без согласия.",
+        "evidence": "Фрагмент локальной трассы; это не полный журнал всех действий. tool=get_operation; object=резервная копия-75003; date=09.09.2026; result=создание копии отклонено; хранилище недоступно. Дополнительно: object=резервная копия-85003; result=копия создана; контрольная сумма проверена.",
+        "claim": "Для объекта резервная копия-75003 от 09.09.2026 резервное копирование завершилось отказом."
+      },
+      "label": "supported"
+    },
+    {
+      "prediction": "supported",
+      "probabilities": {
+        "supported": 0.705078224135602,
+        "contradicted": 0.022259081116859033,
+        "insufficient_evidence": 0.2726626947475389
+      },
+      "label_mass": 0.9922372389823813,
+      "latency_ms": 7118.73,
+      "model": "Qwen/Qwen3-0.6B",
+      "backend": "transformers-cpu",
+      "method": "one-token-logprob",
+      "calibrated": false,
+      "prompt_tokens": 352,
+      "label_token_ids": [
+        32,
+        33,
+        34
+      ],
+      "id": "10-03-failure-2",
+      "state": {
+        "request": "Глеб просит проверить создание резервной копии по объекту резервная копия-75003 от 09.09.2026 и сообщить подтверждённый результат. Не делайте других изменений без согласия.",
+        "evidence": "Фрагмент локальной трассы; это не полный журнал всех действий. tool=get_operation; object=резервная копия-75003; date=09.09.2026; result=создание копии отклонено; хранилище недоступно. Дополнительно: object=резервная копия-85003; result=копия создана; контрольная сумма проверена.",
+        "claim": "Для объекта резервная копия-75003 от 09.09.2026 оператор оставил внутренний комментарий по результату операции."
+      },
+      "label": "insufficient_evidence"
+    },
+    {
+      "prediction": "supported",
+      "probabilities": {
+        "supported": 0.7546659865893419,
+        "contradicted": 0.007960657490361765,
+        "insufficient_evidence": 0.23737335592029632
+      },
+      "label_mass": 0.9933558236788338,
+      "latency_ms": 9887.31,
+      "model": "Qwen/Qwen3-0.6B",
+      "backend": "transformers-cpu",
+      "method": "one-token-logprob",
+      "calibrated": false,
+      "prompt_tokens": 343,
+      "label_token_ids": [
+        32,
+        33,
+        34
+      ],
+      "id": "10-06-unknown-0",
+      "state": {
+        "request": "Жанна просит проверить создание резервной копии по объекту резервная копия-75006 от 15.09.2026 и сообщить подтверждённый результат. Не делайте других изменений без согласия.",
+        "evidence": "Фрагмент локальной трассы; это не полный журнал всех действий. tool=get_operation; object=резервная копия-75006; date=15.09.2026; result=запись о результате не найдена, повторная проверка требуется. Дополнительно: object=резервная копия-85006; result=копия создана; контрольная сумма проверена.",
+        "claim": "Для объекта резервная копия-75006 от 15.09.2026 резервная копия создана."
+      },
+      "label": "insufficient_evidence"
+    },
+    {
+      "prediction": "supported",
+      "probabilities": {
+        "supported": 0.6279503850505613,
+        "contradicted": 0.010420398552940727,
+        "insufficient_evidence": 0.36162921639649787
+      },
+      "label_mass": 0.9927028906472778,
+      "latency_ms": 12720.45,
+      "model": "Qwen/Qwen3-0.6B",
+      "backend": "transformers-cpu",
+      "method": "one-token-logprob",
+      "calibrated": false,
+      "prompt_tokens": 347,
+      "label_token_ids": [
+        32,
+        33,
+        34
+      ],
+      "id": "10-06-unknown-1",
+      "state": {
+        "request": "Жанна просит проверить создание резервной копии по объекту резервная копия-75006 от 15.09.2026 и сообщить подтверждённый результат. Не делайте других изменений без согласия.",
+        "evidence": "Фрагмент локальной трассы; это не полный журнал всех действий. tool=get_operation; object=резервная копия-75006; date=15.09.2026; result=запись о результате не найдена, повторная проверка требуется. Дополнительно: object=резервная копия-85006; result=копия создана; контрольная сумма проверена.",
+        "claim": "Для объекта резервная копия-75006 от 15.09.2026 резервное копирование завершилось отказом."
+      },
+      "label": "insufficient_evidence"
+    },
+    {
+      "prediction": "insufficient_evidence",
+      "probabilities": {
+        "supported": 0.4815095684689828,
+        "contradicted": 0.013848673770145446,
+        "insufficient_evidence": 0.5046417577608717
+      },
+      "label_mass": 0.9921682577063246,
+      "latency_ms": 10611.35,
+      "model": "Qwen/Qwen3-0.6B",
+      "backend": "transformers-cpu",
+      "method": "one-token-logprob",
+      "calibrated": false,
+      "prompt_tokens": 349,
+      "label_token_ids": [
+        32,
+        33,
+        34
+      ],
+      "id": "10-06-unknown-2",
+      "state": {
+        "request": "Жанна просит проверить создание резервной копии по объекту резервная копия-75006 от 15.09.2026 и сообщить подтверждённый результат. Не делайте других изменений без согласия.",
+        "evidence": "Фрагмент локальной трассы; это не полный журнал всех действий. tool=get_operation; object=резервная копия-75006; date=15.09.2026; result=запись о результате не найдена, повторная проверка требуется. Дополнительно: object=резервная копия-85006; result=копия создана; контрольная сумма проверена.",
+        "claim": "Для объекта резервная копия-75006 от 15.09.2026 оператор оставил внутренний комментарий по результату операции."
+      },
+      "label": "insufficient_evidence"
+    }
+  ]
+}

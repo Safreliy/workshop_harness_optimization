@@ -1,0 +1,533 @@
+{
+  "recorded_utc": "2026-10-14T13:17:28.058181+00:00",
+  "source": "real API calls on executed teaching SQL fixture; no benchmark gold labels",
+  "rows": [
+    {
+      "case": "weak_checks",
+      "state": {
+        "request": "Посчитайте сумму завершённых (settled) платежей в USD. Суммы в центах. Другие валюты не включайте.",
+        "claim": "Получена корректная сумма завершённых USD-платежей. Другие валюты не включены.",
+        "evidence": {
+          "sql": "SELECT SUM(amount_minor) AS revenue_minor FROM payments WHERE status='settled'",
+          "result": [
+            [
+              3777
+            ]
+          ],
+          "checks": {
+            "executed": true,
+            "one_integer": true
+          }
+        }
+      },
+      "input_sha256": "301e489052f57f55bb8e4feee1affd0b7564d6206fa5a88beddbf74e6e4ad281",
+      "jev": {
+        "answers": {
+          "verification": {
+            "type": "choice",
+            "choice": "insufficient_evidence",
+            "confidence": 0.52,
+            "probabilities": {
+              "supported": 0.16,
+              "contradicted": 0.16,
+              "insufficient_evidence": 0.68
+            }
+          }
+        },
+        "model": "typesafe/jev-1.13-20260917",
+        "usage": {
+          "input_tokens": 932,
+          "output_tokens": 53
+        },
+        "latency_ms": 1474.4644000893459,
+        "prediction": "insufficient_evidence",
+        "probabilities": {
+          "supported": 0.16,
+          "contradicted": 0.16,
+          "insufficient_evidence": 0.68
+        }
+      }
+    },
+    {
+      "case": "currency_checked",
+      "state": {
+        "request": "Посчитайте сумму завершённых (settled) платежей в USD. Суммы в центах. Другие валюты не включайте.",
+        "claim": "Получена корректная сумма завершённых USD-платежей. Другие валюты не включены.",
+        "evidence": {
+          "sql": "SELECT SUM(amount_minor) AS revenue_minor FROM payments WHERE status='settled'",
+          "result": [
+            [
+              3777
+            ]
+          ],
+          "checks": {
+            "executed": true,
+            "one_integer": true,
+            "settled_USD_reference": false
+          },
+          "reference_USD_minor": 3000
+        }
+      },
+      "input_sha256": "d3105bb178fab773418b540075dc5478900884fbe1a5cbc2d95c0e5edbfcf75f",
+      "jev": {
+        "answers": {
+          "verification": {
+            "type": "choice",
+            "choice": "contradicted",
+            "confidence": 0.52,
+            "probabilities": {
+              "supported": 0.01,
+              "contradicted": 0.68,
+              "insufficient_evidence": 0.31
+            }
+          }
+        },
+        "model": "typesafe/jev-1.13-20260917",
+        "usage": {
+          "input_tokens": 954,
+          "output_tokens": 50
+        },
+        "latency_ms": 485.5352999875322,
+        "prediction": "contradicted",
+        "probabilities": {
+          "supported": 0.01,
+          "contradicted": 0.68,
+          "insufficient_evidence": 0.31
+        }
+      }
+    },
+    {
+      "case": "fixed",
+      "state": {
+        "request": "Посчитайте сумму завершённых (settled) платежей в USD. Суммы в центах. Другие валюты не включайте.",
+        "claim": "Получена корректная сумма завершённых USD-платежей. Другие валюты не включены.",
+        "evidence": {
+          "sql": "SELECT SUM(amount_minor) AS revenue_minor FROM payments WHERE status='settled' AND currency='USD'",
+          "result": [
+            [
+              3000
+            ]
+          ],
+          "checks": {
+            "executed": true,
+            "one_integer": true,
+            "settled_USD_reference": true
+          },
+          "reference_USD_minor": 3000
+        }
+      },
+      "input_sha256": "6e822f6c25aac79727e65baafdfa5768431a90e12cbd2c1e8a6275c409ce4366",
+      "jev": {
+        "answers": {
+          "verification": {
+            "type": "choice",
+            "choice": "supported",
+            "confidence": 0.89,
+            "probabilities": {
+              "supported": 0.93,
+              "contradicted": 0.0,
+              "insufficient_evidence": 0.07
+            }
+          }
+        },
+        "model": "typesafe/jev-1.13-20260917",
+        "usage": {
+          "input_tokens": 959,
+          "output_tokens": 47
+        },
+        "latency_ms": 502.3691999958828,
+        "prediction": "supported",
+        "probabilities": {
+          "supported": 0.93,
+          "contradicted": 0.0,
+          "insufficient_evidence": 0.07
+        }
+      }
+    }
+  ],
+  "forced_fallback": {
+    "route": "judge",
+    "accepted": true,
+    "judge_called": true,
+    "fast": {
+      "answers": {
+        "verification": {
+          "type": "choice",
+          "choice": "supported",
+          "confidence": 0.91,
+          "probabilities": {
+            "supported": 0.9400000000000001,
+            "contradicted": 0.0,
+            "insufficient_evidence": 0.06
+          }
+        }
+      },
+      "model": "typesafe/jev-1.13-20260917",
+      "usage": {
+        "input_tokens": 959,
+        "output_tokens": 47
+      },
+      "latency_ms": 471.04119998402894,
+      "prediction": "supported",
+      "probabilities": {
+        "supported": 0.9400000000000001,
+        "contradicted": 0.0,
+        "insufficient_evidence": 0.06
+      }
+    },
+    "judge": {
+      "value": {
+        "verdict": "supported",
+        "reason": "The SQL query correctly sums the amounts in minor units for settled payments in USD only, and the result matches the reference value.",
+        "evidence_quote": "SELECT SUM(amount_minor) AS revenue_minor FROM payments WHERE status='settled' AND currency='USD' with result [[3000]] and reference_USD_minor 3000",
+        "next_check": "Verify the correctness of the 'settled' status and 'currency' filtering in the payments table."
+      },
+      "model": "openai/gpt-4.1-mini",
+      "usage": {
+        "prompt_tokens": 203,
+        "completion_tokens": 105,
+        "total_tokens": 308,
+        "cost": 0.0002492,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.0002492,
+          "upstream_inference_prompt_cost": 8.12e-05,
+          "upstream_inference_completions_cost": 0.000168
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "latency_ms": 4096.093100029975
+    }
+  },
+  "negative_fallback": {
+    "route": "judge",
+    "accepted": false,
+    "judge_called": true,
+    "fast": {
+      "answers": {
+        "verification": {
+          "type": "choice",
+          "choice": "insufficient_evidence",
+          "confidence": 0.52,
+          "probabilities": {
+            "supported": 0.07,
+            "contradicted": 0.25,
+            "insufficient_evidence": 0.68
+          }
+        }
+      },
+      "model": "typesafe/jev-1.13-20260917",
+      "usage": {
+        "input_tokens": 932,
+        "output_tokens": 53
+      },
+      "latency_ms": 532.5033999979496,
+      "prediction": "insufficient_evidence",
+      "probabilities": {
+        "supported": 0.07,
+        "contradicted": 0.25,
+        "insufficient_evidence": 0.68
+      }
+    },
+    "judge": {
+      "value": {
+        "verdict": "insufficient_evidence",
+        "reason": "The SQL query sums all settled payments regardless of currency, but the request specifies to include only USD payments. There is no evidence that the query filters by currency.",
+        "evidence_quote": "SELECT SUM(amount_minor) AS revenue_minor FROM payments WHERE status='settled'",
+        "next_check": "Verify that the SQL query includes a filter for currency = 'USD' to ensure only USD payments are summed."
+      },
+      "model": "openai/gpt-4.1-mini",
+      "usage": {
+        "prompt_tokens": 180,
+        "completion_tokens": 97,
+        "total_tokens": 277,
+        "cost": 0.0002272,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.0002272,
+          "upstream_inference_prompt_cost": 7.2e-05,
+          "upstream_inference_completions_cost": 0.0001552
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "latency_ms": 2577.2759000537917
+    }
+  },
+  "dynamic_rubric": {
+    "draft": {
+      "value": {
+        "criteria": [
+          {
+            "id": "c1",
+            "scope": "answer",
+            "expectation": "Сумма всех завершённых (settled) платежей в валюте USD, выраженная в центах, корректно подсчитана и представлена.",
+            "required_evidence": "Перечисление всех платежей с валютой USD и статусом settled, их суммы в центах и итоговая сумма."
+          }
+        ]
+      },
+      "model": "openai/gpt-4.1-mini",
+      "usage": {
+        "prompt_tokens": 113,
+        "completion_tokens": 83,
+        "total_tokens": 196,
+        "cost": 0.000178,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.000178,
+          "upstream_inference_prompt_cost": 4.52e-05,
+          "upstream_inference_completions_cost": 0.0001328
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "latency_ms": 2021.783099975437
+    },
+    "frozen": {
+      "request": "Посчитайте сумму завершённых (settled) платежей в USD. Суммы в центах. Другие валюты не включайте.",
+      "criteria": [
+        {
+          "id": "answer_currency",
+          "scope": "answer",
+          "expectation": "В ответе явно указана валюта USD и единица cents.",
+          "required_evidence": "Текст ответа содержит валюту и единицу суммы.",
+          "origin": "user_requirement"
+        },
+        {
+          "id": "trace_filter",
+          "scope": "trace",
+          "expectation": "Выполненный расчёт использует только settled платежи в USD.",
+          "required_evidence": "SQL и результат реального execute, включая фильтры status и currency.",
+          "origin": "user_requirement"
+        },
+        {
+          "id": "segment_verify",
+          "scope": "segment",
+          "expectation": "До final проведён независимый пересчёт по валюте.",
+          "required_evidence": "Сегмент verify содержит вычисленный reference и сравнение с результатом.",
+          "origin": "evaluation_policy"
+        }
+      ],
+      "version": "ec44bc5a098c0d93294a690b7f1e2626b6b5ecae5a620bc20f20df330b737737",
+      "approved": true
+    },
+    "judgments": [
+      {
+        "criterion_id": "answer_currency",
+        "state": {
+          "request": "Посчитайте сумму завершённых (settled) платежей в USD. Суммы в центах. Другие валюты не включайте.",
+          "rubric_version": "ec44bc5a098c0d93294a690b7f1e2626b6b5ecae5a620bc20f20df330b737737",
+          "criterion_id": "answer_currency",
+          "answer": "Выручка settled-платежей: 3000 cents USD."
+        },
+        "result": {
+          "answers": {
+            "answer_currency": {
+              "type": "choice",
+              "choice": "supported",
+              "confidence": 0.98,
+              "probabilities": {
+                "supported": 0.99,
+                "contradicted": 0.0,
+                "insufficient_evidence": 0.01
+              }
+            }
+          },
+          "model": "typesafe/jev-1.13-20260917",
+          "usage": {
+            "input_tokens": 837,
+            "output_tokens": 48
+          },
+          "latency_ms": 1552.1404999308288
+        }
+      },
+      {
+        "criterion_id": "trace_filter",
+        "state": {
+          "request": "Посчитайте сумму завершённых (settled) платежей в USD. Суммы в центах. Другие валюты не включайте.",
+          "rubric_version": "ec44bc5a098c0d93294a690b7f1e2626b6b5ecae5a620bc20f20df330b737737",
+          "criterion_id": "trace_filter",
+          "trace": [
+            {
+              "tool": "execute_sql",
+              "sql": "SELECT SUM(amount_minor) AS revenue_minor FROM payments WHERE status='settled' AND currency='USD'",
+              "result": [
+                [
+                  3000
+                ]
+              ]
+            }
+          ]
+        },
+        "result": {
+          "answers": {
+            "trace_filter": {
+              "type": "choice",
+              "choice": "supported",
+              "confidence": 1.0,
+              "probabilities": {
+                "supported": 1.0,
+                "contradicted": 0.0,
+                "insufficient_evidence": 0.0
+              }
+            }
+          },
+          "model": "typesafe/jev-1.13-20260917",
+          "usage": {
+            "input_tokens": 872,
+            "output_tokens": 48
+          },
+          "latency_ms": 522.5310999667272
+        }
+      },
+      {
+        "criterion_id": "segment_verify",
+        "state": {
+          "request": "Посчитайте сумму завершённых (settled) платежей в USD. Суммы в центах. Другие валюты не включайте.",
+          "rubric_version": "ec44bc5a098c0d93294a690b7f1e2626b6b5ecae5a620bc20f20df330b737737",
+          "criterion_id": "segment_verify",
+          "segments": {
+            "verify": {
+              "reference_USD_minor": 3000,
+              "checks": {
+                "executed": true,
+                "one_integer": true,
+                "settled_USD_reference": true
+              }
+            }
+          }
+        },
+        "result": {
+          "answers": {
+            "segment_verify": {
+              "type": "choice",
+              "choice": "insufficient_evidence",
+              "confidence": 0.46,
+              "probabilities": {
+                "supported": 0.34,
+                "contradicted": 0.02,
+                "insufficient_evidence": 0.64
+              }
+            }
+          },
+          "model": "typesafe/jev-1.13-20260917",
+          "usage": {
+            "input_tokens": 885,
+            "output_tokens": 54
+          },
+          "latency_ms": 476.18040000088513
+        }
+      }
+    ],
+    "approval": "Explicit reviewer edits: remove invented enumeration, separate scopes, mark verifier policy",
+    "unreviewed_judgments": [
+      {
+        "criterion_id": "c1",
+        "state": {
+          "request": "Посчитайте сумму завершённых (settled) платежей в USD. Суммы в центах. Другие валюты не включайте.",
+          "rubric_version": "4a13751e334e0b722b01276f8c58d37d08422a9523d5434e7947d7b457c4fb09",
+          "criterion_id": "c1",
+          "answer": "Выручка settled-платежей: 3000 cents USD."
+        },
+        "result": {
+          "answers": {
+            "c1": {
+              "type": "choice",
+              "choice": "insufficient_evidence",
+              "confidence": 0.97,
+              "probabilities": {
+                "supported": 0.0,
+                "contradicted": 0.02,
+                "insufficient_evidence": 0.98
+              }
+            }
+          },
+          "model": "typesafe/jev-1.13-20260917",
+          "usage": {
+            "input_tokens": 937,
+            "output_tokens": 54
+          },
+          "latency_ms": 586.3479999825358
+        }
+      }
+    ],
+    "segment_after_evidence_fix": {
+      "criterion_id": "segment_verify",
+      "state": {
+        "request": "Посчитайте сумму завершённых (settled) платежей в USD. Суммы в центах. Другие валюты не включайте.",
+        "rubric_version": "ec44bc5a098c0d93294a690b7f1e2626b6b5ecae5a620bc20f20df330b737737",
+        "criterion_id": "segment_verify",
+        "segments": {
+          "verify": {
+            "events": [
+              {
+                "step": 2,
+                "event": "execute_reference_sql",
+                "sql": "SELECT SUM(amount_minor) AS revenue_minor FROM payments WHERE status='settled' AND currency='USD'",
+                "result_minor": 3000
+              },
+              {
+                "step": 3,
+                "event": "compare",
+                "matched": true
+              },
+              {
+                "step": 4,
+                "event": "final_created",
+                "answer": "Выручка settled-платежей: 3000 cents USD."
+              }
+            ]
+          }
+        }
+      },
+      "result": {
+        "answers": {
+          "segment_verify": {
+            "type": "choice",
+            "choice": "supported",
+            "confidence": 0.58,
+            "probabilities": {
+              "supported": 0.72,
+              "contradicted": 0.02,
+              "insufficient_evidence": 0.26
+            }
+          }
+        },
+        "model": "typesafe/jev-1.13-20260917",
+        "usage": {
+          "input_tokens": 976,
+          "output_tokens": 48
+        },
+        "latency_ms": 1301.4352000318468
+      }
+    }
+  }
+}

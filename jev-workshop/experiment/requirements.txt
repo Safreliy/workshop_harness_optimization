@@ -1,0 +1,6 @@
+torch>=2.6
+transformers>=4.51
+peft>=0.15
+numpy>=1.26
+scikit-learn>=1.5
+huggingface-hub>=0.30

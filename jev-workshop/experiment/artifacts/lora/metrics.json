@@ -1,0 +1,174 @@
+{
+  "mode": "lora",
+  "model_id": "jhu-clsp/mmBERT-base",
+  "selected_epoch": 3,
+  "model_revision": "c5955035435e2bf121cde7f3c8863ef52ff35d82",
+  "input_length_stats": {
+    "train": {
+      "min": 186,
+      "p50": 194.0,
+      "p95": 208.0,
+      "max": 213,
+      "truncated_fraction": 0.0
+    },
+    "dev": {
+      "min": 186,
+      "p50": 188.0,
+      "p95": 197.0,
+      "max": 198,
+      "truncated_fraction": 0.0
+    },
+    "calibration": {
+      "min": 179,
+      "p50": 183.0,
+      "p95": 191.0,
+      "max": 192,
+      "truncated_fraction": 0.0
+    },
+    "test": {
+      "min": 182,
+      "p50": 195.0,
+      "p95": 204.04999999999998,
+      "max": 205,
+      "truncated_fraction": 0.0
+    }
+  },
+  "data_sha256": {
+    "train": "3d670095e4891399ce875e8d1991a56e8c400ae24131949e77e3ac312fbae6d4",
+    "dev": "91ff07cc4a6ccdc1c02a0df18b9553031b7c5584f54bee3dca1f7f9650eae111",
+    "calibration": "f0deb07033d9fe28cffb6342c61f35557614325c7a7b40b8a67393ed64ac3564",
+    "test": "d1549a87ec0bd78ab552e2bc1db44f768fd085d1c6947b720c384f43a11a5c48"
+  },
+  "package_versions": {
+    "torch": "2.11.0+cu128",
+    "transformers": "5.18.0",
+    "peft": "0.21.2",
+    "scikit-learn": "1.9.1"
+  },
+  "dev_macro_f1": 1.0,
+  "temperature": 0.25,
+  "calibration_raw": {
+    "accuracy": 1.0,
+    "macro_f1": 1.0,
+    "confusion_matrix": [
+      [
+        20,
+        0,
+        0
+      ],
+      [
+        0,
+        20,
+        0
+      ],
+      [
+        0,
+        0,
+        50
+      ]
+    ],
+    "support": {
+      "supported": 20,
+      "contradicted": 20,
+      "insufficient_evidence": 50
+    },
+    "nll": 9.840385536460669e-06,
+    "brier": 3.576999927397483e-10,
+    "ece_10_bins": 9.840277364614458e-06
+  },
+  "calibration_calibrated": {
+    "accuracy": 1.0,
+    "macro_f1": 1.0,
+    "confusion_matrix": [
+      [
+        20,
+        0,
+        0
+      ],
+      [
+        0,
+        20,
+        0
+      ],
+      [
+        0,
+        0,
+        50
+      ]
+    ],
+    "support": {
+      "supported": 20,
+      "contradicted": 20,
+      "insufficient_evidence": 50
+    },
+    "nll": -0.0,
+    "brier": 8.846801353528163e-38,
+    "ece_10_bins": 0.0
+  },
+  "test_raw": {
+    "accuracy": 0.8888888888888888,
+    "macro_f1": 0.8222222222222223,
+    "confusion_matrix": [
+      [
+        20,
+        20,
+        0
+      ],
+      [
+        0,
+        40,
+        0
+      ],
+      [
+        0,
+        0,
+        100
+      ]
+    ],
+    "support": {
+      "supported": 40,
+      "contradicted": 40,
+      "insufficient_evidence": 100
+    },
+    "nll": 0.6742248738731531,
+    "brier": 0.18294200770331592,
+    "ece_10_bins": 0.09980475854943957
+  },
+  "test": {
+    "accuracy": 0.8888888888888888,
+    "macro_f1": 0.8222222222222223,
+    "confusion_matrix": [
+      [
+        20,
+        20,
+        0
+      ],
+      [
+        0,
+        40,
+        0
+      ],
+      [
+        0,
+        0,
+        100
+      ]
+    ],
+    "support": {
+      "supported": 40,
+      "contradicted": 40,
+      "insufficient_evidence": 100
+    },
+    "nll": 1.4913355487529205,
+    "brier": 0.21786980675335393,
+    "ece_10_bins": 0.10999080949075324
+  },
+  "median_batch_test_latency_ms_per_record": 8.365449990378693,
+  "median_warm_single_infer_latency_ms": 32.12430002167821,
+  "peak_process_gpu_memory_mib": 2085.80615234375,
+  "duration_seconds": 70.96912690001773,
+  "train_count": 720,
+  "dev_count": 90,
+  "calibration_count": 90,
+  "test_count": 180
+}

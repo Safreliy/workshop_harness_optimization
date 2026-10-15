@@ -1,0 +1,174 @@
+{
+  "mode": "frozen",
+  "model_id": "jhu-clsp/mmBERT-base",
+  "selected_epoch": 1,
+  "model_revision": "c5955035435e2bf121cde7f3c8863ef52ff35d82",
+  "input_length_stats": {
+    "train": {
+      "min": 186,
+      "p50": 194.0,
+      "p95": 208.0,
+      "max": 213,
+      "truncated_fraction": 0.0
+    },
+    "dev": {
+      "min": 186,
+      "p50": 188.0,
+      "p95": 197.0,
+      "max": 198,
+      "truncated_fraction": 0.0
+    },
+    "calibration": {
+      "min": 179,
+      "p50": 183.0,
+      "p95": 191.0,
+      "max": 192,
+      "truncated_fraction": 0.0
+    },
+    "test": {
+      "min": 182,
+      "p50": 195.0,
+      "p95": 204.04999999999998,
+      "max": 205,
+      "truncated_fraction": 0.0
+    }
+  },
+  "data_sha256": {
+    "train": "3d670095e4891399ce875e8d1991a56e8c400ae24131949e77e3ac312fbae6d4",
+    "dev": "91ff07cc4a6ccdc1c02a0df18b9553031b7c5584f54bee3dca1f7f9650eae111",
+    "calibration": "f0deb07033d9fe28cffb6342c61f35557614325c7a7b40b8a67393ed64ac3564",
+    "test": "d1549a87ec0bd78ab552e2bc1db44f768fd085d1c6947b720c384f43a11a5c48"
+  },
+  "package_versions": {
+    "torch": "2.11.0+cu128",
+    "transformers": "5.18.0",
+    "peft": "0.21.2",
+    "scikit-learn": "1.9.1"
+  },
+  "dev_macro_f1": 0.5555555555555555,
+  "temperature": 2.1500000000000004,
+  "calibration_raw": {
+    "accuracy": 0.5555555555555556,
+    "macro_f1": 0.2380952380952381,
+    "confusion_matrix": [
+      [
+        0,
+        0,
+        20
+      ],
+      [
+        0,
+        0,
+        20
+      ],
+      [
+        0,
+        0,
+        50
+      ]
+    ],
+    "support": {
+      "supported": 20,
+      "contradicted": 20,
+      "insufficient_evidence": 50
+    },
+    "nll": 1.0558447394441288,
+    "brier": 0.503558404260649,
+    "ece_10_bins": 0.3577873321720253
+  },
+  "calibration_calibrated": {
+    "accuracy": 0.5555555555555556,
+    "macro_f1": 0.2380952380952381,
+    "confusion_matrix": [
+      [
+        0,
+        0,
+        20
+      ],
+      [
+        0,
+        0,
+        20
+      ],
+      [
+        0,
+        0,
+        50
+      ]
+    ],
+    "support": {
+      "supported": 20,
+      "contradicted": 20,
+      "insufficient_evidence": 50
+    },
+    "nll": 0.9312628434723911,
+    "brier": 0.524544341973313,
+    "ece_10_bins": 0.4262310551947551
+  },
+  "test_raw": {
+    "accuracy": 0.6722222222222223,
+    "macro_f1": 0.48808808808808807,
+    "confusion_matrix": [
+      [
+        39,
+        0,
+        1
+      ],
+      [
+        38,
+        0,
+        2
+      ],
+      [
+        18,
+        0,
+        82
+      ]
+    ],
+    "support": {
+      "supported": 40,
+      "contradicted": 40,
+      "insufficient_evidence": 100
+    },
+    "nll": 1.014940577431121,
+    "brier": 0.5289175043632613,
+    "ece_10_bins": 0.0896780637958146
+  },
+  "test": {
+    "accuracy": 0.6722222222222223,
+    "macro_f1": 0.48808808808808807,
+    "confusion_matrix": [
+      [
+        39,
+        0,
+        1
+      ],
+      [
+        38,
+        0,
+        2
+      ],
+      [
+        18,
+        0,
+        82
+      ]
+    ],
+    "support": {
+      "supported": 40,
+      "contradicted": 40,
+      "insufficient_evidence": 100
+    },
+    "nll": 0.9433122114022707,
+    "brier": 0.5500117147433381,
+    "ece_10_bins": 0.1628773847282177
+  },
+  "median_batch_test_latency_ms_per_record": 1.942449998750817,
+  "median_warm_single_infer_latency_ms": 8.683100022608414,
+  "peak_process_gpu_memory_mib": 1266.35498046875,
+  "duration_seconds": 20.080580000008922,
+  "train_count": 720,
+  "dev_count": 90,
+  "calibration_count": 90,
+  "test_count": 180
+}

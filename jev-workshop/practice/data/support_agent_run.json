@@ -1,0 +1,367 @@
+{
+  "recorded_utc": "2026-10-14T15:44:06.247303+00:00",
+  "source": "Real OpenRouter LLM tool-calling run against local simulated support tools",
+  "environment": {
+    "kind": "local_simulated_support_service",
+    "real_financial_operations": false,
+    "scenario": "First refund request is accepted internally but its response times out; status API returns pending_review.",
+    "fault_injection": "SupportService.call request_refund first call returns upstream_timeout",
+    "source_file": "support_agent.py",
+    "source_sha256": "0108c338bfbcec1d3cbcb5c66a41d916d3155b8fd20f5becb0c140b6dc1003e0"
+  },
+  "requested_model": "openai/gpt-6-luna",
+  "request": "Отключите продление подписки S1 и верните повторное списание P2. Сообщите, что уже сделано, а что ещё ожидается.",
+  "policy": "Ты агент поддержки. Выполни запрос пользователя доступными инструментами.\nПроверяй основания для финансовых действий и состояние операций. При таймауте результат\nоперации неизвестен: сначала выясни состояние, учитывай риск повторного действия.\nНе обещай завершение или срок без подтверждения. Если операция ещё в обработке,\nобъясни подтверждённый результат, оставшуюся неопределённость и конкретный следующий шаг.\nЗаверши кратким ответом клиенту по-русски. Инструменты подключены к локальному учебному сервису.",
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "read_subscription",
+        "description": "Получить подписку и состояние продления.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "subscription_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "subscription_id"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "read_payment",
+        "description": "Получить платёж, клиента и основания для возврата.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "payment_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "payment_id"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "disable_renewal",
+        "description": "Отключить автоматическое продление подписки.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "subscription_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "subscription_id"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "request_refund",
+        "description": "Запросить возврат повторного списания. Повторный вызов не создаёт второй возврат: ключ — payment_id.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "payment_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "payment_id"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_refund_status",
+        "description": "Прочитать текущее состояние возврата по исходному платежу; также после таймаута.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "payment_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "payment_id"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  ],
+  "events": [
+    {
+      "event_id": "e001",
+      "timestamp_utc": "2026-10-14T15:43:54.782126+00:00",
+      "role": "system",
+      "content": "Ты агент поддержки. Выполни запрос пользователя доступными инструментами.\nПроверяй основания для финансовых действий и состояние операций. При таймауте результат\nоперации неизвестен: сначала выясни состояние, учитывай риск повторного действия.\nНе обещай завершение или срок без подтверждения. Если операция ещё в обработке,\nобъясни подтверждённый результат, оставшуюся неопределённость и конкретный следующий шаг.\nЗаверши кратким ответом клиенту по-русски. Инструменты подключены к локальному учебному сервису."
+    },
+    {
+      "event_id": "e002",
+      "timestamp_utc": "2026-10-14T15:43:54.782175+00:00",
+      "role": "user",
+      "content": "Отключите продление подписки S1 и верните повторное списание P2. Сообщите, что уже сделано, а что ещё ожидается."
+    },
+    {
+      "event_id": "e003",
+      "timestamp_utc": "2026-10-14T15:44:00.720186+00:00",
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "id": "call_x0mn1hBz8kqTiBX75xn4kTNU",
+          "function": {
+            "arguments": "{\"subscription_id\":\"S1\"}",
+            "name": "read_subscription"
+          },
+          "type": "function",
+          "index": 0
+        },
+        {
+          "id": "call_0M7XiNU8TYwEw9Pmt6gZqLKC",
+          "function": {
+            "arguments": "{\"payment_id\":\"P2\"}",
+            "name": "read_payment"
+          },
+          "type": "function",
+          "index": 1
+        }
+      ]
+    },
+    {
+      "event_id": "e004",
+      "timestamp_utc": "2026-10-14T15:44:00.722441+00:00",
+      "role": "tool",
+      "tool_call_id": "call_x0mn1hBz8kqTiBX75xn4kTNU",
+      "name": "read_subscription",
+      "content": "{\"subscription_id\": \"S1\", \"customer_id\": \"C17\", \"status\": \"active\", \"renewal_enabled\": true}"
+    },
+    {
+      "event_id": "e005",
+      "timestamp_utc": "2026-10-14T15:44:00.722488+00:00",
+      "role": "tool",
+      "tool_call_id": "call_0M7XiNU8TYwEw9Pmt6gZqLKC",
+      "name": "read_payment",
+      "content": "{\"payment_id\": \"P2\", \"customer_id\": \"C17\", \"subscription_id\": \"S1\", \"amount_minor\": 2990, \"currency\": \"RUB\", \"status\": \"settled\", \"duplicate_of\": \"P1\", \"refund_eligible\": true}"
+    },
+    {
+      "event_id": "e006",
+      "timestamp_utc": "2026-10-14T15:44:02.296767+00:00",
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "id": "call_oopDPDrmWlV8S1tjFbXaRRu1",
+          "function": {
+            "arguments": "{\"subscription_id\":\"S1\"}",
+            "name": "disable_renewal"
+          },
+          "type": "function",
+          "index": 0
+        },
+        {
+          "id": "call_I0S38f9unWhz7b698rqL2WbH",
+          "function": {
+            "arguments": "{\"payment_id\":\"P2\"}",
+            "name": "request_refund"
+          },
+          "type": "function",
+          "index": 1
+        }
+      ]
+    },
+    {
+      "event_id": "e007",
+      "timestamp_utc": "2026-10-14T15:44:02.296901+00:00",
+      "role": "tool",
+      "tool_call_id": "call_oopDPDrmWlV8S1tjFbXaRRu1",
+      "name": "disable_renewal",
+      "content": "{\"subscription_id\": \"S1\", \"customer_id\": \"C17\", \"status\": \"active\", \"renewal_enabled\": false}"
+    },
+    {
+      "event_id": "e008",
+      "timestamp_utc": "2026-10-14T15:44:02.296945+00:00",
+      "role": "tool",
+      "tool_call_id": "call_I0S38f9unWhz7b698rqL2WbH",
+      "name": "request_refund",
+      "content": "{\"error\": \"upstream_timeout\", \"payment_id\": \"P2\", \"retryable\": true, \"message\": \"Ответ платёжного сервиса не получен за 5 секунд. Исход операции неизвестен.\"}"
+    },
+    {
+      "event_id": "e009",
+      "timestamp_utc": "2026-10-14T15:44:03.717291+00:00",
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "id": "call_XiHTgwv9tczh7P8yX8nLdKaj",
+          "function": {
+            "arguments": "{\"payment_id\":\"P2\"}",
+            "name": "get_refund_status"
+          },
+          "type": "function",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "event_id": "e010",
+      "timestamp_utc": "2026-10-14T15:44:03.717438+00:00",
+      "role": "tool",
+      "tool_call_id": "call_XiHTgwv9tczh7P8yX8nLdKaj",
+      "name": "get_refund_status",
+      "content": "{\"payment_id\": \"P2\", \"refund_id\": \"R2\", \"status\": \"pending_review\", \"money_transferred\": false, \"next_action\": \"wait_for_review\", \"eta\": null}"
+    },
+    {
+      "event_id": "e011",
+      "timestamp_utc": "2026-10-14T15:44:06.247197+00:00",
+      "content": "Автопродление подписки S1 отключено.\n\nПлатёж P2 проверен: он отмечен как повторное списание и подходит для возврата. Запрос на возврат создан, сейчас он ожидает проверки; деньги пока не перечислены. Повторно запрашивать возврат не нужно. Следующий шаг — дождаться завершения проверки. Срок пока не подтверждён.",
+      "role": "assistant"
+    }
+  ],
+  "api_responses": [
+    {
+      "response_id": "gen-1791992639-e0ZoZWR4I1urGsOdLoDS",
+      "model": "openai/gpt-6-luna",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "completion_tokens": 52,
+        "prompt_tokens": 340,
+        "total_tokens": 392,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": null,
+          "image_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost": 6e-05,
+        "is_byok": false,
+        "cost_details": {
+          "upstream_inference_cost": 6e-05,
+          "upstream_inference_prompt_cost": 3.4e-05,
+          "upstream_inference_completions_cost": 2.6e-05
+        }
+      },
+      "latency_ms": 5940.1
+    },
+    {
+      "response_id": "gen-1791992641-tnUikJSXU1qbuH1rYu1Z",
+      "model": "openai/gpt-6-luna",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "completion_tokens": 55,
+        "prompt_tokens": 502,
+        "total_tokens": 557,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": null,
+          "image_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost": 7.77e-05,
+        "is_byok": false,
+        "cost_details": {
+          "upstream_inference_cost": 7.77e-05,
+          "upstream_inference_prompt_cost": 5.02e-05,
+          "upstream_inference_completions_cost": 2.75e-05
+        }
+      },
+      "latency_ms": 1574.3
+    },
+    {
+      "response_id": "gen-1791992643-t2h7MB75p3cpjCNl8FOx",
+      "model": "openai/gpt-6-luna",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "completion_tokens": 22,
+        "prompt_tokens": 656,
+        "total_tokens": 678,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": null,
+          "image_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost": 7.66e-05,
+        "is_byok": false,
+        "cost_details": {
+          "upstream_inference_cost": 7.66e-05,
+          "upstream_inference_prompt_cost": 6.56e-05,
+          "upstream_inference_completions_cost": 1.1e-05
+        }
+      },
+      "latency_ms": 1420.4
+    },
+    {
+      "response_id": "gen-1791992645-PAjrqpbIgSjBFgXQrqdj",
+      "model": "openai/gpt-6-luna",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 86,
+        "prompt_tokens": 735,
+        "total_tokens": 821,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": null,
+          "image_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost": 0.0001165,
+        "is_byok": false,
+        "cost_details": {
+          "upstream_inference_cost": 0.0001165,
+          "upstream_inference_prompt_cost": 7.35e-05,
+          "upstream_inference_completions_cost": 4.3e-05
+        }
+      },
+      "latency_ms": 2529.8
+    }
+  ],
+  "final_answer_event_id": "e011",
+  "final_answer": "Автопродление подписки S1 отключено.\n\nПлатёж P2 проверен: он отмечен как повторное списание и подходит для возврата. Запрос на возврат создан, сейчас он ожидает проверки; деньги пока не перечислены. Повторно запрашивать возврат не нужно. Следующий шаг — дождаться завершения проверки. Срок пока не подтверждён.",
+  "events_sha256": "a7975f221de7898eb1583268bf90db128192677f3a9ca9728f5f906e5df78164"
+}

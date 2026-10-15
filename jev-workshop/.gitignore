@@ -1,0 +1,7 @@
+experiment/artifacts/**/checkpoint/
+__pycache__/
+*.log
+.env
+.env.*
+practice/FACILITATOR.html
+speaker-notes.md
